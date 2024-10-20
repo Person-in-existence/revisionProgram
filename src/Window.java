@@ -111,6 +111,10 @@ public class Window extends JFrame {
         createDialog.setVisible(true);
     }
     public void makeNewDocument(DocumentType documentType) {
+        // Make the document
+        Document document = Document.makeFromType(documentType);
+        // Show it
+        contentPanel.showDocument(document);
 
     }
     public void goToHome() {
