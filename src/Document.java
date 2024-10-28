@@ -9,7 +9,7 @@ public abstract class Document {
         // Default to textdoc - shouldn't be possible but suppresses errors
         return new TextDocument();
     }
-    public abstract JPanel makePanel();
-    public abstract void writeToFile(String filePath);
+    public abstract EditDocumentPanel makeEditPanel();
+    public abstract FileWriteException writeToFile(String filePath);
     public abstract void readFromFile(String filePath);
 }

@@ -111,10 +111,14 @@ public class Window extends JFrame {
         createDialog.setVisible(true);
     }
     public void makeNewDocument(DocumentType documentType) {
-        // Make the document
-        Document document = Document.makeFromType(documentType);
-        // Show it
-        contentPanel.showDocument(document);
+        // First, check it is OK to close the current window, running close systems
+        if (contentPanel.closePanel()) {
+            // Make the document
+            Document document = Document.makeFromType(documentType);
+            // Show it
+            contentPanel.showDocument(document);
+        }
+        // If not, don't do anything
 
     }
     public void goToHome() {

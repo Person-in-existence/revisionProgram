@@ -2,20 +2,20 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ContentPanel extends JPanel {
-    JPanel panel;
+    private MainPanel panel;
     public ContentPanel() {
         super(new GridLayout(1,1));
     }
 
     public void showDocument(Document document) {
-        switchPanel(document.makePanel());
+        switchPanel(document.makeEditPanel());
     }
 
     public void showHomepage() {
         System.out.println("ContentPanel switching to homepage");
         switchPanel(new ContentHomePage());
     }
-    private void switchPanel(JPanel newPanel) {
+    private void switchPanel(MainPanel newPanel) {
         this.removeAll();
         panel = newPanel;
 
@@ -23,5 +23,11 @@ public class ContentPanel extends JPanel {
 
         this.revalidate();
         this.repaint();
+    }
+    public boolean closePanel() {
+        if (panel == null) {
+            return true;
+        }
+        return panel.close();
     }
 }
