@@ -8,6 +8,8 @@ This document describes the file storage systems used by this program.
 ---
 ## Text Documents:
 
+File Extension: .rtd (Revision Text Document)
+
 - ### Title:
   - long length
     - The length of the title string

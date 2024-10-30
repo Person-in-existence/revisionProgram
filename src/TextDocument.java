@@ -1,17 +1,27 @@
 import java.io.*;
 
 public class TextDocument extends Document {
+    public static String fileExtension = ".rtd"; // "Revision Text Document"
     public String content;
     public String title;
+    public String filePath;
 
     public TextDocument() {
         content = "";
         title = "";
+        filePath = "";
     }
 
     public TextDocument(String title, String content) {
         this.content = content;
         this.title = title;
+        this.filePath = "";
+    }
+
+    public TextDocument(String title, String content, String filePath) {
+        this.title = title;
+        this.content = content;
+        this.filePath = filePath;
     }
 
     @Override
@@ -22,8 +32,10 @@ public class TextDocument extends Document {
     }
 
     @Override
-    public FileWriteException writeToFile(String filePath) {
+    public FileException writeToFile(String filePath) {
         try {
+            /// Add the root and extension to the filePath
+            filePath = Main.saveLocation + filePath + fileExtension;
             // Create a file class
             File file = new File(filePath);
             /// Check for exceptions
@@ -31,14 +43,14 @@ public class TextDocument extends Document {
             if (!file.exists()) {
                 boolean success = file.createNewFile();
                 if (!success) {
-                    return new FileWriteException(true, Main.strings.getString("createFileFail"));
+                    return new FileException(true, Main.strings.getString("createFileFail"));
                 }
             }
             if (file.isDirectory()) {
-                return new FileWriteException(true, Main.strings.getString("fileIsDirectory"));
+                return new FileException(true, Main.strings.getString("fileIsDirectory"));
             }
             if (!file.canWrite()) {
-                return new FileWriteException(true, Main.strings.getString("cannotWriteToFile"));
+                return new FileException(true, Main.strings.getString("cannotWriteToFile"));
             }
 
             /// Write to the file
@@ -66,38 +78,58 @@ public class TextDocument extends Document {
 
             // If they aren't correct, return an error!
             if (!(readTitle.equals(title) & readContent.equals(content))) {
-                return new FileWriteException(true, "An unexpected error occurred while writing to the file. Please try again.");
+                System.err.println("Incorrect read");
+                System.err.println(title);
+                System.err.println(readTitle);
+                System.err.println(content);
+                System.err.println(readContent);
+                return new FileException(true, "An unknown error occurred while writing to the file. Please try again.");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return new FileWriteException(true, e.getMessage());
+            return new FileException(true, e.getMessage());
         }
-        return new FileWriteException(false, "");
+        return new FileException(false, "");
     }
 
     @Override
-    public void readFromFile(String filePath) {
+    public FileException readFromFile(String filePath) {
+        try {
 
-    }
+            /// Add the root and extension to the filePath
+            filePath = Main.saveLocation + filePath + fileExtension;
+            // Create a file class
+            File file = new File(filePath);
+            /// Check that the file exists and can be read
+            if (!file.exists()) {
+                return new FileException(true, Main.strings.getString("noFile"));
+            }
+            if (file.isDirectory()) {
+                return new FileException(true, Main.strings.getString("fileIsDirectory"));
+            }
+            if (!file.canRead()) {
+                return new FileException(true, Main.strings.getString("cantRead"));
+            }
+            /// Read from the file
+            FileInputStream fis = new FileInputStream(file);
+            DataInputStream in = new DataInputStream(fis);
 
-    public static void writeString(String string, DataOutputStream out) throws IOException {
-        // get the length of the string
-        long length = string.length();
-        // Write the length to the output stream
-        out.writeLong(length);
+            // Read the title
+            title = readString(in);
+            // Read the content
+            content = readString(in);
 
-        // Write the string itself
-        out.writeChars(string);
-    }
-    public static String readString(DataInputStream in) throws IOException {
-        // Read the length of the string
-        long length = in.readLong();
-        // Read that many characters
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            stringBuilder.append(in.readChar());
+            // Close the streams
+            in.close();
+            fis.close();
+            // Return no exception
+            return new FileException(false, "");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new FileException(true, e.getMessage());
         }
-        return stringBuilder.toString();
     }
+
 }

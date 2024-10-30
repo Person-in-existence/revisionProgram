@@ -1,4 +1,3 @@
-import org.w3c.dom.Text;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -101,11 +100,14 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
     }
     @Override
     public TextDocument getDocument() {
+        if (originalDocument.filePath != null) {
+            return new TextDocument(titleField.getText(), mainPaneArea.getText(), originalDocument.filePath);
+        }
         return new TextDocument(titleField.getText(), mainPaneArea.getText());
     }
     @Override
     public boolean hasChanged() {
-        return (Objects.equals(this.titleField.getText(), originalDocument.title) & Objects.equals(this.mainPaneArea.getText(), originalDocument.content));
+        return !(Objects.equals(this.titleField.getText(), originalDocument.title) & Objects.equals(this.mainPaneArea.getText(), originalDocument.content));
     }
     @Override
     public void setDocument(Document document) {
@@ -115,9 +117,37 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
     }
     @Override
     public boolean close() {
+        System.out.println("TextEditDocumentPanel close");
         // If the document has not changed, it is OK to close (return true)
         if (!hasChanged()) {
+            System.out.println("No change");
             return true;
+        }
+        // TODO: STANDARDISE FILE NAME SYSTEM ETC AND MAKE IT POSSIBLE TO CHANGE IT WHEN THE TITLE CHANGES? Maybe ignore old filepath - would need to track old file though - or save it with a timestamp name
+        // Check whether the document has a filename
+        if (!Objects.equals(originalDocument.filePath, "")) {
+            // If it does, save it with a new document
+            FileException e = getDocument().writeToFile(originalDocument.filePath);
+            if (e.failed) {
+                // Pop up a dialog and return false
+                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileWriteErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } else {
+            // Make a filePath for the file
+            String filePath = titleField.getText();
+            // TODO: HANDLE EMPTY TITLE
+            FileException e = getDocument().writeToFile(filePath);
+            if (e.failed) {
+                System.err.println("File Write failed");
+                System.err.println(e.getMessage());
+
+                e.printStackTrace();
+                // Pop up a dialog and return false
+                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileWriteErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
         }
         // Otherwise, TODO: HANDLE CLOSE WITH UNSAVED CHANGES - DIALOG AND SAVE ETC
         // TODO: REMOVE RETURN TRUE CASE
