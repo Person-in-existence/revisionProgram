@@ -4,24 +4,24 @@ public class TextDocument extends Document {
     public static final String fileExtension = ".rtd"; // "Revision Text Document"
     public String content;
     public String title;
-    public String filePath;
+    public String fileName;
 
     public TextDocument() {
         content = "";
         title = "";
-        filePath = "";
+        fileName = "";
     }
 
     public TextDocument(String title, String content) {
         this.content = content;
         this.title = title;
-        this.filePath = "";
+        this.fileName = "";
     }
 
     public TextDocument(String title, String content, String filePath) {
         this.title = title;
         this.content = content;
-        this.filePath = filePath;
+        this.fileName = filePath;
     }
 
     @Override
@@ -120,6 +120,9 @@ public class TextDocument extends Document {
             title = readString(in);
             // Read the content
             content = readString(in);
+            // Set the filename
+            fileName = file.getName().split("\\.")[0];
+
 
             // Close the streams
             in.close();

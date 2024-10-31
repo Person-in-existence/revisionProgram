@@ -100,8 +100,8 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
     }
     @Override
     public TextDocument getDocument() {
-        if (originalDocument.filePath != null) {
-            return new TextDocument(titleField.getText(), mainPaneArea.getText(), originalDocument.filePath);
+        if (originalDocument.fileName != null) {
+            return new TextDocument(titleField.getText(), mainPaneArea.getText(), originalDocument.fileName);
         }
         return new TextDocument(titleField.getText(), mainPaneArea.getText());
     }
@@ -125,9 +125,9 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
         }
         // TODO: STANDARDISE FILE NAME SYSTEM ETC AND MAKE IT POSSIBLE TO CHANGE IT WHEN THE TITLE CHANGES? Maybe ignore old filepath - would need to track old file though - or save it with a timestamp name
         // Check whether the document has a filename
-        if (!Objects.equals(originalDocument.filePath, "")) {
+        if (!Objects.equals(originalDocument.fileName, "")) {
             // If it does, save it with a new document
-            FileException e = getDocument().writeToFile(originalDocument.filePath);
+            FileException e = getDocument().writeToFile(originalDocument.fileName);
             if (e.failed) {
                 // Pop up a dialog and return false
                 JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
