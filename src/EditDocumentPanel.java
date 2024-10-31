@@ -9,5 +9,4 @@ public abstract class EditDocumentPanel extends MainPanel {
     public abstract void setDocument(Document document);
     public abstract boolean hasChanged();
     public abstract boolean close();
-
 }

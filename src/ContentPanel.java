@@ -3,6 +3,7 @@ import java.awt.*;
 
 public class ContentPanel extends JPanel {
     private MainPanel panel;
+    private boolean panelHasClosed;
     private Window window;
     public ContentPanel(Window window) {
         super(new GridLayout(1,1));
@@ -17,7 +18,14 @@ public class ContentPanel extends JPanel {
         System.out.println("ContentPanel switching to homepage");
         switchPanel(new ContentHomePage(window));
     }
+    public void declarePanelOpen() {
+        panelHasClosed = false;
+    }
     private void switchPanel(MainPanel newPanel) {
+        // If the panel has not closed successfully but is being switched anyway, try and force the panel to close.
+        if (!panelHasClosed & panel != null) {
+            panel.close();
+        }
         this.removeAll();
         panel = newPanel;
 
@@ -30,6 +38,10 @@ public class ContentPanel extends JPanel {
         if (panel == null) {
             return true;
         }
-        return panel.close();
+        boolean closed = panel.close();
+        if (closed) {
+            panelHasClosed = true;
+        }
+        return closed;
     }
 }
