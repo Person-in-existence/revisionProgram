@@ -6,19 +6,30 @@ File storage protocols:
 This document describes the file storage systems used by this program.
 
 ---
+
+## Document Requirements:
+All documents *must* begin with a title, in the "String" standard method format. <br>
+This is used to get the titles for lists of files.
+
+---
+
 ## Text Documents:
 
 File Extension: .rtd (Revision Text Document)
 
 - ### Title:
-  - long length
-    - The length of the title string
-  - char[] characters
-    - The characters that make up the string. There are {length} characters.
+  - String
 - ### Content:
-  - long length
-    - The length of the content of the document (This limits content size to 9,223,372,036,854,775,807, but this is unlikely to ever be an issue)
-  - char[] characters
-    - The characters that make up the content. There are {length} characters.
+  - String
 
 ---
+
+#### Standard Methods:
+
+Strings:
+
+- Strings are represented as:
+  - long length
+    - This is the length of the string
+  - char[] characters
+    - These are the characters in the string. There are {length} characters

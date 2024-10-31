@@ -1,8 +1,14 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.EnumMap;
 
 public abstract class Document {
+    public static final EnumMap<DocumentType, String> keyMap;
+    static {
+        keyMap = new EnumMap<>(DocumentType.class);
+        keyMap.put(DocumentType.TEXT, Main.strings.getString("textDocument"));
+    }
     public static Document makeFromType(DocumentType type) {
         switch (type) {
             case TEXT:
@@ -18,6 +24,14 @@ public abstract class Document {
         }
         // Return empty string otherwise
         return "";
+    }
+    public static DocumentType getTypeByExtension(String extension) {
+        switch (extension) {
+            case TextDocument.fileExtension:
+                return DocumentType.TEXT;
+        }
+        // Return textdocument if invalid
+        return DocumentType.TEXT;
     }
     public abstract EditDocumentPanel makeEditPanel();
     public abstract FileException writeToFile(String filePath);

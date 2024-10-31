@@ -130,7 +130,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
             FileException e = getDocument().writeToFile(originalDocument.filePath);
             if (e.failed) {
                 // Pop up a dialog and return false
-                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileWriteErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
                 return false;
             }
         } else {
@@ -144,7 +144,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
 
                 e.printStackTrace();
                 // Pop up a dialog and return false
-                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileWriteErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
                 return false;
             }
 

@@ -1,1 +1,1 @@
-public record DocumentMetadata(String name, String title) { }
+public record DocumentMetadata(String name, String title, DocumentType documentType) { }

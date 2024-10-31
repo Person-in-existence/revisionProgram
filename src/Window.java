@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 
 public class Window extends JFrame {
@@ -8,6 +10,16 @@ public class Window extends JFrame {
     ContentPanel contentPanel;
     public Window() {
         super();
+
+        /// REMOVE FOCUS IF EMPTY SPACE CLICKED
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                requestFocus();
+                System.out.println("Focus Lost");
+            }
+        });
+
         // Change the size of the window
         this.setSize(Main.windowWidth, Main.windowHeight);
 
@@ -27,7 +39,7 @@ public class Window extends JFrame {
         // Increment constraints
         constraints.gridy++;
         /// Make a lower content panel to hold the rest of the window
-        contentPanel = new ContentPanel();
+        contentPanel = new ContentPanel(this);
         // Set the weighty of constraints to 1
         constraints.weighty = 1;
         // Add contentPanel to the main panel
@@ -121,9 +133,18 @@ public class Window extends JFrame {
         // If not, don't do anything
 
     }
+
+    public void openDocument(Document document) {
+        if (contentPanel.closePanel()) {
+            contentPanel.showDocument(document);
+        }
+    }
     public void goToHome() {
         System.out.println("Going to homepage");
-        contentPanel.showHomepage();
+        // Check that it is OK to go to home
+        if (contentPanel.closePanel()) {
+            contentPanel.showHomepage();
+        }// Otherwise, do nothing
     }
     private void centreOnScreen() {
         Point p = getCentredWindowPoint(0,0, Main.screenWidth, Main.screenHeight, Main.windowWidth, Main.windowHeight);

@@ -1,7 +1,7 @@
 import java.io.*;
 
 public class TextDocument extends Document {
-    public static String fileExtension = ".rtd"; // "Revision Text Document"
+    public static final String fileExtension = ".rtd"; // "Revision Text Document"
     public String content;
     public String title;
     public String filePath;
@@ -97,12 +97,13 @@ public class TextDocument extends Document {
     public FileException readFromFile(String filePath) {
         try {
 
-            /// Add the root and extension to the filePath
-            filePath = Main.saveLocation + filePath + fileExtension;
+            /// Add the root to the filePath
+            filePath = Main.saveLocation + filePath;
             // Create a file class
             File file = new File(filePath);
             /// Check that the file exists and can be read
             if (!file.exists()) {
+                System.err.println(file.getPath());
                 return new FileException(true, Main.strings.getString("noFile"));
             }
             if (file.isDirectory()) {
