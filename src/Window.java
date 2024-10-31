@@ -48,6 +48,8 @@ public class Window extends JFrame {
 
         /// Add the main panel to the window
         this.add(panel);
+        // Go to the homepage
+        goToHome();
         // Make the window visible
         this.setVisible(true);
 
