@@ -34,6 +34,7 @@ public abstract class Document {
         return DocumentType.TEXT;
     }
     public abstract EditDocumentPanel makeEditPanel();
+    public abstract ViewDocumentPanel makeViewPanel();
     public abstract FileException writeToFile(String filePath);
     public abstract FileException readFromFile(String filePath);
     public static void writeString(String string, DataOutputStream out) throws IOException {

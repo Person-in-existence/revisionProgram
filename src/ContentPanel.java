@@ -10,8 +10,11 @@ public class ContentPanel extends JPanel {
         this.window = window;
     }
 
-    public void showDocument(Document document) {
+    public void editDocument(Document document) {
         switchPanel(document.makeEditPanel());
+    }
+    public void viewDocument(Document document) {
+        switchPanel(document.makeViewPanel());
     }
 
     public void showHomepage() {

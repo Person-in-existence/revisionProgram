@@ -130,15 +130,20 @@ public class Window extends JFrame {
             // Make the document
             Document document = Document.makeFromType(documentType);
             // Show it
-            contentPanel.showDocument(document);
+            contentPanel.editDocument(document);
         }
         // If not, don't do anything
 
     }
 
-    public void openDocument(Document document) {
+    public void editDocument(Document document) {
         if (contentPanel.closePanel()) {
-            contentPanel.showDocument(document);
+            contentPanel.editDocument(document);
+        }
+    }
+    public void viewDocument(Document document) {
+        if (contentPanel.closePanel()) {
+            contentPanel.viewDocument(document);
         }
     }
     public void goToHome() {

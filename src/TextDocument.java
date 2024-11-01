@@ -30,6 +30,11 @@ public class TextDocument extends Document {
         panel.setDocument(this);
         return panel;
     }
+    public ViewDocumentPanel makeViewPanel() {
+        TextViewDocumentPanel panel = new TextViewDocumentPanel();
+        panel.setDocument(this);
+        return panel;
+    }
 
     @Override
     public FileException writeToFile(String filePath) {

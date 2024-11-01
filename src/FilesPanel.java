@@ -54,7 +54,7 @@ public class FilesPanel extends JPanel {
         JButton viewButton = new JButton(Main.strings.getString("fileViewButton"));
         // Stop it being focusable so that it doesn't remove focus when pressed
         viewButton.setFocusable(false);
-        // TODO: Add action listener
+        viewButton.addActionListener(_->openViewDocument());
         // Increment constraints
         constraints.gridx++;
         // Add the button to the panel
@@ -90,7 +90,6 @@ public class FilesPanel extends JPanel {
         makeFileListPanel();
     }
     private void makeFileTable() {
-        // TODO: REFRESH BREAKS BUTTONS
         // Get all the available files
         DocumentMetadata[] files = Main.getDocumentData();
         data = files;
@@ -143,10 +142,8 @@ public class FilesPanel extends JPanel {
         largestWidth += padSize*2;
         panel.setBorder(new EmptyBorder(padSize,padSize,padSize, padSize));
         // Set the preferred size of the panel
-        System.out.println("Preferred panel size: " + totalHeight);
         Dimension preferredSize = new Dimension(largestWidth, totalHeight);
         fileScrollPanel.setPreferredSize(preferredSize);
-        System.out.println(fileScrollPanel.getPreferredSize());
         fileScrollPanel.requestFocusInWindow();
 
         // Add it to the panel
@@ -180,7 +177,17 @@ public class FilesPanel extends JPanel {
             // display an error message
             JOptionPane.showMessageDialog(parent, document.e().getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
         } else {
-            parent.openDocument(document.document());
+            parent.editDocument(document.document());
+        }
+    }
+    private void openViewDocument() {
+        DocumentMetadata data = getSelectedData();
+        DocumentErrorPackage document = Main.makeDocumentFromData(data);
+        if (document.e().failed) {
+            // display an error message
+            JOptionPane.showMessageDialog(parent, document.e().getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
+        } else {
+            parent.viewDocument(document.document());
         }
     }
 }

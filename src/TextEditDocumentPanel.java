@@ -38,7 +38,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
         JPanel panel = new JPanel(new GridLayout(1,1));
         JTextPane pane = new JTextPane();
         mainPaneArea = pane;
-        pane.setFont(new Font(null, Font.PLAIN, 16));
+        pane.setFont(Main.textContentFont);
         // Add the pane to the panel
         panel.add(pane);
         // Return the panel
@@ -68,8 +68,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
 
         /// Make title label
         JLabel titleLabel = new JLabel(Main.strings.getString("title"));
-        Font titleFont = new Font(null, Font.PLAIN, 30);
-        titleLabel.setFont(titleFont);
+        titleLabel.setFont(Main.titleFont);
         // Add the title label to the panel
         titlePanel.add(titleLabel,titlePanelConstraints);
 
@@ -79,7 +78,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
         // Change the title constraints
         // Create the field
         titleField = new JTextField(20);
-        titleField.setFont(titleFont);
+        titleField.setFont(Main.titleFont);
         // Add the titlefield to the panel
         titlePanel.add(titleField, titlePanelConstraints);
 

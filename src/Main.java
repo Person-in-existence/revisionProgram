@@ -9,6 +9,8 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class Main {
+    public static final Font titleFont = new Font("Arial", Font.PLAIN, 30);
+    public static final Font textContentFont = new Font("Arial", Font.PLAIN, 16);
     public static final String[] docTypes = new String[] {"Text"};
     public static final String saveLocation = "sets/";
     public static final double SIZE_SCALER = 0.9;
