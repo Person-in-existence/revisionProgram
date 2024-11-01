@@ -64,19 +64,19 @@ public class Window extends JFrame {
         topBarPanel.setBorder(new EmptyBorder(15,30,15,30));
 
         /// Add a button in the top left
-        // TODO: EXTRACT STRING RESOURCE
-        JButton homeButton = new JButton("Home");
+        JButton homeButton = new JButton(Main.strings.getString("homeButton"));
+        // Make button not focusable
+        homeButton.setFocusable(false);
         // Add the action listener to the button
         homeButton.addActionListener(_->goToHome());
         // Add the button to the panel
         topBarPanel.add(homeButton, BorderLayout.LINE_START);
 
         /// Add a button in the top right
-        // TODO: EXTRACT STRING RESOURCE
-        JButton newButton = new JButton("Create new");
-        newButton.addActionListener(_ -> {
-            openCreateDialog();
-        });
+        JButton newButton = new JButton(Main.strings.getString("createNewButton"));
+        // Make button not focusable
+        newButton.setFocusable(false);
+        newButton.addActionListener(_ -> openCreateDialog());
         // Add the button to the panel
         topBarPanel.add(newButton, BorderLayout.LINE_END);
 

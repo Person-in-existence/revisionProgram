@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -45,7 +46,7 @@ public class FilesPanel extends JPanel {
         JButton refreshButton = new JButton(Main.strings.getString("fileRefreshButton"));
         // Stop it being focusable so that it doesn't remove focus when pressed
         refreshButton.setFocusable(false);
-        refreshButton.addActionListener(_-> makeFileTable());
+        refreshButton.addActionListener(_-> refresh());
         // Add the button to the panel
         panel.add(refreshButton, constraints);
 
@@ -84,6 +85,10 @@ public class FilesPanel extends JPanel {
 
         return panel;
     }
+    public void refresh() {
+        this.remove(fileScrollPanel);
+        makeFileListPanel();
+    }
     private void makeFileTable() {
         // TODO: REFRESH BREAKS BUTTONS
         // Get all the available files
@@ -91,8 +96,9 @@ public class FilesPanel extends JPanel {
         data = files;
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-
+        // Keep a total of the height required so that
+        int totalHeight = 0;
+        int largestWidth = 0;
         for (int index = 0; index < files.length; index++) {
             FileListItem item = new FileListItem(files[index]);
             item.setFocusable(true);
@@ -122,17 +128,43 @@ public class FilesPanel extends JPanel {
                 }
             });
             panel.add(item);
+            totalHeight += (int) item.getPreferredSize().getHeight();
+            if (largestWidth < item.getPreferredSize().width) {
+                largestWidth = item.getPreferredSize().width;
+            }
             // Add spacing
-            panel.add(new JPanel());
+            final int verticalSpace = 5;
+            totalHeight += verticalSpace;
+            panel.add(Box.createVerticalStrut(verticalSpace));
         }
+        // Add padding to the border
+        final int padSize = 5;
+        totalHeight += padSize*2;
+        largestWidth += padSize*2;
+        panel.setBorder(new EmptyBorder(padSize,padSize,padSize, padSize));
+        // Set the preferred size of the panel
+        System.out.println("Preferred panel size: " + totalHeight);
+        Dimension preferredSize = new Dimension(largestWidth, totalHeight);
+        fileScrollPanel.setPreferredSize(preferredSize);
+        System.out.println(fileScrollPanel.getPreferredSize());
+        fileScrollPanel.requestFocusInWindow();
 
         // Add it to the panel
         fileScrollPanel.removeAll();
-        JScrollPane scrollPane = new JScrollPane(panel);
-        scrollPane.setBorder(null);
+        JScrollPane scrollPane = makeScrollPane(panel, preferredSize);
         fileScrollPanel.add(scrollPane);
     }
 
+    public static JScrollPane makeScrollPane(JPanel content, Dimension contentPreferredSize) {
+        JScrollPane scrollPane = new JScrollPane(content);
+        scrollPane.setBorder(null);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        // Scroll dimension including scroll bar
+        Dimension scrollPreferredSize = new Dimension(contentPreferredSize.width + scrollPane.getVerticalScrollBar().getPreferredSize().width, contentPreferredSize.height);
+        scrollPane.setMinimumSize(scrollPreferredSize);
+        return scrollPane;
+    }
     public DocumentMetadata getSelectedData() {
         if (dataIndex != -1 & dataIndex < data.length) {
             return data[dataIndex];

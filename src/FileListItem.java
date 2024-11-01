@@ -3,6 +3,8 @@ import com.formdev.flatlaf.ui.FlatButtonBorder;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
 public class FileListItem extends JPanel {
@@ -19,16 +21,22 @@ public class FileListItem extends JPanel {
         infoPanel.add(new JLabel(documentMetadata.name()));
         this.add(titlePanel);
         this.add(infoPanel);
-        this.setBorder(new FlatBorder());
+        this.setBorder(defaultBorder());
 
     }
     public void highlight() {
+        this.setBorder(highlightedBorder());
+    }
+    public void unhighlight() {
+        this.setBorder(defaultBorder());
+    }
+    private static Border defaultBorder() {
+        return new CompoundBorder(new FlatBorder(), new EmptyBorder(1,1,1,1));
+    }
+    private static Border highlightedBorder() {
         FlatBorder border = new FlatBorder();
         border.applyStyleProperty("borderColor", Color.cyan);
         border.applyStyleProperty("focusWidth", 1);
-        this.setBorder(border);
-    }
-    public void unhighlight() {
-        this.setBorder(new FlatBorder());
+        return border;
     }
 }
