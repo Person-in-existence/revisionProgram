@@ -96,6 +96,7 @@ public class TextViewDocumentPanel extends ViewDocumentPanel {
         this.mainPaneArea.setText(this.document.content);
         this.titleField.setText(this.document.title);
     }
+    public void refresh(){}
     public boolean close() {
         return true;
     }

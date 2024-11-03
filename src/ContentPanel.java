@@ -47,4 +47,7 @@ public class ContentPanel extends JPanel {
         }
         return closed;
     }
+    public void refresh() {
+        panel.refresh();
+    }
 }

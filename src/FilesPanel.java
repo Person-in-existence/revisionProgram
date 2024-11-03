@@ -11,28 +11,11 @@ public class FilesPanel extends JPanel {
     private JPanel fileScrollPanel;
     private DocumentMetadata[] data;
     private int dataIndex = -1;
-    private Window parent;
+    private final Window parent;
     public FilesPanel(Window parent) {
         super(new GridBagLayout());
         this.parent = parent;
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weighty = 0;
-        constraints.weightx = 1;
-        constraints.fill = GridBagConstraints.BOTH;
-
-        // Add the button panel
-        this.add(makeButtonPanel(), constraints);
-        // Add a padding panel to separate the button panel from the file scroll panel
-        constraints.gridy++;
-        this.add(new JPanel(), constraints);
-
-        // Change constraints
-        constraints.weighty = 1;
-        constraints.gridy++;
-        // Add the file scroll panel
-        this.add(makeFileListPanel(), constraints);
+        make();
 
     }
     private JPanel makeButtonPanel() {
@@ -46,7 +29,7 @@ public class FilesPanel extends JPanel {
         JButton refreshButton = new JButton(Main.strings.getString("fileRefreshButton"));
         // Stop it being focusable so that it doesn't remove focus when pressed
         refreshButton.setFocusable(false);
-        refreshButton.addActionListener(_-> refresh());
+        refreshButton.addActionListener(_-> refreshFiles());
         // Add the button to the panel
         panel.add(refreshButton, constraints);
 
@@ -85,7 +68,11 @@ public class FilesPanel extends JPanel {
 
         return panel;
     }
-    public void refresh() {
+    public void refreshUI() {
+        this.removeAll();
+        this.make();
+    }
+    public void refreshFiles() {
         this.remove(fileScrollPanel);
         makeFileListPanel();
     }
@@ -189,5 +176,25 @@ public class FilesPanel extends JPanel {
         } else {
             parent.viewDocument(document.document());
         }
+    }
+    private void make() {
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weighty = 0;
+        constraints.weightx = 1;
+        constraints.fill = GridBagConstraints.BOTH;
+
+        // Add the button panel
+        this.add(makeButtonPanel(), constraints);
+        // Add a padding panel to separate the button panel from the file scroll panel
+        constraints.gridy++;
+        this.add(new JPanel(), constraints);
+
+        // Change constraints
+        constraints.weighty = 1;
+        constraints.gridy++;
+        // Add the file scroll panel
+        this.add(makeFileListPanel(), constraints);
     }
 }

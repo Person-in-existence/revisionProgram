@@ -1,4 +1,3 @@
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -114,6 +113,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
         titleField.setText(originalDocument.title);
         mainPaneArea.setText(originalDocument.content);
     }
+    public void refresh(){}
     @Override
     public boolean close() {
         System.out.println("TextEditDocumentPanel close");

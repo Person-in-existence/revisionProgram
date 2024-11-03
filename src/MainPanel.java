@@ -8,5 +8,6 @@ public abstract class MainPanel extends JPanel {
     public MainPanel(LayoutManager layout) {
         super(layout);
     }
+    public abstract void refresh();
     public abstract boolean close();
 }

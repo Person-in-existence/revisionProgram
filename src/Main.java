@@ -1,3 +1,6 @@
+import com.formdev.flatlaf.ui.FlatBorder;
+import com.formdev.flatlaf.ui.FlatButtonBorder;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.DataInputStream;
@@ -30,9 +33,7 @@ public class Main {
     public static int dialogHeight = 150;
 
     public static void main(String[] args) {
-        try {
-            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarkLaf");
-        } catch (Exception _) {}
+        setDarkMode();
         // Get locale from args
         try {
             String language = args[0];
@@ -168,5 +169,77 @@ public class Main {
             return documentIndex;
         }
         return documentIndex;
+    }
+
+    public static boolean setDarkMode() {
+        try {
+            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarkLaf");
+            return true;
+        } catch (Exception e) {
+            System.err.println("Setting dark mode failed");
+            return false;
+        }
+    }
+    public static boolean setLightMode() {
+        try {
+            UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
+            return true;
+        } catch (Exception e) {
+            System.err.println("Setting light mode failed");
+            return false;
+        }
+    }
+    public static Color getPanelForeground() {
+        return UIManager.getColor("Panel.foreground");
+    }
+    public static Color getPanelBackground() {
+        return UIManager.getColor("Panel.background");
+    }
+    public static Color getButtonForeground() {
+        return UIManager.getColor("Button.foreground");
+    }
+    public static Color getButtonBackground() {
+        return UIManager.getColor("Button.background");
+    }
+    public static Color getLabelForeground() {
+        return UIManager.getColor("Label.foreground");
+    }
+    public static Color getLabelBackground() {
+        return UIManager.getColor("Label.background");
+    }
+    public static Color getTextFieldForeground() {
+        return UIManager.getColor("TextField.foreground");
+    }
+    public static Color getTextFieldBackground() {
+        return UIManager.getColor("TextField.background");
+    }
+    public static Color getTextPaneForeground() {
+        return UIManager.getColor("TextPane.foreground");
+    }
+    public static Color getTextPaneBackground() {
+        return UIManager.getColor("TextPane.background");
+    }
+    public static void setComponentColour(Component c) {
+        if (c instanceof JPanel) {
+            c.setForeground(getPanelForeground());
+            c.setBackground(getPanelBackground());
+        }
+        else if (c instanceof JButton) {
+            c.setForeground(getButtonForeground());
+            c.setBackground(getButtonBackground());
+            ((JButton)c).setBorder(new FlatButtonBorder());
+        }
+        else if (c instanceof JLabel) {
+            c.setForeground(getLabelForeground());
+            c.setBackground(getLabelBackground());
+        }
+        else if (c instanceof JTextField) {
+            c.setForeground(getTextFieldForeground());
+            c.setBackground(getTextFieldBackground());
+        }
+        else if (c instanceof JTextPane) {
+            c.setForeground(getTextPaneForeground());
+            c.setBackground(getTextPaneBackground());
+        }
     }
 }

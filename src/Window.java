@@ -1,13 +1,17 @@
+import com.formdev.flatlaf.FlatLaf;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Properties;
 
 
 public class Window extends JFrame {
-    JPanel panel = new JPanel(new GridBagLayout());
-    ContentPanel contentPanel;
+    public JPanel panel = new JPanel(new GridBagLayout());
+    private final ContentPanel contentPanel;
+    private JPanel topBarPanel;
     public Window() {
         super();
 
@@ -33,7 +37,7 @@ public class Window extends JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         /// Make the top bar
-        JPanel topBarPanel = makeTopPanel();
+        topBarPanel = makeTopPanel();
         // Add the top bar panel to the main panel
         panel.add(topBarPanel, constraints);
         // Increment constraints
@@ -58,8 +62,12 @@ public class Window extends JFrame {
     }
 
     public JPanel makeTopPanel() {
-        // Make the top bar panel with a borderLayout, as it doesn't need a full GridBagLayout
-        JPanel topBarPanel = new JPanel(new BorderLayout());
+        // Make the top bar panel with a GridBagLayout
+        JPanel topBarPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 0;
         // Add padding to the top bar panel
         topBarPanel.setBorder(new EmptyBorder(15,30,15,30));
 
@@ -70,15 +78,38 @@ public class Window extends JFrame {
         // Add the action listener to the button
         homeButton.addActionListener(_->goToHome());
         // Add the button to the panel
-        topBarPanel.add(homeButton, BorderLayout.LINE_START);
+        topBarPanel.add(homeButton, constraints);
+
+        /// Add a filler panel
+        constraints.weightx = 1;
+        constraints.gridx++;
+        topBarPanel.add(new JPanel(), constraints);
+        constraints.weightx = 0;
+
+        /// Add the settings button
+        JButton settingsButton = new JButton("Settings");
+        constraints.gridx++;
+        settingsButton.addActionListener(_->{
+            SettingsDialog settings = new SettingsDialog(this);
+            settings.setVisible(true);
+        });
+        settingsButton.setFocusable(false);
+        topBarPanel.add(settingsButton, constraints);
+
+        /// Add a filler panel
+        constraints.weightx = 1;
+        constraints.gridx++;
+        topBarPanel.add(new JPanel(), constraints);
+        constraints.weightx = 0;
 
         /// Add a button in the top right
+        constraints.gridx++;
         JButton newButton = new JButton(Main.strings.getString("createNewButton"));
         // Make button not focusable
         newButton.setFocusable(false);
         newButton.addActionListener(_ -> openCreateDialog());
         // Add the button to the panel
-        topBarPanel.add(newButton, BorderLayout.LINE_END);
+        topBarPanel.add(newButton, constraints);
 
         return topBarPanel;
     }
@@ -171,5 +202,8 @@ public class Window extends JFrame {
         // Return it as a point
         return new Point(pointX, pointY);
     }
-
+    public void refresh() {
+        FlatLaf.updateUI();
+        contentPanel.refresh();
+    }
 }

@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ContentHomePage extends MainPanel {
+    private FilesPanel filesPanel;
+    private TimetablePanel timetablePanel;
     public ContentHomePage(Window window) {
         super(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
@@ -12,13 +14,24 @@ public class ContentHomePage extends MainPanel {
 
         //JLabel label = new JLabel("Insert Home Page Here");
         // Add a files panel
-        FilesPanel filesPanel = new FilesPanel(window);
+        filesPanel = new FilesPanel(window);
         this.add(filesPanel, constraints);
         constraints.gridx++;
         // Add a timetable panel
-        this.add(new TimetablePanel(), constraints);
+        timetablePanel = new TimetablePanel();
+        this.add(timetablePanel, constraints);
         //label.setFont(new Font(null, Font.PLAIN, 50));
         //this.add(label);
+    }
+    @Override
+    public void refresh(){
+        filesPanel.refreshUI();
+        Color foreground = Main.getPanelForeground();
+        Color background = Main.getPanelBackground();
+        this.setBackground(background);
+        this.setForeground(foreground);
+        timetablePanel.setForeground(foreground);
+        timetablePanel.setForeground(background);
     }
     @Override
     public boolean close() {
