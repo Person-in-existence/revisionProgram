@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Objects;
 
 public class TextDocument extends Document {
     public static final String fileExtension = ".rtd"; // "Revision Text Document"
@@ -37,10 +38,24 @@ public class TextDocument extends Document {
     }
 
     @Override
-    public FileException writeToFile(String filePath) {
+    public FileException writeToFile() {
         try {
             /// Add the root and extension to the filePath
+            // Change the file name to remove spaces etc
+            String filePath;
+            if (this.fileName != "") {
+                filePath = fileName;
+            } else {
+                filePath = this.title;
+                System.out.println(filePath);
+                filePath = Main.convertFileName(filePath);
+                filePath = Main.accountForDuplicates(filePath, fileExtension, false);
+            }
+
+            System.out.println(filePath);
             filePath = Main.saveLocation + filePath + fileExtension;
+            System.out.println(filePath);
+
             // Create a file class
             File file = new File(filePath);
             /// Check for exceptions

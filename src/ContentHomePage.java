@@ -26,12 +26,6 @@ public class ContentHomePage extends MainPanel {
     @Override
     public void refresh(){
         filesPanel.refreshUI();
-        Color foreground = Main.getPanelForeground();
-        Color background = Main.getPanelBackground();
-        this.setBackground(background);
-        this.setForeground(foreground);
-        timetablePanel.setForeground(foreground);
-        timetablePanel.setForeground(background);
     }
     @Override
     public boolean close() {

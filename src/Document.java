@@ -35,7 +35,7 @@ public abstract class Document {
     }
     public abstract EditDocumentPanel makeEditPanel();
     public abstract ViewDocumentPanel makeViewPanel();
-    public abstract FileException writeToFile(String filePath);
+    public abstract FileException writeToFile();
     public abstract FileException readFromFile(String filePath);
     public static void writeString(String string, DataOutputStream out) throws IOException {
         // get the length of the string

@@ -242,4 +242,43 @@ public class Main {
             c.setBackground(getTextPaneBackground());
         }
     }
+    public static String convertFileName(String fileName) {
+        StringBuilder newFileName = new StringBuilder();
+        // Name it "Untitled" if it is empty (as no set file name is an empty string, so an empty file name will break it)
+        if (Objects.equals(fileName, "")) {
+            return Main.strings.getString("untitledFileName");
+        }
+        for (int index = 0; index < fileName.length(); index++) {
+            char character = fileName.charAt(index);
+            // Filter illegal chars
+            if (character == ' ' | character == '<' | character == '>' | character == ':' | character == '"' | character == '/' | character == '\\' | character == '|' | character == '&' | character == '%' | character == '~') {
+                newFileName.append("_");
+            } else {
+                newFileName.append(character);
+            }
+        }
+        return newFileName.toString();
+    }
+    public static String accountForDuplicates(String fileName, String extension, boolean previousFileNameExists) {
+        if (previousFileNameExists) {
+            return fileName;
+        }
+        String fileRoot = fileName + "_";
+        File toCheck = new File(Main.saveLocation + fileName + extension);
+        int version = 1;
+        if (toCheck.exists()) {
+            version++;
+            String tempFileName = fileRoot + version;
+
+            toCheck = new File(Main.saveLocation + tempFileName + extension);
+        } else {
+            return fileName;
+        }
+        while (toCheck.exists()) {
+            version++;
+            String tempFileName = fileRoot + version;
+            toCheck = new File(Main.saveLocation + tempFileName + extension);
+        }
+        return fileRoot + version;
+    }
 }

@@ -98,10 +98,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
     }
     @Override
     public TextDocument getDocument() {
-        if (originalDocument.fileName != null) {
-            return new TextDocument(titleField.getText(), mainPaneArea.getText(), originalDocument.fileName);
-        }
-        return new TextDocument(titleField.getText(), mainPaneArea.getText());
+        return new TextDocument(titleField.getText(), mainPaneArea.getText(), originalDocument.fileName);
     }
     @Override
     public boolean hasChanged() {
@@ -126,7 +123,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
         // Check whether the document has a filename
         if (!Objects.equals(originalDocument.fileName, "")) {
             // If it does, save it with a new document
-            FileException e = getDocument().writeToFile(originalDocument.fileName);
+            FileException e = getDocument().writeToFile();
             if (e.failed) {
                 // Pop up a dialog and return false
                 JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
@@ -136,7 +133,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
             // Make a filePath for the file
             String filePath = titleField.getText();
             // TODO: HANDLE EMPTY TITLE
-            FileException e = getDocument().writeToFile(filePath);
+            FileException e = getDocument().writeToFile();
             if (e.failed) {
                 System.err.println("File Write failed");
                 System.err.println(e.getMessage());
