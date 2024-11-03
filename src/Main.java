@@ -33,7 +33,14 @@ public class Main {
     public static int dialogHeight = 150;
 
     public static void main(String[] args) {
-        setDarkMode();
+        // Get the preferred settings (light/dark mode)
+        Settings settings = new Settings();
+
+        if (settings.darkMode) {
+            setDarkMode();
+        } else {
+            setLightMode();
+        }
         // Get locale from args
         try {
             String language = args[0];

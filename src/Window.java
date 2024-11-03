@@ -5,6 +5,8 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Properties;
 
 
@@ -12,6 +14,7 @@ public class Window extends JFrame {
     public JPanel panel = new JPanel(new GridBagLayout());
     private final ContentPanel contentPanel;
     private JPanel topBarPanel;
+    private boolean settingsOpen = false;
     public Window() {
         super();
 
@@ -90,8 +93,18 @@ public class Window extends JFrame {
         JButton settingsButton = new JButton("Settings");
         constraints.gridx++;
         settingsButton.addActionListener(_->{
-            SettingsDialog settings = new SettingsDialog(this);
-            settings.setVisible(true);
+            // Check settings isn't open (will be set back when settings is closed)
+            if (!settingsOpen) {
+                settingsOpen = true;
+                SettingsDialog settings = new SettingsDialog(this);
+                settings.setVisible(true);
+                settings.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        settingsOpen = false;
+                    }
+                });
+            }
         });
         settingsButton.setFocusable(false);
         topBarPanel.add(settingsButton, constraints);

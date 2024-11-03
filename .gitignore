@@ -30,3 +30,4 @@ bin/
 /.idea/
 qodana.yaml
 /sets/
+/settings
