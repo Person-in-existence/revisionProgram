@@ -189,7 +189,7 @@ public class Window extends JFrame {
         // Move the window
         this.setLocation(p);
     }
-    private static Point getCentredWindowPoint(int topX, int topY, int backWidth, int backHeight, int width, int height) {
+    public static Point getCentredWindowPoint(int topX, int topY, int backWidth, int backHeight, int width, int height) {
         // Get the window midpoint (assuming 0,0 start)
         int centreWidth = backWidth/2;
         int centreHeight = backHeight/2;

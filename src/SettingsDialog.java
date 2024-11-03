@@ -51,6 +51,12 @@ public class SettingsDialog extends JDialog {
         this.setSize(new Dimension(totalWidth, totalHeight));
         // Set the title
         this.setTitle(Main.strings.getString("settingTitle"));
-        // TODO: CENTRE IN WINDOW
+        
+        // Centre the dialog in the window
+        Point windowLocation = window.getLocation();
+        int windowWidth = window.getWidth();
+        int windowHeight = window.getHeight();
+        Point centredPoint = Window.getCentredWindowPoint(windowLocation.x, windowLocation.y, windowWidth, windowHeight, totalWidth, totalHeight);
+        this.setLocation(centredPoint);
     }
 }
