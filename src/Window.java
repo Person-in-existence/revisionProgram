@@ -31,9 +31,7 @@ public class Window extends JFrame {
         this.setSize(Main.windowWidth, Main.windowHeight);
 
         /// Make constraints
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridy = 0;
-        constraints.gridx = 0;
+        GridBagConstraints constraints = Main.makeConstraints();
         constraints.weightx = 1;
         // Allows the panels to expand in both directions fully
         constraints.fill = GridBagConstraints.BOTH;
@@ -67,10 +65,7 @@ public class Window extends JFrame {
     public JPanel makeTopPanel() {
         // Make the top bar panel with a GridBagLayout
         JPanel topBarPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weightx = 0;
+        GridBagConstraints constraints = Main.makeConstraints();
         // Add padding to the top bar panel
         topBarPanel.setBorder(new EmptyBorder(15,30,15,30));
 
@@ -136,9 +131,7 @@ public class Window extends JFrame {
         JPanel dialogPanel = new JPanel(new GridBagLayout());
 
         // Make the constraints for the panel
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
+        GridBagConstraints constraints = Main.makeConstraints();
 
         // Make a drop-down box
         JComboBox<String> comboBox = new JComboBox<>(Main.docTypes);

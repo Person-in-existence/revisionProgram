@@ -288,4 +288,12 @@ public class Main {
         }
         return fileRoot + version;
     }
+    public static GridBagConstraints makeConstraints() {
+        GridBagConstraints constraints = new GridBagConstraints();
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weightx = 0;
+        constraints.weighty = 0;
+        return constraints;
+    }
 }

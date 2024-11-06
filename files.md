@@ -19,6 +19,34 @@ Settings have no file extension, but are stored in the file "settings"
 
 ---
 
+## Timetable:
+
+The timetable is stored in a file named "timetable". It is stored in the following way:
+
+- ### Activity Types
+  - int numActivities
+    - This is the number of activities in the list
+  - activities
+    - This is a series of strings. There are numActivities strings. Strings are stored as defined below.
+
+- ### Timetable
+  - int numDays
+    - The number of days in the timetable
+  - numDays times:
+    - String dayName
+      - The name of the day
+    - int numActivities
+      - The number of activities in this day
+    - numActivities times:
+      - String activity name
+        - The name of the activity
+      - int activityIndex
+        - This is the index in activities that the activity type is. 
+Note that this can be equal to the length of activities - in this case, it should be represented as "none"
+
+
+---
+
 ## Document Requirements:
 All documents *must* begin with a title, in the "String" standard method format. <br>
 This is used to get the titles for lists of files.
@@ -36,7 +64,7 @@ File Extension: .rtd (Revision Text Document)
 
 ---
 
-#### Standard Methods:
+## Standard Methods:
 
 Strings:
 

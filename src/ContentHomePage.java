@@ -29,6 +29,7 @@ public class ContentHomePage extends MainPanel {
     }
     @Override
     public boolean close() {
+        timetablePanel.close();
         return true;
     }
 }
