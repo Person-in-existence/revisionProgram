@@ -1,12 +1,8 @@
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.BoxView;
 import java.awt.*;
-import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class TimetablePanel extends JPanel {
     private JPanel contentPanel;
@@ -15,6 +11,8 @@ public class TimetablePanel extends JPanel {
     private ArrayList<TimetableActivityPanel> activities = new ArrayList<>();
     private ArrayList<JTextField> dayNameFields = new ArrayList<>();
     private ArrayList<ArrayList<TimetableActivityPanel>> dayActivities = new ArrayList<>();
+    private boolean isSomethingFocused = false;
+    private int selectedIndex = -1;
     private boolean editMode = false;
     private Timetable timetable;
 
@@ -54,13 +52,18 @@ public class TimetablePanel extends JPanel {
     }
     private JPanel makeUpperPanel() {
         JPanel panel = new JPanel(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weighty = 0;
-        constraints.weightx = 1;
+        GridBagConstraints constraints = Main.makeConstraints();
+
+        /// Add a set day button
+        JButton setDayButton = new JButton(Main.strings.getString("timetableSetDay"));
+        setDayButton.setFocusable(false);
+        setDayButton.addActionListener(_->setDay());
+        panel.add(setDayButton, constraints);
+        // Increment constraints
+        constraints.gridx++;
 
         /// Add a padding panel
+        constraints.weightx = 1;
         panel.add(new JPanel(), constraints);
 
         // Add the switch mode button
@@ -72,6 +75,7 @@ public class TimetablePanel extends JPanel {
         constraints.weightx = 0;
         // Add the button
         panel.add(switchModeButton, constraints);
+
 
 
         return panel;
@@ -142,61 +146,8 @@ public class TimetablePanel extends JPanel {
         contentPanel.removeAll();
         contentPanel.add(editPanel);
     }
-    private JPanel makeDayPanel(int index, Day day) {
-        JPanel dayPanel = new JPanel();
-        dayPanel.setLayout(new BoxLayout(dayPanel, BoxLayout.Y_AXIS));
-
-        // Make an arraylist in dayActivities
-        // Keep it as a variable so indexes in dayActivities can change and it can still be used
-        ArrayList<TimetableActivityPanel> dayActivityArrayList = new ArrayList<>();
-        dayActivities.add(dayActivityArrayList);
-        /// Add a title field for the day name
-        JPanel titleFieldPanel = new JPanel(new BorderLayout());
-        String dayTitle = Objects.equals(day.name, "") ? Main.strings.getString("timetableDayTitle") + (index + 1) : day.name;
-        // Add an editable label if it can be changed, otherwise make it non-editable
-        JTextField dayTitleField;
-        if (editMode) {
-            dayTitleField = new EditableLabel(dayTitle, contentPanel);
-        } else {
-            dayTitleField = new JTextField(day.name);
-            dayTitleField.setEditable(false);
-            dayTitleField.setFocusable(false);
-            dayTitleField.setBorder(new EmptyBorder(1,1,1,1));
-            // Make sure the title field is the correct size
-            resizeField(dayTitleField);
-        }
-        // Add the field to the panel and list
-        titleFieldPanel.add(dayTitleField);
-        dayNameFields.add(dayTitleField);
-
-        // Set the maximum size of the panel to be its preferred size in height, so it doesnt get too big
-        titleFieldPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, titleFieldPanel.getPreferredSize().height));
-        dayPanel.add(titleFieldPanel);
-
-        // If the day has any, add the activities
-        for (int activityIndex = 0; activityIndex < day.activities.length; activityIndex++) {
-            TimetableActivityPanel activity = new TimetableActivityPanel(editMode, configuredActivities, this);
-            activity.setData(day.activities[activityIndex]);
-            activities.add(activity);
-            dayActivityArrayList.add(activity);
-            dayPanel.add(activity); // We don't need to add it second-last here because the create button hasn't been added yet
-            dayPanel.add(Box.createVerticalStrut(3));
-        }
-        // Add a create button to the day panel if it can be edited, otherwise add the activities
-        if (editMode) {
-            JButton createButton = new JButton(Main.strings.getString("timetableCreateDay"));
-            createButton.setFocusable(false);
-            createButton.addActionListener(_ -> {
-                TimetableActivityPanel activity = new TimetableActivityPanel(true, configuredActivities, this);
-                activities.add(activity);
-                dayActivityArrayList.add(activity);
-                dayPanel.add(activity, dayPanel.getComponentCount() - 1); // Add it second-last here so createButton stays at the end
-                dayPanel.add(Box.createVerticalStrut(3), dayPanel.getComponentCount() - 1);
-                refresh();
-            });
-            dayPanel.add(createButton);
-        }
-        return dayPanel;
+    private TimetableDayPanel makeDayPanel(int index, Day day) {
+        return new TimetableDayPanel(index, day, editMode, dayActivities, contentPanel, dayNameFields, activities, this, configuredActivities);
     }
     public void refresh() {
         contentPanel.revalidate();
@@ -207,8 +158,6 @@ public class TimetablePanel extends JPanel {
         for (int index = 0; index < activities.size(); index++) {
             activities.get(index).configuredActivitiesUpdated();
         }
-
-
     }
     public Timetable makeTimetable() {
         Day[] days = new Day[dayActivities.size()];
@@ -260,5 +209,12 @@ public class TimetablePanel extends JPanel {
         Dimension d = new Dimension(width, label.getPreferredSize().height);
         label.setPreferredSize(d);
         label.setMinimumSize(d);
+    }
+    public void focusIndex(int index) {
+        isSomethingFocused = index != -1;
+        selectedIndex = index;
+    }
+    private void setDay() {
+        // TODO: CODE
     }
 }

@@ -3,6 +3,8 @@ import com.formdev.flatlaf.ui.FlatBorder;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -16,24 +18,20 @@ public class TimetableActivityPanel extends JPanel {
     private TimetablePanel parent;
     private JLabel activityTypeLabel;
     private JPanel activityTypePanel;
-    public TimetableActivityPanel(boolean canEdit, ArrayList<String> configuredActivities, TimetablePanel parent) {
+    public TimetableActivityPanel(boolean canEdit, ArrayList<String> configuredActivities, TimetablePanel parent, TimetableDayPanel dayPanel) {
         super(new GridBagLayout());
         this.parent = parent;
         this.canEdit = canEdit;
         GridBagConstraints constraints = Main.makeConstraints();
         this.configuredActivities = configuredActivities;
-
+        this.setFocusable(false);
         this.setBorder(new FlatBorder());
 
         JPanel namePanel = new JPanel(new BorderLayout());
         if (canEdit) {
-            nameField = new EditableLabel(Main.strings.getString("timetableActivityNamePlaceholder"), this);
+            nameField = new EditableLabel(Main.strings.getString("timetableActivityNamePlaceholder"), this, true);
         } else {
-            // TODO: TEXT IN NON-EDITABLE ONES
-            nameField = new JTextField();
-            nameField.setEditable(false);
-            nameField.setFocusable(false);
-            nameField.setBorder(new EmptyBorder(1,1,1,1));
+            nameField = new EditableLabel("", this, false);
         }
         namePanel.add(nameField);
 
@@ -53,9 +51,7 @@ public class TimetableActivityPanel extends JPanel {
         activityTypeConstraints.gridx++;
 
         // Activity choice box
-        System.out.println("TimetableActivityPanel55");
         if (canEdit) {
-            System.out.println("TimetableActivityPanel57");
             activityChoice = new JComboBox<>(configuredActivities.toArray(new String[0]));
             // Add the create new option
             activityChoice.addItem(Main.strings.getString("timetableNewActivity"));
@@ -97,6 +93,34 @@ public class TimetableActivityPanel extends JPanel {
             activityLabel = new JLabel();
             activityTypePanel.add(activityLabel, activityTypeConstraints);
         }
+
+        /// Add an on-click listener to this panel so that when it is clicked, the event is sent to the dayPanel above this
+        TimetableActivityPanel selfReference = this;
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                dayPanel.registerClick(selfReference);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                dayPanel.registerClick(selfReference);
+            }
+        });
+        // If you can't edit, make all subcomponents transparent
+        if (!canEdit) {
+            activityTypePanel.setOpaque(false);
+            namePanel.setOpaque(false);
+            nameField.setOpaque(false);
+            // Add a mouselistener to the nameField as it fixes the focus issue
+            nameField.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    dayPanel.registerClick(selfReference);
+                }
+            });
+        }
+
 
         this.add(activityTypePanel, constraints);
         // Set the maximum size to be the preferred size, so they don't expand to fill the timetable panel
@@ -161,11 +185,9 @@ public class TimetableActivityPanel extends JPanel {
             this.setPreferredSize(d);
             this.setMaximumSize(d);
             this.setMinimumSize(d);
-            System.out.println(d);
             this.revalidate();
             this.repaint();
             parent.refresh();
-            System.out.println(this.getSize());
         }
     }
 }
