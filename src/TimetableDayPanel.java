@@ -44,7 +44,7 @@ public class TimetableDayPanel extends JPanel {
         });
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         /// Add a border to the dayPanel
-        this.setBorder(defaultBorder());
+        this.setBorder(Borders.defaultBorder());
         // Make an arraylist in dayActivities
         // Keep it as a variable so indexes in dayActivities can change and it can still be used
         dayActivityArrayList = new ArrayList<>();
@@ -101,20 +101,12 @@ public class TimetableDayPanel extends JPanel {
         }
     }
     public void highlight() {
-        this.setBorder(highlightedBorder());
+        this.setBorder(Borders.highlightedBorder());
     }
     public void unhighlight() {
-        this.setBorder(defaultBorder());
+        this.setBorder(Borders.defaultBorder());
     }
-    private static Border defaultBorder() {
-        return new CompoundBorder(new FlatBorder(), new EmptyBorder(1,1,1,1));
-    }
-    private static Border highlightedBorder() {
-        FlatBorder border = new FlatBorder();
-        border.applyStyleProperty("borderColor", Color.cyan);
-        border.applyStyleProperty("focusWidth", 1);
-        return border;
-    }
+
     public void registerClick(TimetableActivityPanel component) {
         // For now, just register the focus on this
         // In future, could be used to handle deleting of items

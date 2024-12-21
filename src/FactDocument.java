@@ -1,62 +1,50 @@
+import javax.swing.*;
 import java.io.*;
 import java.util.Objects;
 
-public class TextDocument extends Document {
-    public static final String fileExtension = "rtd"; // "Revision Text Document"
-    public String content;
+public class FactDocument extends Document {
+    public static final String fileExtension = "rfd";
+
     public String title;
     public String fileName;
-
-    public TextDocument() {
-        content = "";
-        title = "";
-        fileName = "";
-    }
-
-    public TextDocument(String title, String content) {
-        this.content = content;
+    public Fact[] facts;
+    public FactDocument(String title, String fileName, Fact[] facts) {
+        this.facts = facts;
         this.title = title;
+        this.fileName = fileName;
+    }
+    public FactDocument() {
+        this.facts = new Fact[0];
+        this.title = "";
         this.fileName = "";
     }
-
-    public TextDocument(String title, String content, String filePath) {
-        this.title = title;
-        this.content = content;
-        this.fileName = filePath;
+    @Override
+    public EditDocumentPanel makeEditPanel() {
+        FactEditDocumentPanel panel = new FactEditDocumentPanel();
+        panel.setDocument(this);
+        return panel;
     }
 
     @Override
-    public EditDocumentPanel makeEditPanel() {
-        TextEditDocumentPanel panel = new TextEditDocumentPanel();
-        panel.setDocument(this);
-        return panel;
-    }
     public ViewDocumentPanel makeViewPanel() {
-        TextViewDocumentPanel panel = new TextViewDocumentPanel();
-        panel.setDocument(this);
-        return panel;
+        return null;
     }
 
     @Override
     public FileException writeToFile() {
         try {
-            /// Add the root and extension to the filePath
-            // Change the file name to remove spaces etc
             String filePath;
             if (!Objects.equals(this.fileName, "")) {
                 filePath = fileName;
             } else {
                 filePath = this.title;
-                System.out.println(filePath);
                 filePath = Main.convertFileName(filePath);
                 filePath = Main.accountForDuplicates(filePath, fileExtension, false);
             }
-
-            System.out.println(filePath);
             filePath = Main.saveLocation + filePath + "." + fileExtension;
             System.out.println(filePath);
 
-            // Create a file class
+            // Make a file
             File file = new File(filePath);
             /// Check for exceptions
             // If the file doesn't exist, create it
@@ -80,50 +68,36 @@ public class TextDocument extends Document {
             // Write the title
             writeString(this.title, out);
 
-            // Write the content
-            writeString(this.content, out);
 
-            // Close the output stream
-            out.close();
-            fos.close();
+            /// Write the facts
+            // Num facts
+            int numFacts = facts.length;
+            out.writeInt(numFacts);
 
-            /// Check that it has worked
-            // Title
-            FileInputStream fis = new FileInputStream(filePath);
-            DataInputStream in = new DataInputStream(fis);
-            String readTitle = readString(in);
-
-            // Content
-            String readContent = readString(in);
-
-            // If they aren't correct, return an error!
-            if (!(readTitle.equals(title) & readContent.equals(content))) {
-                System.err.println("Incorrect read");
-                System.err.println(title);
-                System.err.println(readTitle);
-                System.err.println(content);
-                System.err.println(readContent);
-                return new FileException(true, "An unknown error occurred while writing to the file. Please try again.");
+            for (Fact fact:facts) {
+                // String question
+                String question = fact.question;
+                writeString(question, out);
+                // String answer
+                String answer = fact.answer;
+                writeString(answer, out);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            return new FileException(false, "");
+        } catch (IOException e) {
             return new FileException(true, e.getMessage());
         }
-        return new FileException(false, "");
+
     }
 
     @Override
     public FileException readFromFile(String filePath) {
         try {
-
-            /// Add the root to the filePath
             filePath = Main.saveLocation + filePath;
-            // Create a file class
+
             File file = new File(filePath);
-            /// Check that the file exists and can be read
+            // Check for exceptions
             if (!file.exists()) {
-                System.err.println(file.getPath());
                 return new FileException(true, Main.strings.getString("noFile"));
             }
             if (file.isDirectory()) {
@@ -132,26 +106,28 @@ public class TextDocument extends Document {
             if (!file.canRead()) {
                 return new FileException(true, Main.strings.getString("cantRead"));
             }
-            /// Read from the file
+
             FileInputStream fis = new FileInputStream(file);
             DataInputStream in = new DataInputStream(fis);
 
             // Read the title
             title = readString(in);
-            // Read the content
-            content = readString(in);
-            // Set the filename
+            System.out.println(title);
+
+            int numFacts = in.readInt();
+            facts = new Fact[numFacts];
+
+            for (int index = 0; index < numFacts; index++) {
+                String question = readString(in);
+                String answer = readString(in);
+                facts[index] = new Fact(question, answer);
+            }
+
             fileName = getNameFromFile(file);
-
-
-            // Close the streams
             in.close();
             fis.close();
-            // Return no exception
             return new FileException(false, "");
-            
         } catch (Exception e) {
-            e.printStackTrace();
             return new FileException(true, e.getMessage());
         }
     }
@@ -159,8 +135,8 @@ public class TextDocument extends Document {
     public String getFileName() {
         return fileName;
     }
+    @Override
     public String getTitle() {
         return title;
     }
-
 }

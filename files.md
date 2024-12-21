@@ -64,6 +64,21 @@ File Extension: .rtd (Revision Text Document)
 
 ---
 
+## Fact Documents
+
+File Extension: .rfd (Revision Fact Document)
+
+- ### Title:
+  -   String
+- ### Content:
+  - int num_facts
+    - The number of facts in the document
+  - num_facts times:
+    - String question
+      - The question of the fact. Stored in the standard String format
+    - String answer
+      - The answer to the fact. Stored in the standard String format
+
 ## Standard Methods:
 
 Strings:

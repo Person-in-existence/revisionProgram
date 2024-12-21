@@ -1,7 +1,10 @@
+import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.EnumMap;
+import java.util.Objects;
 
 public abstract class Document {
     public static final EnumMap<DocumentType, String> keyMap;
@@ -13,6 +16,8 @@ public abstract class Document {
         switch (type) {
             case TEXT:
                 return new TextDocument();
+            case FACT:
+                return new FactDocument();
         }
         // Default to textdoc - shouldn't be possible but suppresses errors
         return new TextDocument();
@@ -21,6 +26,8 @@ public abstract class Document {
         switch (type) {
             case TEXT:
                 return TextDocument.fileExtension;
+            case FACT:
+                return FactDocument.fileExtension;
         }
         // Return empty string otherwise
         return "";
@@ -29,14 +36,20 @@ public abstract class Document {
         switch (extension) {
             case TextDocument.fileExtension:
                 return DocumentType.TEXT;
+            case FactDocument.fileExtension:
+                return DocumentType.FACT;
         }
-        // Return textdocument if invalid
+        // Return textdocument if invalid and write error to console
+        System.err.println("Document.getTypeByExtension: Extension type not recognised: " + extension);
+        System.err.println("Returning Text instead");
         return DocumentType.TEXT;
     }
     public abstract EditDocumentPanel makeEditPanel();
     public abstract ViewDocumentPanel makeViewPanel();
     public abstract FileException writeToFile();
     public abstract FileException readFromFile(String filePath);
+    public abstract String getTitle();
+    public abstract String getFileName();
     public static void writeString(String string, DataOutputStream out) throws IOException {
         // get the length of the string
         long length = string.length();
@@ -55,5 +68,9 @@ public abstract class Document {
             stringBuilder.append(in.readChar());
         }
         return stringBuilder.toString();
+    }
+
+    public static String getNameFromFile(File file) {
+        return file.getName().split("\\.")[0];
     }
 }
