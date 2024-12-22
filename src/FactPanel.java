@@ -54,19 +54,8 @@ public class FactPanel extends JPanel{
         constraints.gridx++;
         constraints.weightx = 1;
 
-        // Override preferred size so that the width can be kept but the height still works properly
-        this.questionArea = new JTextArea(fact.question) {
-            @Override
-            public Dimension getPreferredSize() {
-                Dimension size = super.getPreferredSize();
-                size.width = textAreaWidth;
-                return size;
-            }
-        };
+        this.questionArea = new SizedTextArea(fact.question, textAreaWidth);
         questionArea.setFont(Main.factFont);
-        // Set the question area to wrap at the end of words
-        questionArea.setLineWrap(true);
-        questionArea.setWrapStyleWord(true);
         // Add it to the question panel
         questionPanel.add(questionArea, constraints);
 

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class FactEditDocumentPanel extends EditDocumentPanel {
-    public DocumentEditTitlePanel titlePanel;
+    public DocumentTitlePanel titlePanel;
     private JPanel contentPanel;
     private ArrayList<FactPanel> panels = new ArrayList<>();
     private FactDocument originalDocument;
@@ -18,7 +18,7 @@ public class FactEditDocumentPanel extends EditDocumentPanel {
         constraints.fill = GridBagConstraints.BOTH;
 
         // Make the title panel
-        titlePanel = new DocumentEditTitlePanel();
+        titlePanel = new DocumentTitlePanel(true);
         this.add(titlePanel, constraints);
 
         // Set the weighty to 1

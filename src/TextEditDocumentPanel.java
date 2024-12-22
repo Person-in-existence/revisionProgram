@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class TextEditDocumentPanel extends EditDocumentPanel {
     private JTextPane mainPaneArea;
-    private DocumentEditTitlePanel titlePanel;
+    private DocumentTitlePanel titlePanel;
     private TextDocument originalDocument;
     public TextEditDocumentPanel() {
         super(new GridBagLayout());
@@ -17,7 +17,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
 
         /// Title panel
         constraints.weightx = 1;
-        titlePanel = new DocumentEditTitlePanel();
+        titlePanel = new DocumentTitlePanel(true);
         // Add the title panel to the panel
         this.add(titlePanel, constraints);
 

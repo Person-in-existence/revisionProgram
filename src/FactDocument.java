@@ -27,7 +27,9 @@ public class FactDocument extends Document {
 
     @Override
     public ViewDocumentPanel makeViewPanel() {
-        return null;
+        FactViewDocumentPanel panel = new FactViewDocumentPanel();
+        panel.setDocument(this);
+        return panel;
     }
 
     @Override

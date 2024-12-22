@@ -2,9 +2,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-public class DocumentEditTitlePanel extends JPanel {
+public class DocumentTitlePanel extends JPanel {
     private final JTextField titleField;
-    public DocumentEditTitlePanel() {
+    public DocumentTitlePanel(boolean editable) {
         super(new GridBagLayout());
         GridBagConstraints constraints = Main.makeConstraints();
         // Set constraints
@@ -21,7 +21,6 @@ public class DocumentEditTitlePanel extends JPanel {
         titlePanelConstraints.insets = new Insets(5,3,5,3);
         // Make a border
         titlePanel.setBorder(new EmptyBorder(0, 10, 10, 10));
-
         /// Make title label
         JLabel titleLabel = new JLabel(Main.strings.getString("title"));
         titleLabel.setFont(Main.titleFont);
@@ -35,6 +34,12 @@ public class DocumentEditTitlePanel extends JPanel {
         // Create the field
         titleField = new JTextField(20);
         titleField.setFont(Main.titleFont);
+        titleField.setEditable(editable);
+        if (editable) {
+            titleField.setBorder(Borders.defaultBorder());
+        } else {
+            titleField.setBorder(new EmptyBorder(1,1,1,1));
+        }
         // Add the titlefield to the panel
         titlePanel.add(titleField, titlePanelConstraints);
 
