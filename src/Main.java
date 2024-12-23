@@ -19,10 +19,13 @@ public class Main {
     public static final String saveLocation = "sets/";
     public static final double SIZE_SCALER = 0.9;
     public static final int scrollSpeed = 20;
+    public static final Color factCorrectColour = new Color(50, 206, 50);
+    public static final Color factIncorrectColour = new Color(229, 47, 47);
     public static int windowWidth;
     public static int windowHeight;
     public static int screenWidth;
     public static int screenHeight;
+
     static {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         screenWidth = screenSize.width;

@@ -1,3 +1,7 @@
+import com.formdev.flatlaf.ui.FlatBorder;
+import com.formdev.flatlaf.ui.FlatLineBorder;
+import com.formdev.flatlaf.ui.FlatMarginBorder;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
@@ -9,6 +13,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
     private FactDocument originalDocument;
     private final DocumentTitlePanel titlePanel;
     private JPanel contentPanel;
+    private ScrollingPanel scrollPanel;
     private ArrayList<FactRevisionPanel> panels;
     public FactViewDocumentPanel() {
         super(new GridBagLayout());
@@ -26,9 +31,14 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
         originalDocument = new FactDocument();
 
         panels = new ArrayList<>();
-        contentPanel = makeContentPanel(originalDocument.facts);
-        this.add(makeLowerPanel(), constraints);
+        contentPanel = makeContentPanel();
+        this.add(makeCentrePanel(), constraints);
 
+        // Change constraints
+        constraints.weighty = 0;
+        constraints.gridy++;
+        // Add the bottom (check button) panel
+        this.add(makeLowerPanel(), constraints);
 
         this.addComponentListener(new ComponentAdapter() {
             @Override
@@ -45,13 +55,42 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
 
     }
 
-    private JPanel makeLowerPanel() {
+    private JPanel makeCentrePanel() {
         JPanel panel = new JPanel();
-        panel.add(new ScrollingPanel(contentPanel));
+        scrollPanel = new ScrollingPanel(contentPanel);
+        scrollPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        
+        panel.add(scrollPanel);
+        // Make the scroll panel have the right size
+        panel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                Dimension size = new Dimension(scrollPanel.getPreferredSize().width, panel.getHeight());
+                scrollPanel.setSize(size);
+            }
+        });
         return panel;
     }
 
-    private JPanel makeContentPanel(Fact[] facts) {
+    private JPanel makeLowerPanel() {
+        JPanel panel = new JPanel();
+        // Give the panel a border so that it doesn't look wierd when scrolling
+        panel.setBorder(new FlatBorder());
+        JButton checkButton = new JButton(Main.strings.getString("factCheck"));
+        checkButton.setFocusable(false);
+        checkButton.addActionListener(_->check());
+        panel.add(checkButton);
+
+        return panel;
+    }
+
+    private void check() {
+        for (FactRevisionPanel panel : panels) {
+            panel.check();
+        }
+    }
+
+    private JPanel makeContentPanel() {
         JPanel panel = new JPanel();
         // Give the panel a box layout
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -71,7 +110,11 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
 
     @Override
     public void refresh() {
+        // Reset the border around the scrolling panel
+        scrollPanel.refresh();
+        // Get the answers and whether the panel was checked
         String[] answers = getAnswers();
+        boolean[] checked = getChecked();
         // Empty the list of panels
         contentPanel.removeAll();
         // Empty panels itself
@@ -79,6 +122,10 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
         // Add new panels for all of the answers and facts
         for (int index = 0; index < answers.length; index++) {
             addFact(originalDocument.facts[index], answers[index]);
+            // Check the panel if it was checked before
+            if (checked[index]) {
+                panels.get(index).check();
+            }
         }
 
     }
@@ -94,6 +141,14 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
             answers[index] = panels.get(index).getAnswer();
         }
         return answers;
+    }
+
+    private boolean[] getChecked() {
+        boolean[] checked = new boolean[panels.size()];
+        for (int index = 0; index < panels.size(); index++) {
+            checked[index] = panels.get(index).getChecked();
+        }
+        return checked;
     }
 
     @Override
