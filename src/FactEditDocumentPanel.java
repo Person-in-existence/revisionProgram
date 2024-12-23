@@ -53,11 +53,17 @@ public class FactEditDocumentPanel extends EditDocumentPanel {
         return new ScrollingPanel(contentPanel);
     }
     private void newFact(Fact fact) {
-        FactPanel newFact = new FactPanel(fact, (int) (this.getSize().width*0.66));
+        FactPanel newFact = new FactPanel(fact, (int) (this.getSize().width*0.66), this);
         panels.add(newFact);
         contentPanel.add(newFact, contentPanel.getComponentCount() - 1);
         this.revalidate();
         this.repaint();
+    }
+
+    public void deleteFact(FactPanel panel) {
+        contentPanel.remove(panel);
+        panels.remove(panel);
+        this.revalidate();
     }
 
     private JButton makeNewFactButton() {

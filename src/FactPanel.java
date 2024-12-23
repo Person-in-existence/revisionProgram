@@ -13,7 +13,7 @@ public class FactPanel extends JPanel{
     private int textAreaWidth;
     public static final Insets factInsets = new Insets(10,5,10,5);
 
-    public FactPanel(Fact fact, int width) {
+    public FactPanel(Fact fact, int width, FactEditDocumentPanel parent) {
         super(new GridBagLayout());
         GridBagConstraints constraints = Main.makeConstraints();
         constraints.weightx = 1;
@@ -26,6 +26,14 @@ public class FactPanel extends JPanel{
 
         // Answer Panel
         this.add(makeAnswerPanel(), constraints);
+
+        // Delete button
+        constraints.gridx++;
+        JButton deleteButton = new JButton(Main.strings.getString("factDelete"));
+        deleteButton.addActionListener(e->{
+            parent.deleteFact(this);
+        });
+        this.add(deleteButton, constraints);
 
         this.setPreferredSize(size);
         this.setMinimumSize(size);
