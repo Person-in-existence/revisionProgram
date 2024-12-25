@@ -8,12 +8,13 @@ public class TimetablePanel extends JPanel {
     private JPanel contentPanel;
     private JButton switchModeButton;
     private ArrayList<String> configuredActivities;
-    private ArrayList<TimetableActivityPanel> activities = new ArrayList<>();
-    private ArrayList<JTextField> dayNameFields = new ArrayList<>();
-    private ArrayList<ArrayList<TimetableActivityPanel>> dayActivities = new ArrayList<>();
+    protected ArrayList<TimetableActivityPanel> activities = new ArrayList<>();
+    protected ArrayList<JTextField> dayNameFields = new ArrayList<>();
+    protected ArrayList<ArrayList<TimetableActivityPanel>> dayActivities = new ArrayList<>();
     private boolean isSomethingFocused = false;
     private int selectedIndex = -1;
     private boolean editMode = false;
+    private JPanel editPanel;
     private Timetable timetable;
 
     public TimetablePanel() {
@@ -119,7 +120,7 @@ public class TimetablePanel extends JPanel {
         dayNameFields = new ArrayList<>();
         dayActivities = new ArrayList<>();
 
-        JPanel editPanel = new JPanel();
+        editPanel = new JPanel();
         editPanel.setLayout(new BoxLayout(editPanel, BoxLayout.X_AXIS));
 
 
@@ -135,7 +136,7 @@ public class TimetablePanel extends JPanel {
             int index = editPanel.getComponentCount()-1;
             editPanel.add(makeDayPanel(index/2, new Day()), index);
             // Add some spacing between panels
-            editPanel.add(Box.createHorizontalStrut(5), index);
+            editPanel.add(Box.createHorizontalStrut(5), index + 1); // Add 1 to the index because the previous component means everything shifts over 1
             editPanel.revalidate();
             editPanel.repaint();
         });
@@ -216,5 +217,28 @@ public class TimetablePanel extends JPanel {
     }
     private void setDay() {
         // TODO: CODE
+    }
+    protected void removeDay(TimetableDayPanel panel) {
+        if (editMode) {
+            Component[] editPanelComponents = editPanel.getComponents();
+            int finalIndex = -1;
+            for (int index = 0; index < editPanelComponents.length; index++) {
+                if (editPanelComponents[index] == panel) {
+                    finalIndex = index;
+                    break;
+                }
+            }
+            // Check if the component has not been found
+            if (finalIndex == -1) {
+                System.err.println("Component could not be found");
+                return;
+            }
+
+            editPanel.remove(finalIndex);
+            editPanel.remove(finalIndex); // Strut comes after, so remove that same index again to remove the strut
+            this.revalidate();
+        } else {
+            System.err.println("Tried to remove panel while not in edit mode");
+        }
     }
 }

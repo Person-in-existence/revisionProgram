@@ -93,12 +93,7 @@ public class Window extends JFrame {
                 settingsOpen = true;
                 SettingsDialog settings = new SettingsDialog(this);
                 settings.setVisible(true);
-                settings.addWindowListener(new WindowAdapter() {
-                    @Override
-                    public void windowClosing(WindowEvent e) {
-                        settingsOpen = false;
-                    }
-                });
+
             }
         });
         settingsButton.setFocusable(false);
@@ -211,5 +206,8 @@ public class Window extends JFrame {
     public void refresh() {
         FlatLaf.updateUI();
         contentPanel.refresh();
+    }
+    protected void closeSettings() {
+        settingsOpen = false;
     }
 }

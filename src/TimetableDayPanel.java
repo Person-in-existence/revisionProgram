@@ -1,9 +1,4 @@
-import com.formdev.flatlaf.ui.FlatBorder;
-
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -14,8 +9,12 @@ import java.util.Objects;
 
 public class TimetableDayPanel extends JPanel {
     private final ArrayList<TimetableActivityPanel> dayActivityArrayList; // Keep timetable activity panel list around for later use
+    private final TimetablePanel parent;
+    private final JTextField dayTitleField;
     public TimetableDayPanel(int index, Day day, boolean editMode, ArrayList<ArrayList<TimetableActivityPanel>> dayActivities, JPanel contentPanel, ArrayList<JTextField> dayNameFields, ArrayList<TimetableActivityPanel> activities, TimetablePanel parent, ArrayList<String> configuredActivities) {
+        super();
         /// Logic for dayPanel highlighting
+        this.parent = parent;
         this.setFocusable(true);
         // Add a mouse listener to get focus when clicked on
         this.addMouseListener(new MouseAdapter() {
@@ -53,7 +52,6 @@ public class TimetableDayPanel extends JPanel {
         JPanel titleFieldPanel = new JPanel(new BorderLayout());
         String dayTitle = Objects.equals(day.name, "") ? Main.strings.getString("timetableDayTitle") + (index + 1) : day.name;
         // Add an editable label if it can be changed, otherwise make it non-editable
-        JTextField dayTitleField;
         if (editMode) {
             dayTitleField = new EditableLabel(dayTitle, contentPanel, true);
         } else {
@@ -72,6 +70,16 @@ public class TimetableDayPanel extends JPanel {
         titleFieldPanel.add(dayTitleField);
         dayNameFields.add(dayTitleField);
 
+        /// Make the remove button
+        if (editMode) {
+            JButton removeDayButton = new JButton(Main.strings.getString("timetableRemove"));
+            removeDayButton.addActionListener(_->{
+                delete();
+            });
+            titleFieldPanel.add(removeDayButton, BorderLayout.LINE_END);
+
+        }
+
         // Set the maximum size of the panel to be its preferred size in height, so it doesnt get too big
         titleFieldPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, titleFieldPanel.getPreferredSize().height));
         this.add(titleFieldPanel);
@@ -87,6 +95,7 @@ public class TimetableDayPanel extends JPanel {
         }
         // Add a create button to the day panel if it can be edited, otherwise add the activities
         if (editMode) {
+            JPanel controlPanel = new JPanel();
             JButton createButton = new JButton(Main.strings.getString("timetableCreateDay"));
             createButton.setFocusable(false);
             createButton.addActionListener(_ -> {
@@ -97,7 +106,23 @@ public class TimetableDayPanel extends JPanel {
                 this.add(Box.createVerticalStrut(3), this.getComponentCount() - 1);
                 parent.refresh();
             });
-            this.add(createButton);
+            controlPanel.add(createButton);
+
+            JButton removeButton = new JButton(Main.strings.getString("timetableRemove"));
+            removeButton.setFocusable(false);
+            removeButton.addActionListener(_->{
+                if (!dayActivityArrayList.isEmpty()) {
+                    // Remove the last item from the list
+                    TimetableActivityPanel toRemove = dayActivityArrayList.getLast();
+                    activities.remove(toRemove);
+                    dayActivityArrayList.remove(toRemove);
+                    this.remove(toRemove);
+                    this.remove(this.getComponentCount()-2); // Remove the vertical strut
+                    this.revalidate();
+                }
+            });
+            controlPanel.add(removeButton);
+            this.add(controlPanel);
         }
     }
     public void highlight() {
@@ -115,5 +140,13 @@ public class TimetableDayPanel extends JPanel {
 
         System.out.println("Click Registered");
 
+    }
+    private void delete() {
+        parent.dayActivities.remove(dayActivityArrayList);
+        for (TimetableActivityPanel panel : dayActivityArrayList) {
+            parent.activities.remove(panel);
+        }
+        parent.dayNameFields.remove(dayTitleField);
+        parent.removeDay(this);
     }
 }
