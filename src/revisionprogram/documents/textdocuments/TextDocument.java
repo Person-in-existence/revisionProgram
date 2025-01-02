@@ -1,6 +1,7 @@
 package revisionprogram.documents.textdocuments;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.Objects;
 import revisionprogram.documents.*;
 import revisionprogram.Main;
@@ -11,23 +12,33 @@ public class TextDocument extends Document {
     public String content;
     public String title;
     public String fileName;
+    public LocalDate lastRevised;
 
     public TextDocument() {
         content = "";
         title = "";
         fileName = "";
+        lastRevised = LocalDate.now();
     }
 
     public TextDocument(String title, String content) {
         this.content = content;
         this.title = title;
         this.fileName = "";
+        this.lastRevised = LocalDate.now();
     }
 
     public TextDocument(String title, String content, String filePath) {
         this.title = title;
         this.content = content;
         this.fileName = filePath;
+        this.lastRevised = LocalDate.now();
+    }
+    public TextDocument(String title, String content, String filePath, LocalDate lastRevised) {
+        this.title = title;
+        this.content = content;
+        this.fileName = filePath;
+        this.lastRevised = lastRevised;
     }
 
     @Override
@@ -85,6 +96,9 @@ public class TextDocument extends Document {
             // Write the title
             Document.writeString(this.title, out);
 
+            // Write lastRevised
+            Document.writeString(Main.getStringFromDate(lastRevised), out);
+
             // Write the content
             Document.writeString(this.content, out);
 
@@ -98,6 +112,8 @@ public class TextDocument extends Document {
             DataInputStream in = new DataInputStream(fis);
             String readTitle = Document.readString(in);
 
+            // Skip date
+            Document.readString(in);
             // Content
             String readContent = Document.readString(in);
 
@@ -143,6 +159,8 @@ public class TextDocument extends Document {
 
             // Read the title
             title = Document.readString(in);
+            // Read lastRevised
+            lastRevised = Main.getDateFromString(Document.readString(in));
             // Read the content
             content = Document.readString(in);
             // Set the filename

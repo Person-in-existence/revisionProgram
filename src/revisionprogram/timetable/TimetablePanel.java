@@ -6,6 +6,7 @@ import revisionprogram.Day;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -16,9 +17,11 @@ public class TimetablePanel extends JPanel {
     private ArrayList<String> configuredActivities;
     protected ArrayList<TimetableActivityPanel> activities = new ArrayList<>();
     protected ArrayList<JTextField> dayNameFields = new ArrayList<>();
-    protected ArrayList<ArrayList<TimetableActivityPanel>> dayActivities = new ArrayList<>();
+    protected ArrayList<TimetableDayPanel> dayActivities = new ArrayList<>();
     private boolean isSomethingFocused = false;
     private int selectedIndex = -1;
+    private int setDayIndex;
+    private int originalSetDayIndex;
     private boolean editMode = false;
     private JPanel editPanel;
     private Timetable timetable;
@@ -54,6 +57,8 @@ public class TimetablePanel extends JPanel {
             System.err.println(Arrays.toString(exception.getStackTrace()));
         }
         this.configuredActivities = new ArrayList<>(List.of(timetable.configuredActivities));
+        this.originalSetDayIndex = timetable.getFileIndexOnDay(LocalDate.now());
+        this.setDayIndex = originalSetDayIndex;
         makeViewPanel(timetable);
 
     }
@@ -93,7 +98,11 @@ public class TimetablePanel extends JPanel {
         viewPanel.setLayout(new BoxLayout(viewPanel, BoxLayout.X_AXIS));
 
         for (int dayIndex = 0; dayIndex < timetable.days.length; dayIndex++) {
-            viewPanel.add(makeDayPanel(dayIndex, timetable.days[dayIndex]));
+            TimetableDayPanel day = makeDayPanel(dayIndex, timetable.days[dayIndex]);
+            if (dayIndex == setDayIndex) {
+                day.setSelectedDay(true);
+            }
+            viewPanel.add(day);
         }
 
         contentPanel.removeAll();
@@ -105,6 +114,7 @@ public class TimetablePanel extends JPanel {
     public void switchToView() {
         close();
         timetable = makeTimetable();
+        dayActivities = new ArrayList<>();
         makeViewPanel(timetable);
     }
     public void switchToEdit() {
@@ -140,7 +150,14 @@ public class TimetablePanel extends JPanel {
         createButton.setFocusable(false);
         createButton.addActionListener(_->{
             int index = editPanel.getComponentCount()-1;
-            editPanel.add(makeDayPanel(index/2, new Day()), index);
+            TimetableDayPanel day = makeDayPanel(index/2, new Day());
+            // Select it if it is the only day
+            if (dayActivities.isEmpty()) {
+                day.setSelectedDay(true);
+                setDayIndex = 0;
+            }
+            editPanel.add(day, index);
+            // If this new day is the only day thats there
             // Add some spacing between panels
             editPanel.add(Box.createHorizontalStrut(5), index + 1); // Add 1 to the index because the previous component means everything shifts over 1
             editPanel.revalidate();
@@ -170,7 +187,7 @@ public class TimetablePanel extends JPanel {
         Day[] days = new Day[dayActivities.size()];
         // Loop through the days
         for (int dayIndex = 0; dayIndex < dayActivities.size(); dayIndex++) {
-            ArrayList<TimetableActivityPanel> activityList = dayActivities.get(dayIndex);
+            ArrayList<TimetableActivityPanel> activityList = dayActivities.get(dayIndex).dayActivityArrayList;
             TimetableActivity[] dayList = new TimetableActivity[activityList.size()];
             // Loop through the activities in the day
             for (int activityIndex = 0; activityIndex < activityList.size(); activityIndex++) {
@@ -180,10 +197,10 @@ public class TimetablePanel extends JPanel {
             Day day = new Day(dayList, dayNameFields.get(dayIndex).getText());
             days[dayIndex] = day;
         }
-        return new Timetable(days, configuredActivities.toArray(new String[0]));
+        return new Timetable(LocalDate.now(), setDayIndex, days, configuredActivities.toArray(new String[0]));
     }
     public void close() {
-        if (editMode) {
+        if (editMode | (originalSetDayIndex != setDayIndex)) {
             Timetable timetable = makeTimetable();
             FileException fileException = timetable.writeToFile();
             if (fileException.failed) {
@@ -222,7 +239,20 @@ public class TimetablePanel extends JPanel {
         selectedIndex = index;
     }
     private void setDay() {
-        // TODO: CODE
+        if (isSomethingFocused) {
+            System.out.println("Day set");
+            System.out.println(selectedIndex);
+            System.out.println(dayActivities.size());
+            // Check whether there is another day selected to deselect
+            if (setDayIndex != -1) {
+                dayActivities.get(setDayIndex).setSelectedDay(false);
+            }
+            setDayIndex = selectedIndex;
+            // Set the current day
+            dayActivities.get(setDayIndex).setSelectedDay(true);
+            // Request the focus in this window so that the yellow border shows
+            this.requestFocusInWindow();
+        }
     }
     protected void removeDay(TimetableDayPanel panel) {
         if (editMode) {

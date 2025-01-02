@@ -1,6 +1,7 @@
 package revisionprogram.documents.factdocuments;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.Objects;
 import revisionprogram.documents.*;
 import revisionprogram.files.FileException;
@@ -12,15 +13,24 @@ public class FactDocument extends Document {
     public String title;
     public String fileName;
     public Fact[] facts;
+    public LocalDate lastRevised;
     public FactDocument(String title, String fileName, Fact[] facts) {
         this.facts = facts;
         this.title = title;
         this.fileName = fileName;
+        this.lastRevised = LocalDate.now();
+    }
+    public FactDocument(String title, String fileName, Fact[] facts, LocalDate lastRevised) {
+        this.facts = facts;
+        this.title = title;
+        this.fileName = fileName;
+        this.lastRevised = lastRevised;
     }
     public FactDocument() {
         this.facts = new Fact[0];
         this.title = "";
         this.fileName = "";
+        this.lastRevised = LocalDate.now();
     }
     @Override
     public EditDocumentPanel makeEditPanel() {
@@ -74,6 +84,9 @@ public class FactDocument extends Document {
             // Write the title
             Document.writeString(this.title, out);
 
+            // Write lastRevised
+            Document.writeString(Main.getStringFromDate(this.lastRevised), out);
+
 
             /// Write the facts
             // Num facts
@@ -118,7 +131,9 @@ public class FactDocument extends Document {
 
             // Read the title
             title = Document.readString(in);
-            System.out.println(title);
+
+            // Read lastRevised
+            this.lastRevised = Main.getDateFromString(Document.readString(in));
 
             int numFacts = in.readInt();
             facts = new Fact[numFacts];

@@ -52,10 +52,6 @@ public class FactRevisionPanel extends JPanel {
         this.setMaximumSize(size);
 
         this.setBorder(new CompoundBorder(new EmptyBorder(5,0,5,0), Borders.defaultBorder())); // Use a compound border to easily add padding
-
-
-
-
     }
     private JPanel makeQuestionPanel() {
         JPanel panel = new JPanel(new GridBagLayout());

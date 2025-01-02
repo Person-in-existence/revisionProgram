@@ -23,6 +23,9 @@ Settings have no file extension, but are stored in the file "settings"
 
 The timetable is stored in a file named "timetable". It is stored in the following way:
 
+- ### Day data
+  - String start_date
+    - The date the timetable starts on, in a "yyyy-MM-dd"
 - ### Activity Types
   - int numActivities
     - This is the number of activities in the list

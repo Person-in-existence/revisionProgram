@@ -6,18 +6,27 @@ import revisionprogram.documents.Document;
 import revisionprogram.files.FileException;
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 public class Timetable {
     private static final String saveLocation = "timetable";
     public Day[] days;
     public String[] configuredActivities;
-    public Timetable(Day[] days, String[] configuredActivities) {
+    public LocalDate startDate;
+
+    public Timetable(LocalDate startDate, int startDayIndex, Day[] days, String[] configuredActivities) {
         this.days = days;
         this.configuredActivities = configuredActivities;
+
+        // Subtract the dayIndex so that startDayIndex is always 0
+        startDate = startDate.minusDays(startDayIndex);
+        this.startDate = startDate;
     }
     public Timetable() {
         this.days = new Day[0];
         this.configuredActivities = new String[0];
+        this.startDate = LocalDate.now();
     }
 
     public FileException writeToFile() {
@@ -39,6 +48,10 @@ public class Timetable {
             // Create the file streams
             FileOutputStream fos = new FileOutputStream(file);
             DataOutputStream out = new DataOutputStream(fos);
+
+            // String startDate
+            String startDate = Main.getStringFromDate(this.startDate);
+            Document.writeString(startDate, out);
 
             // long numActivities
             int numActivities = configuredActivities.length;
@@ -100,6 +113,10 @@ public class Timetable {
             FileInputStream fis = new FileInputStream(file);
             DataInputStream in = new DataInputStream(fis);
 
+            /// String startDate
+            String startDate = Document.readString(in);
+            this.startDate = Main.getDateFromString(startDate);
+
             /// Activity Types
             int numActivities = in.readInt();
             configuredActivities = new String[numActivities];
@@ -129,6 +146,16 @@ public class Timetable {
             return new FileException(false, "");
         } catch (Exception e) {
             return new FileException(true, e.getMessage());
+        }
+
+    }
+    public int getFileIndexOnDay(LocalDate day) {
+        if (days.length != 0) {
+            long between = ChronoUnit.DAYS.between(this.startDate, day);
+            int index = (int) (between % days.length);
+            return index;
+        } else {
+            return -1;
         }
 
     }

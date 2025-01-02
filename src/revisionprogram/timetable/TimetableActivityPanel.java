@@ -131,7 +131,10 @@ public class TimetableActivityPanel extends JPanel {
     }
     public void setData(TimetableActivity activity) {
         if (canEdit) {
+            // Stop the action listener from triggering
+            createNewActive = false;
             activityChoice.setSelectedIndex(activity.activityIndex());
+            createNewActive = true;
         } else {
             if (activity.activityIndex() == configuredActivities.size()) {
                 activityLabel.setText(Main.strings.getString("timetableNoActivitySelected"));

@@ -17,6 +17,7 @@ public abstract class Document {
     static {
         keyMap = new EnumMap<>(DocumentType.class);
         keyMap.put(DocumentType.TEXT, Main.strings.getString("textDocument"));
+        keyMap.put(DocumentType.FACT, Main.strings.getString("factDocument"));
     }
     public static Document makeFromType(DocumentType type) {
         switch (type) {

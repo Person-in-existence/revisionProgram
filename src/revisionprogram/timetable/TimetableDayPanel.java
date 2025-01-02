@@ -6,6 +6,7 @@ import revisionprogram.EditableLabel;
 import revisionprogram.Main;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -15,10 +16,11 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class TimetableDayPanel extends JPanel {
-    private final ArrayList<TimetableActivityPanel> dayActivityArrayList; // Keep revisionprogram.timetable activity panel list around for later use
+    protected final ArrayList<TimetableActivityPanel> dayActivityArrayList; // Keep revisionprogram.timetable activity panel list around for later use
     private final TimetablePanel parent;
     private final JTextField dayTitleField;
-    public TimetableDayPanel(int index, Day day, boolean editMode, ArrayList<ArrayList<TimetableActivityPanel>> dayActivities, JPanel contentPanel, ArrayList<JTextField> dayNameFields, ArrayList<TimetableActivityPanel> activities, TimetablePanel parent, ArrayList<String> configuredActivities) {
+    private boolean isSelectedDay = false;
+    public TimetableDayPanel(int index, Day day, boolean editMode, ArrayList<TimetableDayPanel> dayActivities, JPanel contentPanel, ArrayList<JTextField> dayNameFields, ArrayList<TimetableActivityPanel> activities, TimetablePanel parent, ArrayList<String> configuredActivities) {
         super();
         /// Logic for dayPanel highlighting
         this.parent = parent;
@@ -54,7 +56,7 @@ public class TimetableDayPanel extends JPanel {
         // Make an arraylist in dayActivities
         // Keep it as a variable so indexes in dayActivities can change and it can still be used
         dayActivityArrayList = new ArrayList<>();
-        dayActivities.add(dayActivityArrayList);
+        dayActivities.add(this);
         /// Add a title field for the day name
         JPanel titleFieldPanel = new JPanel(new BorderLayout());
         String dayTitle = Objects.equals(day.name, "") ? Main.strings.getString("timetableDayTitle") + (index + 1) : day.name;
@@ -136,24 +138,33 @@ public class TimetableDayPanel extends JPanel {
         this.setBorder(Borders.highlightedBorder());
     }
     public void unhighlight() {
-        this.setBorder(Borders.defaultBorder());
+        this.setBorder(defaultBorder());
     }
-
+    private Border defaultBorder() {
+        if (isSelectedDay) {
+            return Borders.colouredBorder(Color.YELLOW);
+        }
+        // Otherwise, return the default border
+        return Borders.defaultBorder();
+    }
     public void registerClick(TimetableActivityPanel component) {
         // For now, just register the focus on this
         // In future, could be used to handle deleting of items
-        // TODO: DELETING OF ITEMS
         SwingUtilities.invokeLater(this::requestFocusInWindow);
 
         System.out.println("Click Registered");
 
     }
     private void delete() {
-        parent.dayActivities.remove(dayActivityArrayList);
+        parent.dayActivities.remove(this);
         for (TimetableActivityPanel panel : dayActivityArrayList) {
             parent.activities.remove(panel);
         }
         parent.dayNameFields.remove(dayTitleField);
         parent.removeDay(this);
+    }
+    public void setSelectedDay(boolean selected) {
+        isSelectedDay = selected;
+        this.setBorder(defaultBorder());
     }
 }

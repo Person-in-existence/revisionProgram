@@ -17,4 +17,10 @@ public class Borders {
         border.applyStyleProperty("focusWidth", 1);
         return border;
     }
+    public static Border colouredBorder(Color colour) {
+        FlatBorder border = new FlatBorder();
+        border.applyStyleProperty("borderColor", colour);
+        border.applyStyleProperty("focusWidth", 1);
+        return border;
+    }
 }

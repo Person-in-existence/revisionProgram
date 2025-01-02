@@ -10,6 +10,8 @@ import java.awt.*;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -25,6 +27,7 @@ public class Main {
     public static final int scrollSpeed = 20;
     public static final Color factCorrectColour = new Color(50, 206, 50);
     public static final Color factIncorrectColour = new Color(229, 47, 47);
+    public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     public static int windowWidth;
     public static int windowHeight;
     public static int screenWidth;
@@ -102,7 +105,7 @@ public class Main {
                     }
 
                     // Read the title
-                    documentIndex = getFileTitle(listOfFiles, documentIndex, documents, index, name);
+                    documentIndex = getFileTitleAndDate(listOfFiles, documentIndex, documents, index, name);
 
                 }
             }
@@ -132,7 +135,7 @@ public class Main {
                     String name = listOfFiles[index].getName();
 
                     // Read the title
-                    documentIndex = getFileTitle(listOfFiles, documentIndex, documents, index, name);
+                    documentIndex = getFileTitleAndDate(listOfFiles, documentIndex, documents, index, name);
 
                 }
             }
@@ -158,8 +161,9 @@ public class Main {
         return new DocumentErrorPackage(d, e);
     }
 
-    private static int getFileTitle(File[] listOfFiles, int documentIndex, DocumentMetadata[] documents, int index, String name) {
+    private static int getFileTitleAndDate(File[] listOfFiles, int documentIndex, DocumentMetadata[] documents, int index, String name) {
         String title;
+        String dateString;
         try {
             FileInputStream fis = new FileInputStream(listOfFiles[index]);
             DataInputStream in = new DataInputStream(fis);
@@ -173,9 +177,11 @@ public class Main {
             } else {
                 return documentIndex;
             }
+            dateString = Document.readString(in);
+            LocalDate date = Main.getDateFromString(dateString);
 
             // Make the metadata
-            DocumentMetadata metadata = new DocumentMetadata(name, title, type);
+            DocumentMetadata metadata = new DocumentMetadata(name, title, date, type);
             // Add it to the list
             documents[documentIndex] = metadata;
             // increment the document index
@@ -305,4 +311,16 @@ public class Main {
         constraints.weighty = 0;
         return constraints;
     }
+    public static String getCurrentDateString() {
+        LocalDate date = LocalDate.now();
+        return date.format(dateTimeFormatter);
+    }
+    public static LocalDate getDateFromString(String dateString) {
+         return LocalDate.parse(dateString, dateTimeFormatter);
+    }
+    public static String getStringFromDate(LocalDate date) {
+        return date.format(dateTimeFormatter);
+    }
+
+
 }
