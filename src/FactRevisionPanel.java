@@ -17,9 +17,13 @@ public class FactRevisionPanel extends JPanel {
     private boolean correct = false; // Start correct as false
     private JPanel correctAnswerPanel;
     private JLabel correctAnswerLabel;
+    private FactViewDocumentPanel parent;
 
-    public FactRevisionPanel(Fact fact, int width) {
+    public FactRevisionPanel(Fact fact, int width, FactViewDocumentPanel parent) {
         super(new GridBagLayout());
+
+        // Set parent
+        this.parent = parent;
 
         answerAreaWidth = width >> 1; // Half the width
 
@@ -163,6 +167,7 @@ public class FactRevisionPanel extends JPanel {
     public void toggleCorrect() {
         correct = !correct;
         updateIndicatorColour();
+        parent.updateTotalScore();
     }
 
 }

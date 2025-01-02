@@ -15,6 +15,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
     private JPanel contentPanel;
     private ScrollingPanel scrollPanel;
     private ArrayList<FactRevisionPanel> panels;
+    private JLabel totalScore;
     public FactViewDocumentPanel() {
         super(new GridBagLayout());
         GridBagConstraints constraints = Main.makeConstraints();
@@ -81,6 +82,10 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
         checkButton.addActionListener(_->check());
         panel.add(checkButton);
 
+        // Make a total score counter
+        totalScore = new JLabel();
+        panel.add(totalScore);
+
         return panel;
     }
 
@@ -88,6 +93,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
         for (FactRevisionPanel panel : panels) {
             panel.check();
         }
+        updateTotalScore();
     }
 
     private JPanel makeContentPanel() {
@@ -100,7 +106,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
     }
 
     private void addFact(Fact fact, String answer) {
-        FactRevisionPanel factPanel = new FactRevisionPanel(fact, (int) (this.getWidth()*0.66));
+        FactRevisionPanel factPanel = new FactRevisionPanel(fact, (int) (this.getWidth()*0.66), this);
         factPanel.setAnswer(answer);
         contentPanel.add(factPanel);
         panels.add(factPanel);
@@ -166,5 +172,15 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
     @Override
     public boolean close() {
         return true;
+    }
+    protected void updateTotalScore() {
+        int total = 0;
+        for (FactRevisionPanel panel: panels) {
+            if (panel.isCorrect()) {
+                total++;
+            }
+        }
+        int maxScore = panels.size();
+        totalScore.setText(total + "/" + maxScore);
     }
 }
