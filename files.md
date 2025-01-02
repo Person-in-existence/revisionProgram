@@ -49,7 +49,9 @@ Note that this can be equal to the length of activities - in this case, it shoul
 
 ## Document Requirements:
 All documents *must* begin with a title, in the "String" standard method format. <br>
-This is used to get the titles for lists of files.
+This is used to get the titles for lists of files. <br>
+Documents must also have a date - the date they were last revised. This is stored in string format, as "yyyy-MM-dd" <br>
+This allows for revision based on when topics were last revised
 
 ---
 
@@ -57,8 +59,9 @@ This is used to get the titles for lists of files.
 
 File Extension: .rtd (Revision Text Document)
 
-- ### Title:
-  - String
+- ### Header:
+  - String title
+  - String date (See document requirements)
 - ### Content:
   - String
 
@@ -68,8 +71,9 @@ File Extension: .rtd (Revision Text Document)
 
 File Extension: .rfd (Revision Fact Document)
 
-- ### Title:
-  -   String
+- ### Header:
+  -   String title
+  -   String date (See Document Requirements)
 - ### Content:
   - int num_facts
     - The number of facts in the document
