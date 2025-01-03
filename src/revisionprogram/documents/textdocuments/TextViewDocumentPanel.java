@@ -2,10 +2,16 @@ package revisionprogram.documents.textdocuments;
 
 import revisionprogram.Main;
 import revisionprogram.documents.*;
+import revisionprogram.files.FileException;
+import revisionprogram.scheduledrevision.ScheduledRevisionManager;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.io.File;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 
 public class TextViewDocumentPanel extends ViewDocumentPanel {
     private JTextPane mainPaneArea;
@@ -50,8 +56,15 @@ public class TextViewDocumentPanel extends ViewDocumentPanel {
         return panel;
     }
 
+    protected Document getOriginalDocument() {
+        return document;
+    }
 
     public Document getDocument() {
+        LocalDate nextRevision = ScheduledRevisionManager.getDaysToNextRevision(document.lastRevised, document.nextRevision);
+        if (nextRevision != document.nextRevision) {
+            return new TextDocument(document.title, document.content, document.fileName, LocalDate.now(), nextRevision);
+        }
         return document;
     }
     public void setDocument(Document document) {
@@ -60,7 +73,5 @@ public class TextViewDocumentPanel extends ViewDocumentPanel {
         this.titlePanel.setText(this.document.title);
     }
     public void refresh(){}
-    public boolean close() {
-        return true;
-    }
+
 }

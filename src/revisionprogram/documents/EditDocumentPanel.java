@@ -51,8 +51,6 @@ public abstract class EditDocumentPanel extends MainPanel {
             }
 
         }
-        // Otherwise, TODO: HANDLE CLOSE WITH UNSAVED CHANGES - DIALOG AND SAVE ETC
-        // TODO: REMOVE RETURN TRUE CASE
         return true;
     }
 }

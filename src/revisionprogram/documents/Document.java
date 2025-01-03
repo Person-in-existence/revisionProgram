@@ -8,6 +8,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.EnumMap;
 import revisionprogram.files.FileException;
 
@@ -57,6 +58,8 @@ public abstract class Document {
     public abstract FileException readFromFile(String filePath);
     public abstract String getTitle();
     public abstract String getFileName();
+    public abstract LocalDate getLastRevised();
+    public abstract LocalDate getNextRevision();
     public static void writeString(String string, DataOutputStream out) throws IOException {
         // get the length of the string
         long length = string.length();

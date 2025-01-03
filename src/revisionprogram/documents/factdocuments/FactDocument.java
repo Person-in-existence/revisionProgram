@@ -14,23 +14,27 @@ public class FactDocument extends Document {
     public String fileName;
     public Fact[] facts;
     public LocalDate lastRevised;
+    public LocalDate nextRevision;
     public FactDocument(String title, String fileName, Fact[] facts) {
         this.facts = facts;
         this.title = title;
         this.fileName = fileName;
         this.lastRevised = LocalDate.now();
+        this.nextRevision = LocalDate.now();
     }
-    public FactDocument(String title, String fileName, Fact[] facts, LocalDate lastRevised) {
+    public FactDocument(String title, String fileName, Fact[] facts, LocalDate lastRevised, LocalDate nextRevision) {
         this.facts = facts;
         this.title = title;
         this.fileName = fileName;
         this.lastRevised = lastRevised;
+        this.nextRevision = nextRevision;
     }
     public FactDocument() {
         this.facts = new Fact[0];
         this.title = "";
         this.fileName = "";
         this.lastRevised = LocalDate.now();
+        this.nextRevision = LocalDate.now();
     }
     @Override
     public EditDocumentPanel makeEditPanel() {
@@ -87,6 +91,9 @@ public class FactDocument extends Document {
             // Write lastRevised
             Document.writeString(Main.getStringFromDate(this.lastRevised), out);
 
+            // Write nextRevision
+            Document.writeString(Main.getStringFromDate(this.nextRevision), out);
+
 
             /// Write the facts
             // Num facts
@@ -135,6 +142,9 @@ public class FactDocument extends Document {
             // Read lastRevised
             this.lastRevised = Main.getDateFromString(Document.readString(in));
 
+            // Read nextRevision
+            this.nextRevision = Main.getDateFromString(Document.readString(in));
+
             int numFacts = in.readInt();
             facts = new Fact[numFacts];
 
@@ -156,6 +166,17 @@ public class FactDocument extends Document {
     public String getFileName() {
         return fileName;
     }
+
+    @Override
+    public LocalDate getLastRevised() {
+        return lastRevised;
+    }
+
+    @Override
+    public LocalDate getNextRevision() {
+        return nextRevision;
+    }
+
     @Override
     public String getTitle() {
         return title;

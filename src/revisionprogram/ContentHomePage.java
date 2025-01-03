@@ -1,6 +1,7 @@
 package revisionprogram;
 
 import revisionprogram.files.FilesPanel;
+import revisionprogram.scheduledrevision.RevisionPanel;
 import revisionprogram.timetable.TimetablePanel;
 
 import java.awt.*;
@@ -16,16 +17,22 @@ public class ContentHomePage extends MainPanel {
         constraints.weighty = 1;
         constraints.weightx = 1;
 
-        //JLabel label = new JLabel("Insert Home Page Here");
         // Add a files panel
         filesPanel = new FilesPanel(window);
         this.add(filesPanel, constraints);
         constraints.gridx++;
-        // Add a revisionprogram.timetable panel
+
+        // Add the revision scheduler
+        RevisionPanel revisionPanel = new RevisionPanel();
+        this.add(revisionPanel, constraints);
+        constraints.gridx++;
+
+        // Add a timetable panel
         timetablePanel = new TimetablePanel();
         this.add(timetablePanel, constraints);
-        //label.setFont(new Font(null, Font.PLAIN, 50));
-        //this.add(label);
+        constraints.gridx++;
+
+
     }
     @Override
     public void refresh(){

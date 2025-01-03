@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ScrollingPanel extends JScrollPane {
-    public ScrollingPanel(JPanel content) {
+    public ScrollingPanel(Component content) {
         super(content);
         Dimension contentPreferredSize = content.getPreferredSize();
         this.setBorder(null);

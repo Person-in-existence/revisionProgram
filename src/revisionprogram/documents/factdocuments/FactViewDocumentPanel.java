@@ -6,11 +6,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import revisionprogram.Main;
 import revisionprogram.ScrollingPanel;
 import revisionprogram.documents.*;
+import revisionprogram.scheduledrevision.ScheduledRevisionManager;
 
 public class FactViewDocumentPanel extends ViewDocumentPanel {
     private FactDocument originalDocument;
@@ -141,7 +143,11 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
 
     @Override
     public Document getDocument() {
-        return originalDocument;
+        LocalDate date = ScheduledRevisionManager.getDaysToNextRevision(originalDocument.lastRevised, originalDocument.nextRevision);
+        if (date == originalDocument.nextRevision) {
+            return originalDocument;
+        }
+        return new FactDocument(originalDocument.title, originalDocument.fileName, originalDocument.facts, LocalDate.now(), date);
     }
 
     private String[] getAnswers() {
@@ -172,10 +178,12 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
 
     }
 
-    @Override
-    public boolean close() {
-        return true;
+
+
+    protected Document getOriginalDocument() {
+        return originalDocument;
     }
+
     protected void updateTotalScore() {
         int total = 0;
         for (FactRevisionPanel panel: panels) {

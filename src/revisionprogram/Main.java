@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
@@ -28,10 +29,12 @@ public class Main {
     public static final Color factCorrectColour = new Color(50, 206, 50);
     public static final Color factIncorrectColour = new Color(229, 47, 47);
     public static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    public static Locale defaultLocale = Locale.getDefault();
     public static int windowWidth;
     public static int windowHeight;
     public static int screenWidth;
     public static int screenHeight;
+    private static Window window;
 
     static {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -69,7 +72,7 @@ public class Main {
         if (!saveRoot.exists()) {
             saveRoot.mkdirs();
         }
-        Window window = new Window();
+        window = new Window();
     }
     public static DocumentType getTypeFromIndex(int index) {
         try {
@@ -180,8 +183,11 @@ public class Main {
             dateString = Document.readString(in);
             LocalDate date = Main.getDateFromString(dateString);
 
+            String nextRevisionString = Document.readString(in);
+            LocalDate nextRevision = Main.getDateFromString(nextRevisionString);
+
             // Make the metadata
-            DocumentMetadata metadata = new DocumentMetadata(name, title, date, type);
+            DocumentMetadata metadata = new DocumentMetadata(name, title, date, nextRevision, type);
             // Add it to the list
             documents[documentIndex] = metadata;
             // increment the document index
@@ -320,6 +326,14 @@ public class Main {
     }
     public static String getStringFromDate(LocalDate date) {
         return date.format(dateTimeFormatter);
+    }
+
+    public static String getUserStyleDateString(LocalDate date) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(defaultLocale);
+        return date.format(dateTimeFormatter);
+    }
+    public static Window getWindow() {
+        return window;
     }
 
 

@@ -13,12 +13,14 @@ public class TextDocument extends Document {
     public String title;
     public String fileName;
     public LocalDate lastRevised;
+    public LocalDate nextRevision;
 
     public TextDocument() {
         content = "";
         title = "";
         fileName = "";
         lastRevised = LocalDate.now();
+        nextRevision = LocalDate.now();
     }
 
     public TextDocument(String title, String content) {
@@ -26,6 +28,7 @@ public class TextDocument extends Document {
         this.title = title;
         this.fileName = "";
         this.lastRevised = LocalDate.now();
+        this.nextRevision = LocalDate.now();
     }
 
     public TextDocument(String title, String content, String filePath) {
@@ -33,12 +36,14 @@ public class TextDocument extends Document {
         this.content = content;
         this.fileName = filePath;
         this.lastRevised = LocalDate.now();
+        this.nextRevision = LocalDate.now();
     }
-    public TextDocument(String title, String content, String filePath, LocalDate lastRevised) {
+    public TextDocument(String title, String content, String filePath, LocalDate lastRevised, LocalDate nextRevision) {
         this.title = title;
         this.content = content;
         this.fileName = filePath;
         this.lastRevised = lastRevised;
+        this.nextRevision = nextRevision;
     }
 
     @Override
@@ -99,6 +104,9 @@ public class TextDocument extends Document {
             // Write lastRevised
             Document.writeString(Main.getStringFromDate(lastRevised), out);
 
+            // Write nextRevised
+            Document.writeString(Main.getStringFromDate(nextRevision), out);
+
             // Write the content
             Document.writeString(this.content, out);
 
@@ -113,6 +121,8 @@ public class TextDocument extends Document {
             String readTitle = Document.readString(in);
 
             // Skip date
+            Document.readString(in);
+            // Skip nextRevision
             Document.readString(in);
             // Content
             String readContent = Document.readString(in);
@@ -161,6 +171,8 @@ public class TextDocument extends Document {
             title = Document.readString(in);
             // Read lastRevised
             lastRevised = Main.getDateFromString(Document.readString(in));
+            // Read nextRevision
+            nextRevision = Main.getDateFromString(Document.readString(in));
             // Read the content
             content = Document.readString(in);
             // Set the filename
@@ -182,6 +194,17 @@ public class TextDocument extends Document {
     public String getFileName() {
         return fileName;
     }
+
+    @Override
+    public LocalDate getLastRevised() {
+        return lastRevised;
+    }
+
+    @Override
+    public LocalDate getNextRevision() {
+        return nextRevision;
+    }
+
     public String getTitle() {
         return title;
     }

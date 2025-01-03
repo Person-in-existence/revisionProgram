@@ -53,7 +53,7 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
     }
     @Override
     public TextDocument getDocument() {
-        return new TextDocument(titlePanel.getText(), mainPaneArea.getText(), originalDocument.fileName);
+        return new TextDocument(titlePanel.getText(), mainPaneArea.getText(), originalDocument.fileName, originalDocument.lastRevised, originalDocument.nextRevision);
     }
     @Override
     public boolean hasChanged() {
