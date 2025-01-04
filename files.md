@@ -19,6 +19,32 @@ Settings have no file extension, but are stored in the file "settings"
 
 ---
 
+## Document creation suggestions:
+
+Only today and yesterday are used in creation suggestions - more than that is unhelpful.
+The created/ignored documents need to be remembered, so that we dont prompt the user to create a document twice.
+
+This is stored in a file called "documentprompts", with no file extension
+
+- String date
+  - This is the date of the first day, when the document was created. This means that we can see if the document is outdated
+- int numActivities
+  - The number of activities which have **not** been done on this day
+  - numActivities times:
+    - String Activity name
+      - The name of the activity
+    - int subjectIndex
+      - The index of the subject this belongs to.
+- int numActivities2
+  - The number of activities on the previous day which have not been done (note that there is no date before this one)
+  - numActivities2 times:
+    - String activity name
+      - The name of the activity
+    - int subjectIndex
+      - The index of the subject it belongs to
+
+---
+
 ## Timetable:
 
 The timetable is stored in a file named "timetable". It is stored in the following way:
@@ -65,10 +91,11 @@ They then have another date in the same format, which is scheduled for when revi
 File Extension: .rtd (Revision Text Document)
 
 - ### Header:
+  -String subject 
   - String title
-  - String date (See document requirements)
-  - String nextDate
-    - The date the document should next be revised on
+    - String date (See document requirements)
+    - String nextDate
+      - The date the document should next be revised on
 - ### Content:
   - String
 
@@ -79,6 +106,7 @@ File Extension: .rtd (Revision Text Document)
 File Extension: .rfd (Revision Fact Document)
 
 - ### Header:
+  - String subject 
   -   String title
   -   String date (See Document Requirements)
   - String nextDate

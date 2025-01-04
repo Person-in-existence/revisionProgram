@@ -1,6 +1,7 @@
 package revisionprogram.scheduledrevision;
 
 import revisionprogram.CreateDialog;
+import revisionprogram.DocumentMetadata;
 import revisionprogram.Main;
 import revisionprogram.ScrollingPanel;
 import revisionprogram.timetable.Timetable;
@@ -13,6 +14,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CreateTimetableDocumentPanel extends JPanel {
     private JTable toCreateTable;
@@ -21,6 +24,7 @@ public class CreateTimetableDocumentPanel extends JPanel {
     public static final String[] headings = new String[] {Main.strings.getString("dayCreateNameHeading"), Main.strings.getString("dayCreateSubjectHeading"), Main.strings.getString("dayCreateDateHeading")};
     public static final int[] widths = {200, 100, 130};
     public static final int numRows = 6;
+    private ArrayList<DocumentPrompt> prompts;
     public CreateTimetableDocumentPanel(TimetablePanel timetablePanel) {
         super();
         this.timetablePanel = timetablePanel;
@@ -28,10 +32,10 @@ public class CreateTimetableDocumentPanel extends JPanel {
         timetablePanel.addChangeListener(this::update);
 
         // TODO: ADD PREVIOUS UNDONE DAYS
-        TimetableActivity[] timetableActivities = timetable.getDayActivities(timetable.getIndexOnDay(LocalDate.now()));
+        prompts = new ArrayList<>(Arrays.asList(ScheduledRevisionManager.getPrompts()));
         String[] activityNames = timetable.configuredActivities;
 
-        tableModel = new DefaultTableModel(makeDataFromActivities(timetableActivities, activityNames), headings);
+        tableModel = new DefaultTableModel(makeDataFromActivities(prompts, activityNames), headings);
         toCreateTable = new JTable(tableModel) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -50,7 +54,7 @@ public class CreateTimetableDocumentPanel extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     int row = toCreateTable.getSelectedRow();
-                    int index = timetableActivities[row].activityIndex();
+                    int index = prompts.get(row).subjectIndex();
                     System.out.println(index);
                     String subject;
                     if (index < activityNames.length) {
@@ -61,6 +65,7 @@ public class CreateTimetableDocumentPanel extends JPanel {
 
                     CreateDialog createDialog = new CreateDialog(subject);
                     createDialog.setVisible(true);
+                    createDialog.addCreationListener(()->removeItem(row));
                 }
             }
         });
@@ -75,28 +80,29 @@ public class CreateTimetableDocumentPanel extends JPanel {
             tableModel.removeRow(0);
         }
         Timetable timetable = timetablePanel.makeTimetable();
-        Object[][] data = makeDataFromActivities(timetable.getDayActivities(timetable.getCurrentDay()), timetable.configuredActivities);
+        prompts = new ArrayList<>(Arrays.asList(ScheduledRevisionManager.getPrompts()));
+        Object[][] data = makeDataFromActivities(prompts, timetable.configuredActivities);
         for (Object[] row: data) {
             tableModel.addRow(row);
         }
     }
-    private Object[] makeRow(TimetableActivity data, String[] activityNames) {
+    private Object[] makeRow(DocumentPrompt data, String[] activityNames) {
         Object[] row = new Object[headings.length];
         row[0] = data.name();
-        int nameIndex = data.activityIndex();
+        int nameIndex = data.subjectIndex();
         if (nameIndex < activityNames.length) {
             row[1] = activityNames[nameIndex];
         } else {
             row[1] = Main.strings.getString("timetableNoActivitySelected");
         }
-        row[2] = Main.getUserStyleDateString(LocalDate.now());
+        row[2] = Main.getUserStyleDateString(data.date());
         return row;
 
     }
-    private Object[][] makeDataFromActivities(TimetableActivity[] activities, String[] activityNames) {
-        Object[][] data = new Object[activities.length][];
-        for (int activityIndex = 0; activityIndex < activities.length; activityIndex++) {
-            data[activityIndex] = makeRow(activities[activityIndex], activityNames);
+    private Object[][] makeDataFromActivities(ArrayList<DocumentPrompt> activities, String[] activityNames) {
+        Object[][] data = new Object[activities.size()][];
+        for (int activityIndex = 0; activityIndex < activities.size(); activityIndex++) {
+            data[activityIndex] = makeRow(activities.get(activityIndex), activityNames);
         }
         return data;
     }
@@ -111,6 +117,12 @@ public class CreateTimetableDocumentPanel extends JPanel {
             sum += width;
         }
         return sum;
+    }
+    private void removeItem(int row) {
+        prompts.remove(row);
+        // Update ScheduledRevisionManager
+        ScheduledRevisionManager.updatePromptFile(prompts);
+
     }
 
 }

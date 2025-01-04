@@ -22,9 +22,9 @@ public abstract class Document {
     }
     public static Document makeFromType(DocumentType type) {
         switch (type) {
-            case DocumentType.TEXT:
+            case TEXT:
                 return new TextDocument();
-            case DocumentType.FACT:
+            case FACT:
                 return new FactDocument();
         }
         // Default to textdoc - shouldn't be possible but suppresses errors
@@ -32,9 +32,9 @@ public abstract class Document {
     }
     public static String getExtensionByType(DocumentType type) {
         switch (type) {
-            case DocumentType.TEXT:
+            case TEXT:
                 return TextDocument.fileExtension;
-            case DocumentType.FACT:
+            case FACT:
                 return FactDocument.fileExtension;
         }
         // Return empty string otherwise

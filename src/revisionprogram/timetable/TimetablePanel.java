@@ -70,7 +70,7 @@ public class TimetablePanel extends JPanel {
         /// Add a set day button
         JButton setDayButton = new JButton(Main.strings.getString("timetableSetDay"));
         setDayButton.setFocusable(false);
-        setDayButton.addActionListener(_->setDay());
+        setDayButton.addActionListener(e->setDay());
         panel.add(setDayButton, constraints);
         // Increment constraints
         constraints.gridx++;
@@ -82,7 +82,7 @@ public class TimetablePanel extends JPanel {
         // Add the switch mode button
         switchModeButton = new JButton(Main.strings.getString("timetableToEdit"));
         switchModeButton.setFocusable(false);
-        switchModeButton.addActionListener(_->switchMode());
+        switchModeButton.addActionListener(e->switchMode());
         // Increment constraints
         constraints.gridx++;
         constraints.weightx = 0;
@@ -152,7 +152,7 @@ public class TimetablePanel extends JPanel {
         // Add the "create" button
         JButton createButton = new JButton(Main.strings.getString("timetableCreateDay"));
         createButton.setFocusable(false);
-        createButton.addActionListener(_->{
+        createButton.addActionListener(e->{
             int index = editPanel.getComponentCount()-1;
             TimetableDayPanel day = makeDayPanel(index/2, new Day());
             // Select it if it is the only day

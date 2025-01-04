@@ -2,8 +2,10 @@ package revisionprogram;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class CreateDialog extends JDialog {
+    private ArrayList<CreationListener> creationListeners = new ArrayList<>();
     public CreateDialog(String subject) {
         super();
         this.setSize(Main.dialogWidth, Main.dialogHeight);
@@ -23,9 +25,10 @@ public class CreateDialog extends JDialog {
 
         // Make a button to create
         JButton submitButton = new JButton(Main.strings.getString("submitCreateDialog"));
-        submitButton.addActionListener(_->{
+        submitButton.addActionListener(e->{
             // Call the function
             Main.getWindow().makeNewDocument(Main.getTypeFromIndex(comboBox.getSelectedIndex()), subject);
+            fireListeners();
             // Close the dialog
             this.dispose();
         });
@@ -40,6 +43,16 @@ public class CreateDialog extends JDialog {
 
         /// Centre the dialog
         this.setLocation(Main.getWindow().getDialogCentre(Main.dialogWidth, Main.dialogHeight));
-
+    }
+    private void fireListeners() {
+        for (CreationListener creationListener: creationListeners) {
+            creationListener.fire();
+        }
+    }
+    public void addCreationListener(CreationListener creationListener) {
+        creationListeners.add(creationListener);
+    }
+    public interface CreationListener {
+        void fire();
     }
 }

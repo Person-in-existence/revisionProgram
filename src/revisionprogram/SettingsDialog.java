@@ -35,7 +35,7 @@ public class SettingsDialog extends JDialog {
             darkModeCheckBox.setSelected(true);
         }
         // Add action listener
-        darkModeCheckBox.addActionListener(_->{
+        darkModeCheckBox.addActionListener(e->{
             System.out.println("Checked");
             if (darkModeCheckBox.isSelected()) {
                 System.out.println("Selected");

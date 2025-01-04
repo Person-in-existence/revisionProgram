@@ -56,11 +56,8 @@ public class Main {
         } else {
             setLightMode();
         }
-        // Get locale from args
         try {
-            String language = args[0];
-            String country = args[1];
-            Locale locale = Locale.of(language, country);
+            Locale locale = Locale.getDefault();
             strings = ResourceBundle.getBundle("Strings", locale);
         } catch (Exception e) {
             System.err.println("Getting locale failed, using UK");
@@ -72,8 +69,10 @@ public class Main {
         if (!saveRoot.exists()) {
             saveRoot.mkdirs();
         }
-        window = new Window();
+        Window window = new Window();
     }
+
+    protected static void setWindow(Window window) {Main.window = window;}
     public static DocumentType getTypeFromIndex(int index) {
         try {
             return DocumentType.values()[index];

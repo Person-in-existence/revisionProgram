@@ -75,7 +75,7 @@ public class FactEditDocumentPanel extends EditDocumentPanel {
     private JButton makeNewFactButton() {
         JButton addNewFactButton = new JButton(Main.strings.getString("factNewFact"));
         addNewFactButton.setFocusable(false);
-        addNewFactButton.addActionListener(_->newFact(new Fact()));
+        addNewFactButton.addActionListener(e->newFact(new Fact()));
         return addNewFactButton;
     }
 

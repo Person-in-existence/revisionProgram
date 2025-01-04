@@ -58,7 +58,7 @@ public class TimetableActivityPanel extends JPanel {
             activityChoice = new JComboBox<>(configuredActivities.toArray(new String[0]));
             // Add the create new option
             activityChoice.addItem(Main.strings.getString("timetableNewActivity"));
-            activityChoice.addActionListener(_ -> {
+            activityChoice.addActionListener(e -> {
                 // if create new is not active, exit the action listener (stops it from triggering while components change)
                 if (!createNewActive) {
                     return;

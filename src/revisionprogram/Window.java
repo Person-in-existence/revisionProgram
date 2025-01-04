@@ -23,6 +23,9 @@ public class Window extends JFrame {
     public Window() {
         super();
 
+        // Set the window so everything has access to it
+        Main.setWindow(this);
+
         /// REMOVE FOCUS IF EMPTY SPACE CLICKED
         this.addMouseListener(new MouseAdapter() {
             @Override
@@ -87,7 +90,7 @@ public class Window extends JFrame {
         // Make button not focusable
         homeButton.setFocusable(false);
         // Add the action listener to the button
-        homeButton.addActionListener(_->goToHome());
+        homeButton.addActionListener(e->goToHome());
         // Add the button to the panel
         topBarPanel.add(homeButton, constraints);
 
@@ -100,7 +103,7 @@ public class Window extends JFrame {
         /// Add the settings button
         JButton settingsButton = new JButton(Main.strings.getString("settingTitle"));
         constraints.gridx++;
-        settingsButton.addActionListener(_->{
+        settingsButton.addActionListener(e->{
             // Check settings isn't open (will be set back when settings is closed)
             if (!settingsOpen) {
                 settingsOpen = true;
@@ -123,7 +126,7 @@ public class Window extends JFrame {
         JButton newButton = new JButton(Main.strings.getString("createNewButton"));
         // Make button not focusable
         newButton.setFocusable(false);
-        newButton.addActionListener(_ -> openCreateDialog());
+        newButton.addActionListener(e -> openCreateDialog());
         // Add the button to the panel
         topBarPanel.add(newButton, constraints);
 
@@ -195,6 +198,7 @@ public class Window extends JFrame {
     public void setTimetable(Timetable timetable) {
         this.timetable = timetable;
     }
+    public Timetable getTimetable() {return timetable;}
     public String[] getSubjects() {
         return timetable.configuredActivities;
     }

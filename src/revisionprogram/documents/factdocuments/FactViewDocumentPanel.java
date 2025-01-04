@@ -84,7 +84,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
         panel.setBorder(new FlatBorder());
         JButton checkButton = new JButton(Main.strings.getString("factCheck"));
         checkButton.setFocusable(false);
-        checkButton.addActionListener(_->check());
+        checkButton.addActionListener(e->check());
         panel.add(checkButton);
 
         // Make a total score counter

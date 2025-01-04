@@ -35,7 +35,7 @@ public class FilesPanel extends JPanel {
         JButton refreshButton = new JButton(Main.strings.getString("fileRefreshButton"));
         // Stop it being focusable so that it doesn't remove focus when pressed
         refreshButton.setFocusable(false);
-        refreshButton.addActionListener(_-> refreshFiles());
+        refreshButton.addActionListener(e-> refreshFiles());
         // Add the button to the panel
         panel.add(refreshButton, constraints);
 
@@ -43,7 +43,7 @@ public class FilesPanel extends JPanel {
         JButton viewButton = new JButton(Main.strings.getString("fileViewButton"));
         // Stop it being focusable so that it doesn't remove focus when pressed
         viewButton.setFocusable(false);
-        viewButton.addActionListener(_->openViewDocument());
+        viewButton.addActionListener(e->openViewDocument());
         // Increment constraints
         constraints.gridx++;
         // Add the button to the panel
@@ -53,7 +53,7 @@ public class FilesPanel extends JPanel {
         JButton editButton = new JButton(Main.strings.getString("fileEditButton"));
         // Stop it being focusable so that it doesn't remove focus when pressed
         editButton.setFocusable(false);
-        editButton.addActionListener(_->openEditDocument());
+        editButton.addActionListener(e->openEditDocument());
         // Increment constraints
         constraints.gridx++;
         // Add the button to the panel

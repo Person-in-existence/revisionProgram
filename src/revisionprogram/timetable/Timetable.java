@@ -152,7 +152,7 @@ public class Timetable {
     public int getIndexOnDay(LocalDate day) {
         if (days.length != 0) {
             long between = ChronoUnit.DAYS.between(this.startDate, day);
-            int index = (int) (between % days.length);
+            int index = (int) ((between % days.length)+days.length) % days.length; // Make sure it is not negative
             return index;
         } else {
             return -1;
@@ -160,6 +160,9 @@ public class Timetable {
     }
 
     public TimetableActivity[] getDayActivities(int dayIndex) {
+        if (dayIndex == -1) {
+            return new TimetableActivity[0];
+        }
         Day day = days[dayIndex];
         return day.activities;
     }

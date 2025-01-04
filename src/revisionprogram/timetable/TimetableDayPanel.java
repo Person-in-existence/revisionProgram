@@ -82,7 +82,7 @@ public class TimetableDayPanel extends JPanel {
         /// Make the remove button
         if (editMode) {
             JButton removeDayButton = new JButton(Main.strings.getString("timetableRemove"));
-            removeDayButton.addActionListener(_->{
+            removeDayButton.addActionListener(e->{
                 delete();
             });
             titleFieldPanel.add(removeDayButton, BorderLayout.LINE_END);
@@ -107,7 +107,7 @@ public class TimetableDayPanel extends JPanel {
             JPanel controlPanel = new JPanel();
             JButton createButton = new JButton(Main.strings.getString("timetableCreateDay"));
             createButton.setFocusable(false);
-            createButton.addActionListener(_ -> {
+            createButton.addActionListener(e -> {
                 TimetableActivityPanel activity = new TimetableActivityPanel(true, configuredActivities, parent, this);
                 activities.add(activity);
                 dayActivityArrayList.add(activity);
@@ -119,10 +119,10 @@ public class TimetableDayPanel extends JPanel {
 
             JButton removeButton = new JButton(Main.strings.getString("timetableRemove"));
             removeButton.setFocusable(false);
-            removeButton.addActionListener(_->{
+            removeButton.addActionListener(e->{
                 if (!dayActivityArrayList.isEmpty()) {
                     // Remove the last item from the list
-                    TimetableActivityPanel toRemove = dayActivityArrayList.getLast();
+                    TimetableActivityPanel toRemove = dayActivityArrayList.get(dayActivityArrayList.size()-1);
                     activities.remove(toRemove);
                     dayActivityArrayList.remove(toRemove);
                     this.remove(toRemove);
