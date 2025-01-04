@@ -3,12 +3,15 @@ package revisionprogram;
 import com.formdev.flatlaf.FlatLaf;
 import revisionprogram.documents.Document;
 import revisionprogram.documents.DocumentType;
+import revisionprogram.files.FileException;
+import revisionprogram.timetable.Timetable;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 
 public class Window extends JFrame {
@@ -16,6 +19,7 @@ public class Window extends JFrame {
     private final ContentPanel contentPanel;
     private JPanel topBarPanel;
     private boolean settingsOpen = false;
+    private Timetable timetable;
     public Window() {
         super();
 
@@ -27,6 +31,14 @@ public class Window extends JFrame {
                 System.out.println("Focus Lost");
             }
         });
+
+        // get the timetable
+        this.timetable = new Timetable();
+        FileException e = timetable.readFromFile();
+        if (e.failed) {
+            System.err.println("Failed to read timetable on start: " + e.getMessage());
+            System.err.println(Arrays.toString(e.getStackTrace()));
+        }
 
         // Change the size of the window
         this.setSize(Main.windowWidth, Main.windowHeight);
@@ -117,51 +129,20 @@ public class Window extends JFrame {
 
         return topBarPanel;
     }
-    // TODO: DEBUG
     public void openCreateDialog() {
-        JDialog createDialog = new JDialog(this);
-        // TODO: ADD DIALOG PADDING
-        createDialog.setSize(Main.dialogWidth, Main.dialogHeight);
-
-        // Make the panel to add stuff to
-        JPanel dialogPanel = new JPanel(new GridBagLayout());
-
-        // Make the constraints for the panel
-        GridBagConstraints constraints = Main.makeConstraints();
-
-        // Make a drop-down box
-        JComboBox<String> comboBox = new JComboBox<>(Main.docTypes);
-        dialogPanel.add(comboBox, constraints);
-        // Increment gridy by 1
-        constraints.gridy++;
-
-        // Make a button to create
-        JButton submitButton = new JButton(Main.strings.getString("submitCreateDialog"));
-        submitButton.addActionListener(_->{
-            // Call the function
-            makeNewDocument(Main.getTypeFromIndex(comboBox.getSelectedIndex()));
-            // Close the dialog
-            createDialog.dispose();
-        });
-        // Add button to panel
-        dialogPanel.add(submitButton, constraints);
-
-        // Add the panel to the dialog
-        createDialog.add(dialogPanel);
-
-        /// Centre the dialog
-        // Get the centre point
-        Point centrePoint = getCentredWindowPoint(this.getX(), this.getY(), this.getWidth(), this.getHeight(), Main.dialogWidth, Main.dialogHeight);
-        // Centre the dialog
-        createDialog.setLocation(centrePoint);
+        CreateDialog dialog = new CreateDialog(Main.strings.getString("timetableNoActivitySelected"));
         // Show the dialog
-        createDialog.setVisible(true);
+        dialog.setVisible(true);
     }
-    public void makeNewDocument(DocumentType documentType) {
+    public void makeNewDocument(DocumentType documentType, String subject) {
         // First, check it is OK to close the current window, running close systems
         if (contentPanel.closePanel()) {
             // Make the document
             Document document = Document.makeFromType(documentType);
+            if (subject != null) {
+                document.setSubject(subject);
+                System.out.println("subject was null");
+            }
             // Show it
             contentPanel.editDocument(document);
         }
@@ -204,9 +185,18 @@ public class Window extends JFrame {
         // Return it as a point
         return new Point(pointX, pointY);
     }
+    public Point getDialogCentre(int dialogWidth, int dialogHeight) {
+        return getCentredWindowPoint(this.getX(), this.getY(), this.getWidth(), this.getHeight(), dialogWidth, dialogHeight);
+    }
     public void refresh() {
         FlatLaf.updateUI();
         contentPanel.refresh();
+    }
+    public void setTimetable(Timetable timetable) {
+        this.timetable = timetable;
+    }
+    public String[] getSubjects() {
+        return timetable.configuredActivities;
     }
     protected void closeSettings() {
         settingsOpen = false;

@@ -41,9 +41,11 @@ public class DocumentDataPanel extends JPanel {
         table.setFont(Main.textContentFont);
         table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         table.getTableHeader().setVisible(true);
+        // Stop the user from reordering the headers
+        table.getTableHeader().setReorderingAllowed(false);
         resizeTable(table);
 
-        // Add a listener to the table to open the document when someone double clicks on it
+        // Add a listener to the table to open the document when someone double-clicks on it
         table.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -68,8 +70,7 @@ public class DocumentDataPanel extends JPanel {
     }
     private DocumentMetadata[] sortData(DocumentMetadata[] data) {
         ArrayList<DocumentMetadata> sorted = new ArrayList<>();
-        for (int index = 0; index < data.length; index++) {
-            DocumentMetadata documentMetadata = data[index];
+        for (DocumentMetadata documentMetadata : data) {
             LocalDate thisDate = documentMetadata.nextRevision();
             boolean added = false;
             for (int sortedIndex = 0; sortedIndex < sorted.size(); sortedIndex++) {
@@ -82,7 +83,7 @@ public class DocumentDataPanel extends JPanel {
                 // If they are the same, do it by alphabetical order of name
                 if (ChronoUnit.DAYS.between(thisDate, sortedDate) == 0) {
                     // Will be before (added) if result is LESS than sorted
-                    if (documentMetadata.name().compareTo(sorted.get(sortedIndex).name()) <=0) {
+                    if (documentMetadata.name().compareTo(sorted.get(sortedIndex).name()) <= 0) {
                         sorted.add(sortedIndex, documentMetadata);
                         added = true;
                         break;

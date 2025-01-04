@@ -84,44 +84,7 @@ public class Main {
             return DocumentType.TEXT;
         }
     }
-    public static DocumentMetadata[] getDocumentDataByType(DocumentType documentType) {
-        // Make the root file
-        File root = new File(saveLocation);
-        // Get the array of all files
-        File[] listOfFiles = root.listFiles();
-        // Check the list of files is not null
-        if (listOfFiles != null) {
-            int documentIndex = 0;
-            DocumentMetadata[] documents = new DocumentMetadata[listOfFiles.length];
-            for (int index = 0; index < listOfFiles.length; index++) {
-                // Check it's a file
-                if (listOfFiles[index].isFile()) {
-                    // Get the title and name
-                    String name = listOfFiles[index].getName();
-                    /// Check the file extension
-                    String[] nameParts = name.split("\\.");
-                    if (nameParts.length != 0) {
-                        if (!Objects.equals("."/*Add the . back*/ + nameParts[nameParts.length - 1], Document.getExtensionByType(documentType))) {
-                            // If the extension is wrong, continue
-                            continue;
-                        }
-                    }
 
-                    // Read the title
-                    documentIndex = getFileTitleAndDate(listOfFiles, documentIndex, documents, index, name);
-
-                }
-            }
-            // Trim the list by copying it to a smaller one
-            // Make the new array
-            DocumentMetadata[] finalDocuments = new DocumentMetadata[documentIndex];
-            // Copy it
-            System.arraycopy(documents, 0, finalDocuments,0, documentIndex);
-            // Return the array
-            return finalDocuments;
-        }
-        return new DocumentMetadata[]{};
-    }
     public static DocumentMetadata[] getDocumentData() {
         // Make the root file
         File root = new File(saveLocation);
@@ -170,6 +133,7 @@ public class Main {
         try {
             FileInputStream fis = new FileInputStream(listOfFiles[index]);
             DataInputStream in = new DataInputStream(fis);
+            String subject = Document.readString(in);
             title = Document.readString(in);
 
             // Get the extension to get the document type
@@ -187,13 +151,13 @@ public class Main {
             LocalDate nextRevision = Main.getDateFromString(nextRevisionString);
 
             // Make the metadata
-            DocumentMetadata metadata = new DocumentMetadata(name, title, date, nextRevision, type);
+            DocumentMetadata metadata = new DocumentMetadata(subject, name, title, date, nextRevision, type);
             // Add it to the list
             documents[documentIndex] = metadata;
             // increment the document index
             documentIndex++;
         } catch (Exception e) {
-            System.err.println("Title could not be read for file with name " + name);
+            System.err.println("Metadata could not be read for file with name " + name);
             return documentIndex;
         }
         return documentIndex;

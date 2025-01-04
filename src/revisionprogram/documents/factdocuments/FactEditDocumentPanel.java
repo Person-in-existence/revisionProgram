@@ -98,12 +98,13 @@ public class FactEditDocumentPanel extends EditDocumentPanel {
         for (int index = 0; index < panels.size(); index++) {
             facts[index] = panels.get(index).getFact();
         }
-        return new FactDocument(titlePanel.getText(), originalDocument.fileName, facts);
+        return new FactDocument(titlePanel.getSubject(), titlePanel.getText(), originalDocument.fileName, facts, originalDocument.lastRevised, originalDocument.nextRevision);
     }
 
     @Override
     public void setDocument(Document document) {
         titlePanel.setText(document.getTitle());
+        titlePanel.setSubject(document.getSubject());
         originalDocument = (FactDocument) document;
         Fact[] facts = originalDocument.facts;
         contentPanel.removeAll();
@@ -120,7 +121,7 @@ public class FactEditDocumentPanel extends EditDocumentPanel {
     public boolean hasChanged() {
         FactDocument currentDocument = getDocument();
         // Check the title
-        if (!Objects.equals(getTitle(), originalDocument.getTitle())) {
+        if (!(Objects.equals(getTitle(), originalDocument.getTitle()) & Objects.equals(titlePanel.getSubject(), originalDocument.subject))) {
             return true;
         }
         // Check individual facts
@@ -137,6 +138,15 @@ public class FactEditDocumentPanel extends EditDocumentPanel {
         // If it hasn't returned true, then it is the same, so it hasn't changed
         return false;
     }
+
+    @Override
+    public boolean doSave() {
+        FactDocument currentDocument = getDocument();
+        boolean title = !(Objects.equals(currentDocument.title, originalDocument.title) & Objects.equals(originalDocument.title, ""));
+        boolean content = !(currentDocument.facts.length == 0 & originalDocument.facts.length != 0);
+        return title | content;
+    }
+
     @Override
     protected String getTitle() {
         return titlePanel.getText();

@@ -63,7 +63,7 @@ public class TextViewDocumentPanel extends ViewDocumentPanel {
     public Document getDocument() {
         LocalDate nextRevision = ScheduledRevisionManager.getDaysToNextRevision(document.lastRevised, document.nextRevision);
         if (nextRevision != document.nextRevision) {
-            return new TextDocument(document.title, document.content, document.fileName, LocalDate.now(), nextRevision);
+            return new TextDocument(document.title, document.content, document.fileName, LocalDate.now(), nextRevision, document.subject);
         }
         return document;
     }
@@ -71,6 +71,7 @@ public class TextViewDocumentPanel extends ViewDocumentPanel {
         this.document = (TextDocument) document;
         this.mainPaneArea.setText(this.document.content);
         this.titlePanel.setText(this.document.title);
+        this.titlePanel.setSubject(this.document.subject);
     }
     public void refresh(){}
 

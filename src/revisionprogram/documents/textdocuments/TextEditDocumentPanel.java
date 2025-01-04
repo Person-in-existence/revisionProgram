@@ -53,16 +53,23 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
     }
     @Override
     public TextDocument getDocument() {
-        return new TextDocument(titlePanel.getText(), mainPaneArea.getText(), originalDocument.fileName, originalDocument.lastRevised, originalDocument.nextRevision);
+        return new TextDocument(titlePanel.getText(), mainPaneArea.getText(), originalDocument.fileName, originalDocument.lastRevised, originalDocument.nextRevision, titlePanel.getSubject());
     }
     @Override
     public boolean hasChanged() {
-        return !(Objects.equals(this.titlePanel.getText(), originalDocument.title) & Objects.equals(this.mainPaneArea.getText(), originalDocument.content));
+        return !(Objects.equals(this.titlePanel.getText(), originalDocument.title) & Objects.equals(this.mainPaneArea.getText(), originalDocument.content) & Objects.equals(titlePanel.getSubject(), originalDocument.subject));
+    }
+    public boolean doSave() {
+        boolean title = !(Objects.equals(this.titlePanel.getText(), originalDocument.title) & Objects.equals(originalDocument.title, ""));
+        System.out.println(title);
+        boolean content = !(Objects.equals(this.mainPaneArea.getText(), originalDocument.content) & Objects.equals(originalDocument.content, ""));
+        return title | content;
     }
     @Override
     public void setDocument(Document document) {
         originalDocument = (TextDocument) document;
         titlePanel.setText(originalDocument.title);
+        titlePanel.setSubject(document.getSubject());
         mainPaneArea.setText(originalDocument.content);
     }
     public void refresh(){}

@@ -149,7 +149,7 @@ public class Timetable {
         }
 
     }
-    public int getFileIndexOnDay(LocalDate day) {
+    public int getIndexOnDay(LocalDate day) {
         if (days.length != 0) {
             long between = ChronoUnit.DAYS.between(this.startDate, day);
             int index = (int) (between % days.length);
@@ -157,6 +157,26 @@ public class Timetable {
         } else {
             return -1;
         }
-
     }
+
+    public TimetableActivity[] getDayActivities(int dayIndex) {
+        Day day = days[dayIndex];
+        return day.activities;
+    }
+    public String[] getActivities() {
+        return configuredActivities;
+    }
+    public int getCurrentDay() {
+        return getIndexOnDay(LocalDate.now());
+    }
+    public String[] getDayActivityNames(int dayIndex) {
+        TimetableActivity[] dayActivities = getDayActivities(dayIndex);
+        String[] names = new String[dayActivities.length];
+        for (int index = 0; index < dayActivities.length; index++) {
+            int configuredActivitiesIndex = dayActivities[index].activityIndex();
+            names[index] = configuredActivities[configuredActivitiesIndex];
+        }
+        return names;
+    }
+
 }

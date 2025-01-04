@@ -8,7 +8,8 @@ import revisionprogram.Main;
 import revisionprogram.files.FileException;
 
 public class TextDocument extends Document {
-    public static final String fileExtension = "rtd"; // "Revision Text revisionprogram.documents.Document"
+    public static final String fileExtension = "rtd"; // "Revision Text Document"
+    public String subject;
     public String content;
     public String title;
     public String fileName;
@@ -16,6 +17,7 @@ public class TextDocument extends Document {
     public LocalDate nextRevision;
 
     public TextDocument() {
+        subject = Main.strings.getString("timetableNoActivitySelected");
         content = "";
         title = "";
         fileName = "";
@@ -24,6 +26,7 @@ public class TextDocument extends Document {
     }
 
     public TextDocument(String title, String content) {
+        this.subject = Main.strings.getString("timetableNoActivitySelected");
         this.content = content;
         this.title = title;
         this.fileName = "";
@@ -32,13 +35,15 @@ public class TextDocument extends Document {
     }
 
     public TextDocument(String title, String content, String filePath) {
+        this.subject = Main.strings.getString("timetableNoActivitySelected");
         this.title = title;
         this.content = content;
         this.fileName = filePath;
         this.lastRevised = LocalDate.now();
         this.nextRevision = LocalDate.now();
     }
-    public TextDocument(String title, String content, String filePath, LocalDate lastRevised, LocalDate nextRevision) {
+    public TextDocument(String title, String content, String filePath, LocalDate lastRevised, LocalDate nextRevision, String subject) {
+        this.subject = subject;
         this.title = title;
         this.content = content;
         this.fileName = filePath;
@@ -98,6 +103,9 @@ public class TextDocument extends Document {
             FileOutputStream fos = new FileOutputStream(file);
             DataOutputStream out = new DataOutputStream(fos);
 
+            // Write the subject
+            Document.writeString(this.subject, out);
+
             // Write the title
             Document.writeString(this.title, out);
 
@@ -118,6 +126,8 @@ public class TextDocument extends Document {
             // Title
             FileInputStream fis = new FileInputStream(filePath);
             DataInputStream in = new DataInputStream(fis);
+            // Skip subject
+            Document.readString(in);
             String readTitle = Document.readString(in);
 
             // Skip date
@@ -167,6 +177,8 @@ public class TextDocument extends Document {
             FileInputStream fis = new FileInputStream(file);
             DataInputStream in = new DataInputStream(fis);
 
+            // Read the subject
+            subject = Document.readString(in);
             // Read the title
             title = Document.readString(in);
             // Read lastRevised
@@ -208,5 +220,7 @@ public class TextDocument extends Document {
     public String getTitle() {
         return title;
     }
+    public String getSubject() {return subject;}
+    public void setSubject(String subject) {this.subject = subject;}
 
 }

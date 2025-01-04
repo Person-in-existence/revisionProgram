@@ -1,6 +1,7 @@
 package revisionprogram;
 
 import revisionprogram.files.FilesPanel;
+import revisionprogram.scheduledrevision.CreateTimetableDocumentPanel;
 import revisionprogram.scheduledrevision.RevisionPanel;
 import revisionprogram.timetable.TimetablePanel;
 
@@ -27,8 +28,15 @@ public class ContentHomePage extends MainPanel {
         this.add(revisionPanel, constraints);
         constraints.gridx++;
 
-        // Add a timetable panel
+        // Make the timetable panel now so we can get the timetable to give to timetableDocumentPanel
         timetablePanel = new TimetablePanel();
+
+        // Add the timetable document creator
+        CreateTimetableDocumentPanel timetableDocumentPanel = new CreateTimetableDocumentPanel(timetablePanel);
+        this.add(timetableDocumentPanel, constraints);
+        constraints.gridx++;
+
+        // Add a timetable panel
         this.add(timetablePanel, constraints);
         constraints.gridx++;
 

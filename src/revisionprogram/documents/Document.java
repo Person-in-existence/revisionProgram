@@ -57,6 +57,8 @@ public abstract class Document {
     public abstract FileException writeToFile();
     public abstract FileException readFromFile(String filePath);
     public abstract String getTitle();
+    public abstract String getSubject();
+    public abstract void setSubject(String subject);
     public abstract String getFileName();
     public abstract LocalDate getLastRevised();
     public abstract LocalDate getNextRevision();

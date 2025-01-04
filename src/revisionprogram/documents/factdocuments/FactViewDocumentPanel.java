@@ -147,7 +147,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
         if (date == originalDocument.nextRevision) {
             return originalDocument;
         }
-        return new FactDocument(originalDocument.title, originalDocument.fileName, originalDocument.facts, LocalDate.now(), date);
+        return new FactDocument(originalDocument.subject, originalDocument.title, originalDocument.fileName, originalDocument.facts, LocalDate.now(), date);
     }
 
     private String[] getAnswers() {
@@ -170,6 +170,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
     public void setDocument(Document document) {
         originalDocument = (FactDocument) document;
         titlePanel.setText(document.getTitle());
+        titlePanel.setSubject(document.getSubject());
 
         Fact[] facts = originalDocument.facts;
         for (Fact fact : facts) {

@@ -25,6 +25,7 @@ public class TimetablePanel extends JPanel {
     private boolean editMode = false;
     private JPanel editPanel;
     private Timetable timetable;
+    private final ArrayList<ChangeListener> changeListeners = new ArrayList<>();
 
     public TimetablePanel() {
         super(new GridBagLayout());
@@ -57,7 +58,7 @@ public class TimetablePanel extends JPanel {
             System.err.println(Arrays.toString(exception.getStackTrace()));
         }
         this.configuredActivities = new ArrayList<>(List.of(timetable.configuredActivities));
-        this.originalSetDayIndex = timetable.getFileIndexOnDay(LocalDate.now());
+        this.originalSetDayIndex = timetable.getIndexOnDay(LocalDate.now());
         this.setDayIndex = originalSetDayIndex;
         makeViewPanel(timetable);
 
@@ -116,6 +117,9 @@ public class TimetablePanel extends JPanel {
         timetable = makeTimetable();
         dayActivities = new ArrayList<>();
         makeViewPanel(timetable);
+        // Fire the changeListeners and update Window
+        Main.getWindow().setTimetable(timetable);
+        fireChangeListeners();
     }
     public void switchToEdit() {
         makeEditPanel(timetable);
@@ -184,6 +188,9 @@ public class TimetablePanel extends JPanel {
         }
     }
     public Timetable makeTimetable() {
+        if (!editMode) {
+            return timetable;
+        }
         Day[] days = new Day[dayActivities.size()];
         // Loop through the days
         for (int dayIndex = 0; dayIndex < dayActivities.size(); dayIndex++) {
@@ -276,5 +283,16 @@ public class TimetablePanel extends JPanel {
         } else {
             System.err.println("Tried to remove panel while not in edit mode");
         }
+    }
+    private void fireChangeListeners() {
+        for (ChangeListener changeListener: changeListeners) {
+            changeListener.change();
+        }
+    }
+    public void addChangeListener(ChangeListener changeListener) {
+        changeListeners.add(changeListener);
+    }
+    public interface ChangeListener {
+        void change();
     }
 }

@@ -11,18 +11,29 @@ public class FactDocument extends Document {
     public static final String fileExtension = "rfd";
 
     public String title;
+    public String subject;
     public String fileName;
     public Fact[] facts;
     public LocalDate lastRevised;
     public LocalDate nextRevision;
     public FactDocument(String title, String fileName, Fact[] facts) {
+        this.subject = Main.strings.getString("timetableNoActivitySelected");
         this.facts = facts;
         this.title = title;
         this.fileName = fileName;
         this.lastRevised = LocalDate.now();
         this.nextRevision = LocalDate.now();
     }
-    public FactDocument(String title, String fileName, Fact[] facts, LocalDate lastRevised, LocalDate nextRevision) {
+    public FactDocument(String subject, String title, String fileName, Fact[] facts) {
+        this.subject = subject;
+        this.facts = facts;
+        this.title = title;
+        this.fileName = fileName;
+        this.lastRevised = LocalDate.now();
+        this.nextRevision = LocalDate.now();
+    }
+    public FactDocument(String subject, String title, String fileName, Fact[] facts, LocalDate lastRevised, LocalDate nextRevision) {
+        this.subject = subject;
         this.facts = facts;
         this.title = title;
         this.fileName = fileName;
@@ -30,6 +41,7 @@ public class FactDocument extends Document {
         this.nextRevision = nextRevision;
     }
     public FactDocument() {
+        this.subject = Main.strings.getString("timetableNoActivitySelected");
         this.facts = new Fact[0];
         this.title = "";
         this.fileName = "";
@@ -85,6 +97,9 @@ public class FactDocument extends Document {
             FileOutputStream fos = new FileOutputStream(file);
             DataOutputStream out = new DataOutputStream(fos);
 
+            // Write the subject
+            Document.writeString(this.subject, out);
+
             // Write the title
             Document.writeString(this.title, out);
 
@@ -136,6 +151,9 @@ public class FactDocument extends Document {
             FileInputStream fis = new FileInputStream(file);
             DataInputStream in = new DataInputStream(fis);
 
+            // Read the subject
+            this.subject = Document.readString(in);
+
             // Read the title
             title = Document.readString(in);
 
@@ -180,5 +198,9 @@ public class FactDocument extends Document {
     @Override
     public String getTitle() {
         return title;
+    }
+    public String getSubject() {return subject;}
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

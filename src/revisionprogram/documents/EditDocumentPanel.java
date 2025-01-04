@@ -17,11 +17,12 @@ public abstract class EditDocumentPanel extends MainPanel {
     public abstract Document getDocument();
     public abstract void setDocument(Document document);
     public abstract boolean hasChanged();
+    public abstract boolean doSave();
     //public abstract boolean close();
     public boolean close() {
-        System.out.println("revisionprogram.documents.textdocuments.TextEditDocumentPanel close");
+        System.out.println("EditDocumentPanel close");
         // If the document has not changed, it is OK to close (return true)
-        if (!hasChanged()) {
+        if (!(hasChanged() & doSave())) {
             System.out.println("No change");
             return true;
         }

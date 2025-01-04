@@ -9,31 +9,31 @@ import java.awt.*;
 
 public class DocumentTitlePanel extends JPanel {
     private final JTextField titleField;
+    private JComboBox<String> subjectSelectionBox;
+    private JLabel subjectLabel;
+    private final boolean editable;
     public DocumentTitlePanel(boolean editable) {
         super(new GridBagLayout());
+        this.editable = editable;
         GridBagConstraints constraints = Main.makeConstraints();
         // Set constraints
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1;
 
         /// Make title panel
-        JPanel titlePanel = new JPanel(new GridBagLayout());
         // Make constraints
-        GridBagConstraints titlePanelConstraints = new GridBagConstraints();
-        titlePanelConstraints.gridy = 0;
-        titlePanelConstraints.gridx = 0;
         // Add padding between components
-        titlePanelConstraints.insets = new Insets(5,3,5,3);
+        constraints.insets = new Insets(5,3,5,3);
+
         // Make a border
-        titlePanel.setBorder(new EmptyBorder(0, 10, 10, 10));
+        this.setBorder(new EmptyBorder(0, 10, 10, 10));
+
         /// Make title label
         JLabel titleLabel = new JLabel(Main.strings.getString("title"));
         titleLabel.setFont(Main.titleFont);
         // Add the title label to the panel
-        titlePanel.add(titleLabel,titlePanelConstraints);
+        this.add(titleLabel,constraints);
+        // Increment constraints
+        constraints.gridx++;
 
-        // increment constraints
-        titlePanelConstraints.gridx++;
         /// Make the title Field
         // Change the title constraints
         // Create the field
@@ -46,22 +46,67 @@ public class DocumentTitlePanel extends JPanel {
             titleField.setBorder(new EmptyBorder(1,1,1,1));
         }
         // Add the titlefield to the panel
-        titlePanel.add(titleField, titlePanelConstraints);
+        this.add(titleField, constraints);
 
         // Increment constraints
-        titlePanelConstraints.gridx++;
-        // Set the weight width to 1
-        titlePanelConstraints.weightx = 1;
-        /// Add a filler panel to the titlePanel
-        titlePanel.add(new JPanel(), titlePanelConstraints);
+        constraints.gridx++;
 
-        // Add the title panel to the upper panel
-        this.add(titlePanel, constraints);
+        /// Make the subject selection box
+        // Subject label
+        JLabel subjectAreaLabel = new JLabel(Main.strings.getString("documentSubjectLabel"));
+        subjectAreaLabel.setFont(Main.titleFont);
+        // Add a border for spacing on the left
+        subjectAreaLabel.setBorder(new EmptyBorder(0,50,0,0));
+        this.add(subjectAreaLabel, constraints);
+        constraints.gridx++;
+
+        if (editable) {
+
+            subjectSelectionBox = new JComboBox<>(Main.getWindow().getSubjects());
+            subjectSelectionBox.addItem(Main.strings.getString("timetableNoActivitySelected"));
+            subjectSelectionBox.setFont(Main.titleFont);
+            this.add(subjectSelectionBox, constraints);
+        } else {
+            subjectLabel = new JLabel();
+            subjectLabel.setFont(Main.titleFont);
+            this.add(subjectLabel, constraints);
+        }
+        constraints.gridx++;
+
+
+        // Set the weight width to 1
+        constraints.weightx = 1;
+        /// Add a filler panel to this
+        this.add(new JPanel(), constraints);
+
     }
     public String getText() {
         return titleField.getText();
     }
     public void setText(String text) {
         titleField.setText(text);
+    }
+    public void setSubject(String subject) {
+        if (editable) {
+            subjectSelectionBox.setSelectedItem(subject);
+        } else {
+            subjectLabel.setText(subject);
+        }
+    }
+    public void setSubjectItems(String[] subjects) {
+        if (editable) {
+            subjectSelectionBox.removeAllItems();
+            for (String string: subjects) {
+                subjectSelectionBox.addItem(string);
+            }
+            subjectSelectionBox.addItem(Main.strings.getString("timetableNoActivitySelected"));
+        }
+    }
+    public String getSubject() {
+        if (editable) {
+            return (String) subjectSelectionBox.getSelectedItem();
+        } else {
+            return subjectLabel.getText();
+        }
     }
 }
