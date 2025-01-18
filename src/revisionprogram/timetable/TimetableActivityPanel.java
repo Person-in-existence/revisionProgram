@@ -143,6 +143,7 @@ public class TimetableActivityPanel extends JPanel {
             }
             TimetablePanel.resizeLabel(activityLabel);
         }
+        // TODO: THERE WAS A FAILED START HERE. INVESTIGATE? nameField.getPreferredSize() was null?
         nameField.setText(activity.name());
         TimetablePanel.resizeField(nameField);
         if (nameField.getPreferredSize().width > this.getMaximumSize().width) {

@@ -2,13 +2,12 @@ package revisionprogram.scheduledrevision;
 
 import revisionprogram.DocumentMetadata;
 import revisionprogram.Main;
-import revisionprogram.ScrollingPanel;
+import revisionprogram.components.ScrollingPanel;
 import revisionprogram.documents.Document;
 import revisionprogram.files.FileException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;

@@ -1,6 +1,7 @@
 package revisionprogram.documents;
 
 import revisionprogram.Main;
+import revisionprogram.documents.blankdocuments.BlankDocument;
 import revisionprogram.documents.factdocuments.FactDocument;
 import revisionprogram.documents.textdocuments.TextDocument;
 
@@ -19,6 +20,7 @@ public abstract class Document {
         keyMap = new EnumMap<>(DocumentType.class);
         keyMap.put(DocumentType.TEXT, Main.strings.getString("textDocument"));
         keyMap.put(DocumentType.FACT, Main.strings.getString("factDocument"));
+        keyMap.put(DocumentType.BLANK, Main.strings.getString("blankDocument"));
     }
     public static Document makeFromType(DocumentType type) {
         switch (type) {
@@ -26,6 +28,8 @@ public abstract class Document {
                 return new TextDocument();
             case FACT:
                 return new FactDocument();
+            case BLANK:
+                return new BlankDocument();
         }
         // Default to textdoc - shouldn't be possible but suppresses errors
         return new TextDocument();
@@ -36,6 +40,8 @@ public abstract class Document {
                 return TextDocument.fileExtension;
             case FACT:
                 return FactDocument.fileExtension;
+            case BLANK:
+                return BlankDocument.fileExtension;
         }
         // Return empty string otherwise
         return "";
@@ -46,6 +52,8 @@ public abstract class Document {
                 return DocumentType.TEXT;
             case FactDocument.fileExtension:
                 return DocumentType.FACT;
+            case BlankDocument.fileExtension:
+                return DocumentType.BLANK;
         }
         // Return textdocument if invalid and write error to console
         System.err.println("revisionprogram.documents.Document.getTypeByExtension: Extension type not recognised: " + extension);

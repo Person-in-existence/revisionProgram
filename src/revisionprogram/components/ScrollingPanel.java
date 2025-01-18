@@ -1,9 +1,14 @@
-package revisionprogram;
+package revisionprogram.components;
+
+import revisionprogram.Main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class ScrollingPanel extends JScrollPane {
+    private int height;
+    private boolean doWidth = false;
     public ScrollingPanel(Component content) {
         super(content);
         Dimension contentPreferredSize = content.getPreferredSize();
@@ -17,5 +22,17 @@ public class ScrollingPanel extends JScrollPane {
     }
     public void refresh() {
         this.setBorder(null);
+    }
+    public void setHeight(int height) {
+        this.height = height;
+        doWidth = true;
+    }
+    public Dimension getPreferredSize() {
+        Dimension d = super.getPreferredSize();
+        d.width += this.getVerticalScrollBar().getPreferredSize().width + 2; // Add space for the scroll bar (plus 2px padding)
+        if (doWidth) {
+            return new Dimension(d.width, height);
+        }
+        return d;
     }
 }

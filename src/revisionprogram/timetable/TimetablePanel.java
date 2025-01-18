@@ -1,11 +1,14 @@
 package revisionprogram.timetable;
 
 import revisionprogram.Main;
+import revisionprogram.components.ScrollingPanel;
 import revisionprogram.files.FileException;
 import revisionprogram.Day;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +51,32 @@ public class TimetablePanel extends JPanel {
         // Change constraints
         constraints.gridy++;
         constraints.weighty = 1;
-        this.add(contentPanel, constraints);
+        // Make a scrollPanel for the content panel
+        ScrollingPanel scrollingPanel = new ScrollingPanel(contentPanel) {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(500, super.getPreferredSize().height);
+            }
+            public Dimension getMinimumSize() {
+                return new Dimension(300, super.getPreferredSize().height);
+            }
+        };
+        scrollingPanel.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollingPanel.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollingPanel.getHorizontalScrollBar().setUnitIncrement(12);
+
+        TimetablePanel thisReference = this;
+
+        contentPanel.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                thisReference.revalidate();
+            }
+        });
+
+        this.add(scrollingPanel, constraints);
+
+
         timetable = new Timetable();
         // Try reading from file.
         FileException exception = timetable.readFromFile();
