@@ -2,10 +2,11 @@ package revisionprogram.documents.textdocuments;
 
 import java.io.*;
 import java.time.LocalDate;
-import java.util.Objects;
+
 import revisionprogram.documents.*;
 import revisionprogram.Main;
 import revisionprogram.files.FileException;
+
 
 public class TextDocument extends Document {
     public static final String fileExtension = "rtd"; // "Revision Text Document"
@@ -64,147 +65,23 @@ public class TextDocument extends Document {
     }
 
     @Override
-    public FileException writeToFile() {
-        try {
-            /// Add the root and extension to the filePath
-            // Change the file name to remove spaces etc
-            String filePath;
-            if (!Objects.equals(this.fileName, "")) {
-                filePath = fileName;
-            } else {
-                filePath = this.title;
-                System.out.println(filePath);
-                filePath = Main.convertFileName(filePath);
-                filePath = Main.accountForDuplicates(filePath, fileExtension, false);
-            }
-
-            System.out.println(filePath);
-            filePath = Main.saveLocation + filePath + "." + fileExtension;
-            System.out.println(filePath);
-
-            // Create a file class
-            File file = new File(filePath);
-            /// Check for exceptions
-            // If the file doesn't exist, create it
-            if (!file.exists()) {
-                boolean success = file.createNewFile();
-                if (!success) {
-                    return new FileException(true, Main.strings.getString("createFileFail"));
-                }
-            }
-            if (file.isDirectory()) {
-                return new FileException(true, Main.strings.getString("fileIsDirectory"));
-            }
-            if (!file.canWrite()) {
-                return new FileException(true, Main.strings.getString("cannotWriteToFile"));
-            }
-
-            /// Write to the file
-            FileOutputStream fos = new FileOutputStream(file);
-            DataOutputStream out = new DataOutputStream(fos);
-
-            // Write the subject
-            Document.writeString(this.subject, out);
-
-            // Write the title
-            Document.writeString(this.title, out);
-
-            // Write lastRevised
-            Document.writeString(Main.getStringFromDate(lastRevised), out);
-
-            // Write nextRevised
-            Document.writeString(Main.getStringFromDate(nextRevision), out);
-
-            // Write the content
-            Document.writeString(this.content, out);
-
-            // Close the output stream
-            out.close();
-            fos.close();
-
-            /// Check that it has worked
-            // Title
-            FileInputStream fis = new FileInputStream(filePath);
-            DataInputStream in = new DataInputStream(fis);
-            // Skip subject
-            Document.readString(in);
-            String readTitle = Document.readString(in);
-
-            // Skip date
-            Document.readString(in);
-            // Skip nextRevision
-            Document.readString(in);
-            // Content
-            String readContent = Document.readString(in);
-
-            // If they aren't correct, return an error!
-            if (!(readTitle.equals(title) & readContent.equals(content))) {
-                System.err.println("Incorrect read");
-                System.err.println(title);
-                System.err.println(readTitle);
-                System.err.println(content);
-                System.err.println(readContent);
-                return new FileException(true, "An unknown error occurred while writing to the file. Please try again.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new FileException(true, e.getMessage());
-        }
-        return new FileException(false, "");
+    public void writeContents(DataOutputStream out) throws IOException{
+        // Write the content
+        writeString(this.content, out);
     }
 
-    @Override
-    public FileException readFromFile(String filePath) {
-        try {
-
-            /// Add the root to the filePath
-            filePath = Main.saveLocation + filePath;
-            // Create a file class
-            File file = new File(filePath);
-            /// Check that the file exists and can be read
-            if (!file.exists()) {
-                System.err.println(file.getPath());
-                return new FileException(true, Main.strings.getString("noFile"));
-            }
-            if (file.isDirectory()) {
-                return new FileException(true, Main.strings.getString("fileIsDirectory"));
-            }
-            if (!file.canRead()) {
-                return new FileException(true, Main.strings.getString("cantRead"));
-            }
-            /// Read from the file
-            FileInputStream fis = new FileInputStream(file);
-            DataInputStream in = new DataInputStream(fis);
-
-            // Read the subject
-            subject = Document.readString(in);
-            // Read the title
-            title = Document.readString(in);
-            // Read lastRevised
-            lastRevised = Main.getDateFromString(Document.readString(in));
-            // Read nextRevision
-            nextRevision = Main.getDateFromString(Document.readString(in));
-            // Read the content
-            content = Document.readString(in);
-            // Set the filename
-            fileName = Document.getNameFromFile(file);
-
-
-            // Close the streams
-            in.close();
-            fis.close();
-            // Return no exception
-            return new FileException(false, "");
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new FileException(true, e.getMessage());
-        }
+    public void readContents(DataInputStream in) throws IOException {
+        content = Document.readString(in);
     }
+
     @Override
     public String getFileName() {
         return fileName;
+    }
+
+    @Override
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override
@@ -213,14 +90,33 @@ public class TextDocument extends Document {
     }
 
     @Override
+    public void setLastRevised(LocalDate lastRevised) {
+        this.lastRevised = lastRevised;
+    }
+
+    @Override
     public LocalDate getNextRevision() {
         return nextRevision;
+    }
+
+    @Override
+    public void setNextRevision(LocalDate nextRevision) {
+        this.nextRevision = nextRevision;
     }
 
     public String getTitle() {
         return title;
     }
+
+    @Override
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getSubject() {return subject;}
     public void setSubject(String subject) {this.subject = subject;}
-
+    @Override
+    public String getFileExtension() {
+        return fileExtension;
+    }
 }

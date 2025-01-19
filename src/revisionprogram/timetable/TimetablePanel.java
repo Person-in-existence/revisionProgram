@@ -55,7 +55,12 @@ public class TimetablePanel extends JPanel {
         ScrollingPanel scrollingPanel = new ScrollingPanel(contentPanel) {
             @Override
             public Dimension getPreferredSize() {
-                return new Dimension(500, super.getPreferredSize().height);
+                Dimension superPreferredSize = super.getPreferredSize();
+                if (superPreferredSize != null) {
+                    return new Dimension(500, super.getPreferredSize().height);
+                } else{
+                    return new Dimension(500,500);
+                }
             }
             public Dimension getMinimumSize() {
                 return new Dimension(300, super.getPreferredSize().height);

@@ -18,8 +18,10 @@ public class PanelList extends JPanel {
     private ArrayList<CreateListener> createButtonListeners = new ArrayList<>();
     private ArrayList<ListCard> panels = new ArrayList<>();
     private JButton createButton;
+    private ScrollingPanel scrollingPanel;
     public PanelList(int axis) {
         super();
+
 
         // Make the content panel with a box layout
         contentPanel = new JPanel();
@@ -31,8 +33,9 @@ public class PanelList extends JPanel {
         contentPanel.add(Box.createVerticalStrut(8)); // Make sure there is a bit of padding so the button isn't cut off
 
         // Make a scrolling panel to put the content panel in
-        ScrollingPanel scrollingPanel = new ScrollingPanel(contentPanel);
+        scrollingPanel = new ScrollingPanel(contentPanel);
         this.add(scrollingPanel);
+
 
         // Add a component listener so that we can resize all the contained panels
         this.addComponentListener(new ComponentAdapter() {
@@ -40,11 +43,15 @@ public class PanelList extends JPanel {
             public void componentResized(ComponentEvent e) {
                 resizeAll();
                 scrollingPanel.setHeight(getHeight());
+                // Fix it not being there at start?
+                scrollingPanel.setPreferredSize(getSize());
+                revalidate();
+                repaint();
             }
         });
     }
 
-    private void resizeAll() {
+    public void resizeAll() {
         int width = this.getWidth();
         for (ListCard card: panels) {
             card.resize((int)(width*0.66));
@@ -66,18 +73,22 @@ public class PanelList extends JPanel {
         contentPanel.add(panel, panels.size()); // Insert it at panels.size() - we haven't yet added the panel to panels
         panels.add(panel);
         panel.setParent(this);
+        scrollingPanel.setPreferredSize(this.getSize());
         this.revalidate();
         this.repaint();
+
     }
 
     public void removePanel(ListCard panel) {
         panels.remove(panel);
         contentPanel.remove(panel);
         panel.removeParent();
-        this.revalidate();
-        this.repaint();
+
     }
 
+    public int numPanels() {
+        return panels.size();
+    }
 
 
     public interface CreateListener {

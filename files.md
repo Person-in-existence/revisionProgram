@@ -120,6 +120,29 @@ File Extension: .rfd (Revision Fact Document)
     - String answer
       - The answer to the fact. Stored in the standard String format
 
+## Blank Documents
+
+File Extension: .rbd  (Revision Blank Document)
+
+- ### Header:
+  - String subject
+  - String title
+  - String date
+  - String nextDate
+- ### Content:
+  - int numBlankCards
+    - The number of blank cards in the document
+  - numBlankCards times:
+    - String blankString
+      - The text in the blank
+    - int numBlanks
+      - The number of blanked sections in the card
+    - numBlanks times:
+      - int startIndex
+        - The start index of the blank
+      - int endIndex
+        - The end index of the blank
+
 ## Standard Methods:
 
 Strings:

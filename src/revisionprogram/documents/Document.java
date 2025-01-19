@@ -5,12 +5,11 @@ import revisionprogram.documents.blankdocuments.BlankDocument;
 import revisionprogram.documents.factdocuments.FactDocument;
 import revisionprogram.documents.textdocuments.TextDocument;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.util.EnumMap;
+import java.util.Objects;
+
 import revisionprogram.files.FileException;
 
 
@@ -60,16 +59,90 @@ public abstract class Document {
         System.err.println("Returning Text instead");
         return DocumentType.TEXT;
     }
+
+    public static String makeFilePath(String title, String fileName, String fileExtension) {
+        String filePath;
+        if (!Objects.equals(fileName, "")) {
+            filePath = fileName;
+        } else {
+            filePath = title;
+            filePath = Main.convertFileName(filePath);
+            filePath = Main.accountForDuplicates(filePath, fileExtension, false);
+            filePath += "." + fileExtension;
+        }
+
+        filePath = Main.saveLocation + filePath;
+        return filePath;
+    }
+
     public abstract EditDocumentPanel makeEditPanel();
     public abstract ViewDocumentPanel makeViewPanel();
-    public abstract FileException writeToFile();
-    public abstract FileException readFromFile(String filePath);
+    public FileException writeToFile() {
+        try {
+            String filePath = makeFilePath(getTitle(), getFileName(), getFileExtension());
+
+            File file = new File(filePath);
+
+            FileException e = doWriteChecks(file);
+            if (e.failed) {
+                return e;
+            }
+
+            DataOutputStream out = makeOutputStreamFromFile(file);
+
+            // Write the header
+            writeHeader(out);
+
+            // Write the contents
+            writeContents(out);
+
+            out.close();
+            return new FileException(false, "");
+        } catch (Exception e) {
+            return new FileException(true, e.getMessage());
+        }
+    }
+    public abstract void writeContents(DataOutputStream out) throws IOException;
+    public FileException readFromFile(String fileName) {
+        try {
+            // Set the fileName
+            setFileName(fileName);
+            File file = makeReadFile(fileName);
+            FileException e = doReadChecks(file);
+            if (e.failed) {
+                return e;
+            }
+            /// Read from the file
+            FileInputStream fis = new FileInputStream(file);
+            DataInputStream in = new DataInputStream(fis);
+
+            // Read the header
+            readHeader(in);
+
+            // Read the content
+            readContents(in);
+
+            // Close the stream
+            in.close();
+            // Return no exception
+            return new FileException(false, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new FileException(true, e.getMessage());
+        }
+    }
+    public abstract void readContents(DataInputStream in) throws IOException;
+    public abstract String getFileExtension();
     public abstract String getTitle();
+    public abstract void setTitle(String title);
     public abstract String getSubject();
     public abstract void setSubject(String subject);
     public abstract String getFileName();
+    public abstract void setFileName(String fileName);
     public abstract LocalDate getLastRevised();
+    public abstract void setLastRevised(LocalDate lastRevised);
     public abstract LocalDate getNextRevision();
+    public abstract void setNextRevision(LocalDate nextRevision);
     public static void writeString(String string, DataOutputStream out) throws IOException {
         // get the length of the string
         long length = string.length();
@@ -92,5 +165,77 @@ public abstract class Document {
 
     public static String getNameFromFile(File file) {
         return file.getName().split("\\.")[0];
+    }
+    public FileException doWriteChecks(File file) throws IOException {
+        if (!file.exists()) {
+            boolean success = file.createNewFile();
+            if (!success) {
+                return new FileException(true, Main.strings.getString("createFileFail"));
+            }
+        }
+        if (file.isDirectory()) {
+            return new FileException(true, Main.strings.getString("fileIsDirectory"));
+        }
+        if (!file.canWrite()) {
+            return new FileException(true, Main.strings.getString("cannotWriteToFile"));
+        }
+        return new FileException(false, "");
+    }
+    public FileException doReadChecks(File file) {
+        /// Check that the file exists and can be read
+        if (!file.exists()) {
+            System.err.println(file.getPath());
+            return new FileException(true, Main.strings.getString("noFile"));
+        }
+        if (file.isDirectory()) {
+            return new FileException(true, Main.strings.getString("fileIsDirectory"));
+        }
+        if (!file.canRead()) {
+            return new FileException(true, Main.strings.getString("cantRead"));
+        }
+        return new FileException(false, "");
+    }
+    public DataOutputStream makeOutputStreamFromFile(File file) throws IOException {
+        FileOutputStream fos = new FileOutputStream(file);
+        return new DataOutputStream(fos);
+    }
+    protected void writeHeader(DataOutputStream out) throws IOException {
+        // Write the subject
+        writeString(getSubject(), out);
+
+        // Write the title
+        writeString(getTitle(), out);
+
+        // Write lastRevised
+        writeString(Main.getStringFromDate(getLastRevised()), out);
+
+        // Write nextRevised
+        writeString(Main.getStringFromDate(getNextRevision()), out);
+    }
+    protected void readHeader(DataInputStream in) throws IOException {
+        // Read the subject
+        String subject = readString(in);
+
+        // Read the title
+        String title = readString(in);
+
+        // Read lastRevised
+        LocalDate lastRevised = Main.getDateFromString(readString(in));
+
+        // Read nextRevision
+        LocalDate nextRevision = Main.getDateFromString(readString(in));
+
+        /// Set the data on the document
+        setSubject(subject);
+        setTitle(title);
+        setLastRevised(lastRevised);
+        setNextRevision(nextRevision);
+    }
+    protected File makeReadFile(String fileName) {
+        /// Add the root to the fileName
+        String filePath = Main.saveLocation + fileName;
+        // Create a file class
+        return new File(filePath);
+
     }
 }

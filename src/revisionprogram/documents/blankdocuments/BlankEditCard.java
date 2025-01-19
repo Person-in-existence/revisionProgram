@@ -13,6 +13,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class BlankEditCard extends ListCard {
     private JTextPane textPane;
@@ -87,6 +89,21 @@ public class BlankEditCard extends ListCard {
     }
     public Blank[] getBlanks() {
         return blanks.toArray(new Blank[0]);
+    }
+
+    public void setBlanks(Blank[] blanks) {
+        this.blanks = new ArrayList<>(Arrays.asList(blanks));
+        renderBlanks();
+    }
+
+    public String getText() {
+        return textPane.getText();
+    }
+    protected void setText(String text) {
+        textPane.setText(text);
+    }
+    public BlankString getBlankString() {
+        return new BlankString(getText(), getBlanks());
     }
 
     @Override
