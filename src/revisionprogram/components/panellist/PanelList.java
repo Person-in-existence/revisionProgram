@@ -19,6 +19,7 @@ public class PanelList extends JPanel {
     private ArrayList<ListCard> panels = new ArrayList<>();
     private JButton createButton;
     private ScrollingPanel scrollingPanel;
+    private boolean canCreate = true;
     public PanelList(int axis) {
         super();
 
@@ -51,6 +52,17 @@ public class PanelList extends JPanel {
         });
     }
 
+    public void setCanCreate(boolean canCreate) {
+        // Only do something if there is a change
+        if (this.canCreate != canCreate) {
+            if (canCreate) {
+                contentPanel.add(createButton);
+            } else {
+                contentPanel.remove(createButton);
+            }
+        }
+    }
+
     public void resizeAll() {
         int width = this.getWidth();
         for (ListCard card: panels) {
@@ -70,7 +82,12 @@ public class PanelList extends JPanel {
     }
 
     public void addPanel(ListCard panel) {
-        contentPanel.add(panel, panels.size()); // Insert it at panels.size() - we haven't yet added the panel to panels
+        // Check if the createButton is in the panel, and change the index based on that
+        if (canCreate) {
+            contentPanel.add(panel, panels.size()); // Insert it at panels.size() - we haven't yet added the panel to panels
+        } else {
+            contentPanel.add(panel); // Just insert it - it will be at the end.
+        }
         panels.add(panel);
         panel.setParent(this);
         scrollingPanel.setPreferredSize(this.getSize());
@@ -83,6 +100,8 @@ public class PanelList extends JPanel {
         panels.remove(panel);
         contentPanel.remove(panel);
         panel.removeParent();
+        this.revalidate();
+        this.repaint();
 
     }
 
@@ -93,6 +112,14 @@ public class PanelList extends JPanel {
 
     public interface CreateListener {
         void create();
+    }
+
+    public void scrollToPanel(ListCard card) {
+        Rectangle bounds = card.getBounds();
+        contentPanel.scrollRectToVisible(bounds);
+    }
+    public ListCard panelAt(int index) {
+        return panels.get(index);
     }
 
 }

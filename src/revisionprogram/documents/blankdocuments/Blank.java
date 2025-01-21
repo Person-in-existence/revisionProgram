@@ -1,5 +1,7 @@
 package revisionprogram.documents.blankdocuments;
 
+import java.util.Comparator;
+
 public class Blank {
     private int start;
     private int end;
@@ -39,5 +41,9 @@ public class Blank {
         boolean end = getStart() < otherBlank.getEnd() & otherBlank.getEnd() < getEnd();
         return start & end;
     }
+    public boolean within(int index) {
+        return getStart() <= index & index < getEnd();
+    }
+    public static Comparator<Blank> comparator = Comparator.comparingInt(Blank::getStart);
 
 }

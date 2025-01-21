@@ -46,7 +46,9 @@ public class BlankDocument extends Document {
 
     @Override
     public ViewDocumentPanel makeViewPanel() {
-        return null;
+        BlankViewDocumentPanel documentPanel = new BlankViewDocumentPanel();
+        documentPanel.setDocument(this);
+        return documentPanel;
     }
 
     @Override

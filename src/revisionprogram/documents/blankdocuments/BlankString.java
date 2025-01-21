@@ -28,4 +28,7 @@ public record BlankString(String string, Blank[] blanks) {
         return true;
 
     }
+    public String getTextAt(Blank blank) {
+        return string().substring(blank.getStart(), blank.getEnd());
+    }
 }
