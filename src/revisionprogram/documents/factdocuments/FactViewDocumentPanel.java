@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import revisionprogram.Main;
-import revisionprogram.ScrollingPanel;
+import revisionprogram.components.ScrollingPanel;
 import revisionprogram.documents.*;
 import revisionprogram.scheduledrevision.ScheduledRevisionManager;
 

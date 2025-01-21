@@ -9,7 +9,7 @@ import java.util.Objects;
 
 import revisionprogram.Main;
 import revisionprogram.documents.*;
-import revisionprogram.ScrollingPanel;
+import revisionprogram.components.ScrollingPanel;
 
 public class FactEditDocumentPanel extends EditDocumentPanel {
     public DocumentTitlePanel titlePanel;
@@ -70,6 +70,7 @@ public class FactEditDocumentPanel extends EditDocumentPanel {
         contentPanel.remove(panel);
         panels.remove(panel);
         this.revalidate();
+        this.repaint();
     }
 
     private JButton makeNewFactButton() {

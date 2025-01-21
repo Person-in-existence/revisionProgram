@@ -1,11 +1,9 @@
 package revisionprogram.scheduledrevision;
 
 import revisionprogram.CreateDialog;
-import revisionprogram.DocumentMetadata;
 import revisionprogram.Main;
-import revisionprogram.ScrollingPanel;
+import revisionprogram.components.ScrollingPanel;
 import revisionprogram.timetable.Timetable;
-import revisionprogram.timetable.TimetableActivity;
 import revisionprogram.timetable.TimetablePanel;
 
 import javax.swing.*;
@@ -13,7 +11,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 

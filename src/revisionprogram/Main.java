@@ -22,7 +22,7 @@ public class Main {
     public static final Font titleFont = new Font("Arial", Font.PLAIN, 30);
     public static final Font textContentFont = new Font("Arial", Font.PLAIN, 16);
     public static final Font factFont = new Font("Arial", Font.PLAIN, 24);
-    public static final String[] docTypes = new String[] {"Text", "Fact"};
+    public static final String[] docTypes = new String[] {"Text", "Fact", "Blank"};
     public static final String saveLocation = "sets/";
     public static final double SIZE_SCALER = 0.9;
     public static final int scrollSpeed = 20;
