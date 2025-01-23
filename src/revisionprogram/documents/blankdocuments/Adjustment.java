@@ -6,7 +6,7 @@ public record Adjustment(int index, int amount) {
             return amount();
         }
         else {
-            return 0;
+            return 0; // No adjustment
         }
     }
 }

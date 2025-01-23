@@ -143,7 +143,7 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
 
     @Override
     public Document getDocument() {
-        LocalDate date = ScheduledRevisionManager.getDaysToNextRevision(originalDocument.lastRevised, originalDocument.nextRevision);
+        LocalDate date = ScheduledRevisionManager.getNextRevision(originalDocument.lastRevised, originalDocument.nextRevision);
         if (date == originalDocument.nextRevision) {
             return originalDocument;
         }

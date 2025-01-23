@@ -30,7 +30,7 @@ public class ScheduledRevisionManager {
 
     }
 
-    public static LocalDate getDaysToNextRevision(LocalDate previousRevision, LocalDate nextRevision) {
+    public static LocalDate getNextRevision(LocalDate previousRevision, LocalDate nextRevision) {
         // If it is far away from that revision (more than 3 days), dont change it at all
         if (LocalDate.now().plusDays(ScheduledRevisionManager.daysBeforeThreshold).isBefore(nextRevision)) {
             return nextRevision;

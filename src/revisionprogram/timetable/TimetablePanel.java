@@ -254,7 +254,7 @@ public class TimetablePanel extends JPanel {
                     System.err.println("Failed again, not retrying");
                     fileException2.printStackTrace();
                     System.err.println(fileException2.getMessage());
-                    JOptionPane.showMessageDialog(this, fileException2.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                    Main.showErrorDialog(fileException2.getMessage());
                 }
             }
         }

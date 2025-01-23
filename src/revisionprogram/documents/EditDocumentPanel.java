@@ -33,7 +33,7 @@ public abstract class EditDocumentPanel extends MainPanel {
             FileException e = getDocument().writeToFile();
             if (e.failed) {
                 // Pop up a dialog and return false
-                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                Main.showErrorDialog(e.getMessage());
                 return false;
             }
         } else {
@@ -47,7 +47,7 @@ public abstract class EditDocumentPanel extends MainPanel {
 
                 e.printStackTrace();
                 // Pop up a dialog and return false
-                JOptionPane.showMessageDialog(this, e.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
+                Main.showErrorDialog(e.getMessage());
                 return false;
             }
 

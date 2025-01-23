@@ -13,10 +13,7 @@ import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class Main {
     public static final Font titleFont = new Font("Arial", Font.PLAIN, 30);
@@ -82,6 +79,16 @@ public class Main {
             e.printStackTrace();
             return DocumentType.TEXT;
         }
+    }
+
+    public static DocumentMetadata[] filter(DocumentMetadata[] data, String subject) {
+        ArrayList<DocumentMetadata> filteredData = new ArrayList<>();
+        for (DocumentMetadata documentMetadata: data) {
+            if (Objects.equals(documentMetadata.subject(), subject)) {
+                filteredData.add(documentMetadata);
+            }
+        }
+        return filteredData.toArray(new DocumentMetadata[0]);
     }
 
     public static DocumentMetadata[] getDocumentData() {
@@ -299,5 +306,10 @@ public class Main {
         return window;
     }
 
+    public static void showErrorDialog(String message) {
+        if (window != null) {
+            JOptionPane.showMessageDialog(window, message, Main.strings.getString("errorDialogTitle"), JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 }
