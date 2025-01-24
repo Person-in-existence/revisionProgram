@@ -23,6 +23,9 @@ public class Window extends JFrame {
     public Window() {
         super();
 
+        // Set the title
+        this.setTitle(Main.strings.getString("windowTitle"));
+
         // Set the window so everything has access to it
         Main.setWindow(this);
 

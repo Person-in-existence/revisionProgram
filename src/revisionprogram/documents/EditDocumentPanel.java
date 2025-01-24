@@ -26,7 +26,6 @@ public abstract class EditDocumentPanel extends MainPanel {
             System.out.println("No change");
             return true;
         }
-        // TODO: STANDARDISE FILE NAME SYSTEM ETC AND MAKE IT POSSIBLE TO CHANGE IT WHEN THE TITLE CHANGES? Maybe ignore old filepath - would need to track old file though - or save it with a timestamp name
         // Check whether the document has a filename
         if (!Objects.equals(getOriginalDocument().getFileName(), "")) {
             // If it does, save it with a new document
@@ -37,9 +36,6 @@ public abstract class EditDocumentPanel extends MainPanel {
                 return false;
             }
         } else {
-            // Make a filePath for the file
-            String filePath = getTitle();
-            // TODO: HANDLE EMPTY TITLE
             FileException e = getDocument().writeToFile();
             if (e.failed) {
                 System.err.println("File Write failed");

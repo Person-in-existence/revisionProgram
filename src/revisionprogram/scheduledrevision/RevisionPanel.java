@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 
 public class RevisionPanel extends JPanel {
-    private JPanel listPanel;
     private DocumentDataPanel dataPanel;
     public RevisionPanel() {
         super(new GridBagLayout());

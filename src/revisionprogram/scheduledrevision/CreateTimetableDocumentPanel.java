@@ -28,7 +28,6 @@ public class CreateTimetableDocumentPanel extends JPanel {
         Timetable timetable = timetablePanel.makeTimetable();
         timetablePanel.addChangeListener(this::update);
 
-        // TODO: ADD PREVIOUS UNDONE DAYS
         prompts = new ArrayList<>(Arrays.asList(ScheduledRevisionManager.getPrompts()));
         String[] activityNames = timetable.configuredActivities;
 
