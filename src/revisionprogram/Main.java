@@ -10,6 +10,8 @@ import java.awt.*;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -162,6 +164,8 @@ public class Main {
             documents[documentIndex] = metadata;
             // increment the document index
             documentIndex++;
+            // Close file
+            in.close();
         } catch (Exception e) {
             System.err.println("Metadata could not be read for file with name " + name);
             return documentIndex;
@@ -261,6 +265,7 @@ public class Main {
         if (previousFileNameExists) {
             return fileName;
         }
+        System.out.println("Duplicatechecking" + fileName);
         String fileRoot = fileName + "_";
         File toCheck = new File(Main.saveLocation + fileName + "." + extension);
         int version = 1;
@@ -311,5 +316,19 @@ public class Main {
             JOptionPane.showMessageDialog(window, message, Main.strings.getString("errorDialogTitle"), JOptionPane.ERROR_MESSAGE);
         }
     }
+    public static FileException removeFile(DocumentMetadata file) {
+        Path path = Paths.get(saveLocation + file.name());
 
+        try {
+            Files.deleteIfExists(path);
+            return new FileException(false, "");
+        } catch (NoSuchFileException e) {
+            return new FileException(true, "noFile");
+        } catch (DirectoryNotEmptyException e) {
+            return new FileException(true, "directoryNotEmpty");
+        } catch (IOException e) {
+            return new FileException(true, e.getMessage());
+        }
+
+    }
 }

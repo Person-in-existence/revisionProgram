@@ -108,7 +108,17 @@ public class PanelList extends JPanel {
         return new ArrayList<>(panels); // Return it as a new arraylist so you can't accidentally remove a panel
     }
 
+    public void update() {
+        this.revalidate();
+        this.repaint();
+    }
+
     public void addPanel(ListCard panel) {
+        addWithoutUpdate(panel);
+        update();
+
+    }
+    public void addWithoutUpdate(ListCard panel) {
         // Check if the createButton is in the panel, and change the index based on that
         if (canCreate) {
             contentPanel.add(panel, panels.size()); // Insert it at panels.size() - we haven't yet added the panel to panels
@@ -118,8 +128,6 @@ public class PanelList extends JPanel {
         panels.add(panel);
         panel.setParent(this);
         scrollingPanel.setPreferredSize(this.getSize());
-        this.revalidate();
-        this.repaint();
 
     }
 
