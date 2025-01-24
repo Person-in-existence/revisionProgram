@@ -23,7 +23,7 @@ public class ContentPanel extends JPanel {
 
     public void showHomepage() {
         System.out.println("revisionprogram.ContentPanel switching to homepage");
-        switchPanel(new ContentHomePage(window));
+        switchPanel(new ContentHomePage());
     }
     public void declarePanelOpen() {
         panelHasClosed = false;

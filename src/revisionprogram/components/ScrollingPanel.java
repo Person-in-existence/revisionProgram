@@ -28,11 +28,13 @@ public class ScrollingPanel extends JScrollPane {
         doWidth = true;
     }
     public Dimension getPreferredSize() {
-        Dimension d = super.getPreferredSize();
-        d.width += this.getVerticalScrollBar().getPreferredSize().width + 2; // Add space for the scroll bar (plus 2px padding)
-        if (doWidth) {
-            return new Dimension(d.width, height);
-        }
-        return d;
+        // TODO: WHY DO WE NEED THIS WHAT HAVE I BROKEN?
+        //Dimension d = super.getPreferredSize();
+        //d.width += this.getVerticalScrollBar().getPreferredSize().width + 2; // Add space for the scroll bar (plus 2px padding)
+        //if (doWidth) {
+        //    return new Dimension(d.width, height);
+        //}
+        //return d;
+        return super.getPreferredSize();
     }
 }

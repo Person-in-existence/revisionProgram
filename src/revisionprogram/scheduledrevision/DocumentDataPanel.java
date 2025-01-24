@@ -106,7 +106,7 @@ public class DocumentDataPanel extends JPanel {
         FileException e = doc.readFromFile(data[row].name());
         if (e.failed) {
             System.err.println("Failed to open document: " + e.getMessage());
-            JOptionPane.showMessageDialog(Main.getWindow(), e.getMessage(), Main.strings.getString("fileErrorTitle"), JOptionPane.ERROR_MESSAGE);
+            Main.showErrorDialog(e.getMessage());
         } else {
             Main.getWindow().viewDocument(doc);
         }

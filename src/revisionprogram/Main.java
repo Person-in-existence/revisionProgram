@@ -10,13 +10,12 @@ import java.awt.*;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class Main {
     public static final Font titleFont = new Font("Arial", Font.PLAIN, 30);
@@ -82,6 +81,16 @@ public class Main {
             e.printStackTrace();
             return DocumentType.TEXT;
         }
+    }
+
+    public static DocumentMetadata[] filter(DocumentMetadata[] data, String subject) {
+        ArrayList<DocumentMetadata> filteredData = new ArrayList<>();
+        for (DocumentMetadata documentMetadata: data) {
+            if (Objects.equals(documentMetadata.subject(), subject)) {
+                filteredData.add(documentMetadata);
+            }
+        }
+        return filteredData.toArray(new DocumentMetadata[0]);
     }
 
     public static DocumentMetadata[] getDocumentData() {
@@ -155,6 +164,8 @@ public class Main {
             documents[documentIndex] = metadata;
             // increment the document index
             documentIndex++;
+            // Close file
+            in.close();
         } catch (Exception e) {
             System.err.println("Metadata could not be read for file with name " + name);
             return documentIndex;
@@ -254,6 +265,7 @@ public class Main {
         if (previousFileNameExists) {
             return fileName;
         }
+        System.out.println("Duplicatechecking" + fileName);
         String fileRoot = fileName + "_";
         File toCheck = new File(Main.saveLocation + fileName + "." + extension);
         int version = 1;
@@ -299,5 +311,24 @@ public class Main {
         return window;
     }
 
+    public static void showErrorDialog(String message) {
+        if (window != null) {
+            JOptionPane.showMessageDialog(window, message, Main.strings.getString("errorDialogTitle"), JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public static FileException removeFile(DocumentMetadata file) {
+        Path path = Paths.get(saveLocation + file.name());
 
+        try {
+            Files.deleteIfExists(path);
+            return new FileException(false, "");
+        } catch (NoSuchFileException e) {
+            return new FileException(true, "noFile");
+        } catch (DirectoryNotEmptyException e) {
+            return new FileException(true, "directoryNotEmpty");
+        } catch (IOException e) {
+            return new FileException(true, e.getMessage());
+        }
+
+    }
 }

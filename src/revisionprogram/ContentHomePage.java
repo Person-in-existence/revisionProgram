@@ -10,7 +10,7 @@ import java.awt.*;
 public class ContentHomePage extends MainPanel {
     private FilesPanel filesPanel;
     private TimetablePanel timetablePanel;
-    public ContentHomePage(Window window) {
+    public ContentHomePage() {
         super(new GridBagLayout());
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -19,7 +19,7 @@ public class ContentHomePage extends MainPanel {
         constraints.weightx = 1;
 
         // Add a files panel
-        filesPanel = new FilesPanel(window);
+        filesPanel = new FilesPanel();
         this.add(filesPanel, constraints);
         constraints.gridx++;
 

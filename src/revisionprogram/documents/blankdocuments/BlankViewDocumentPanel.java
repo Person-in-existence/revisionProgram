@@ -1,15 +1,16 @@
 package revisionprogram.documents.blankdocuments;
 
-import com.formdev.flatlaf.ui.FlatBorder;
 import revisionprogram.Borders;
 import revisionprogram.Main;
 import revisionprogram.components.panellist.PanelList;
 import revisionprogram.documents.Document;
 import revisionprogram.documents.DocumentTitlePanel;
 import revisionprogram.documents.ViewDocumentPanel;
+import revisionprogram.scheduledrevision.ScheduledRevisionManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class BlankViewDocumentPanel extends ViewDocumentPanel {
@@ -101,7 +102,8 @@ public class BlankViewDocumentPanel extends ViewDocumentPanel {
 
     @Override
     public Document getDocument() {
-        return originalDocument;
+        LocalDate nextRevision = ScheduledRevisionManager.getNextRevision(originalDocument.lastRevised, originalDocument.nextRevision);
+        return new BlankDocument(originalDocument.title, originalDocument.getSubject(), originalDocument.getFileName(), originalDocument.blanks, LocalDate.now(), nextRevision);
     }
 
     @Override

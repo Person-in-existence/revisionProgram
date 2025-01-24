@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PanelList extends JPanel {
     private JPanel contentPanel;
@@ -20,9 +21,13 @@ public class PanelList extends JPanel {
     private JButton createButton;
     private ScrollingPanel scrollingPanel;
     private boolean canCreate = true;
+    private int selectedIndex = -1;
+    private boolean selectionEnabled = false;
+    private int axis;
+    private double widthFactor = 0.66;
     public PanelList(int axis) {
         super();
-
+        this.axis = axis;
 
         // Make the content panel with a box layout
         contentPanel = new JPanel();
@@ -42,15 +47,33 @@ public class PanelList extends JPanel {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                resizeAll();
-                scrollingPanel.setHeight(getHeight());
-                // Fix it not being there at start?
-                scrollingPanel.setPreferredSize(getSize());
-                revalidate();
-                repaint();
+                SwingUtilities.invokeLater(()->{
+                    resizeAll();
+                    scrollingPanel.setHeight(getHeight());
+                    // Fix it not being there at start?
+                    Dimension size = getSize();
+                    // REMOVING 10 SEEMS TO FIX THE RANDOM SCROLLING ISSUE?
+                    size.width -= 10;
+                    size.height -= 10;
+                    scrollingPanel.setPreferredSize(size);
+
+                    revalidate();
+                    repaint();
+                });
+
             }
         });
     }
+
+    public Dimension getMinimumSize() {
+        return getPreferredSize();
+    }
+
+    public Dimension getPreferredSize() {
+        return new Dimension(contentPanel.getPreferredSize().width, contentPanel.getPreferredSize().height + 10);
+    }
+
+
 
     public void setCanCreate(boolean canCreate) {
         // Only do something if there is a change
@@ -61,13 +84,17 @@ public class PanelList extends JPanel {
                 contentPanel.remove(createButton);
             }
         }
+        this.canCreate = canCreate;
     }
 
     public void resizeAll() {
-        int width = this.getWidth();
+        int width = this.getSize().width;
         for (ListCard card: panels) {
-            card.resize((int)(width*0.66));
+            card.resize((int)(width*widthFactor));
         }
+    }
+    public void setWidthFactor(double widthFactor) {
+        this.widthFactor = widthFactor;
     }
 
     public void setCreateButtonText(String text) {
@@ -81,7 +108,17 @@ public class PanelList extends JPanel {
         return new ArrayList<>(panels); // Return it as a new arraylist so you can't accidentally remove a panel
     }
 
+    public void update() {
+        this.revalidate();
+        this.repaint();
+    }
+
     public void addPanel(ListCard panel) {
+        addWithoutUpdate(panel);
+        update();
+
+    }
+    public void addWithoutUpdate(ListCard panel) {
         // Check if the createButton is in the panel, and change the index based on that
         if (canCreate) {
             contentPanel.add(panel, panels.size()); // Insert it at panels.size() - we haven't yet added the panel to panels
@@ -91,8 +128,6 @@ public class PanelList extends JPanel {
         panels.add(panel);
         panel.setParent(this);
         scrollingPanel.setPreferredSize(this.getSize());
-        this.revalidate();
-        this.repaint();
 
     }
 
@@ -104,11 +139,37 @@ public class PanelList extends JPanel {
         this.repaint();
 
     }
+    public void removeAllPanels() {
+        // Remove parents
+        for (ListCard card: panels) {
+            card.removeParent();
+        }
+        panels = new ArrayList<>();
+        contentPanel.removeAll();
+        this.revalidate();
+        this.repaint();
+
+    }
 
     public int numPanels() {
         return panels.size();
     }
 
+    protected void setSelectedPanel(ListCard listCard) {
+        if (selectionEnabled) {
+            if (listCard != null) {
+                selectedIndex = panels.indexOf(listCard);
+                listCard.highlight();
+            } else {
+                // Unhighlight the currently selected panel
+                if (selectedIndex != -1) {
+                    panels.get(selectedIndex).unhighlight();
+                }
+                // listCard was null, set the selected index to -1 as no card is selected
+                selectedIndex = -1;
+            }
+        }
+    }
 
     public interface CreateListener {
         void create();
@@ -120,6 +181,16 @@ public class PanelList extends JPanel {
     }
     public ListCard panelAt(int index) {
         return panels.get(index);
+    }
+    public void setSelectionEnabled(boolean selectionEnabled) {
+        this.selectionEnabled = selectionEnabled;
+    }
+
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
+    public ListCard getSelectedPanel() {
+        return panels.get(selectedIndex);
     }
 
 }
