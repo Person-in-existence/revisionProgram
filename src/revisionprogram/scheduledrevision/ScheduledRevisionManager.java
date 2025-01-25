@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ScheduledRevisionManager {
-    public static final String saveLocation = "documentprompts";
+    public static final String saveLocation = Main.saveRoot + "documentprompts";
     public static final int daysBeforeThreshold = 3;
 
     public static DocumentMetadata[] getRevisionList() {

@@ -5,7 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 public class Settings {
-    public static final String settingsPath = "settings";
+    public static String settingsPath = Main.saveRoot + "settings";
 
     public static final String darkModeKey = "dark_mode";
     public static boolean darkModeDefault = false;

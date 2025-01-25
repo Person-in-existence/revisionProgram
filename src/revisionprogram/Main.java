@@ -22,7 +22,8 @@ public class Main {
     public static final Font textContentFont = new Font("Arial", Font.PLAIN, 16);
     public static final Font factFont = new Font("Arial", Font.PLAIN, 24);
     public static final String[] docTypes = new String[] {"Text", "Fact", "Blank"};
-    public static final String saveLocation = "sets/";
+    public static String saveRoot = System.getenv("APPDATA") + "/revisionProgram/";
+    public static String saveLocation = saveRoot + "sets/";
     public static final double SIZE_SCALER = 0.9;
     public static final int scrollSpeed = 20;
     public static final Color factCorrectColour = new Color(50, 206, 50);

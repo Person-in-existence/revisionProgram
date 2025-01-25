@@ -4,6 +4,7 @@ File storage protocols:
 ---
 
 This document describes the file storage systems used by this program.
+All files are saved in System.getenv("APPDATA") - the appdata folder of the system.
 
 ---
 

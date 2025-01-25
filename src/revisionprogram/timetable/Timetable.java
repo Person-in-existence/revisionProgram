@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class Timetable {
-    private static final String saveLocation = "timetable";
+    private static final String saveLocation = Main.saveRoot + "timetable";
     public Day[] days;
     public String[] configuredActivities;
     public LocalDate startDate;
