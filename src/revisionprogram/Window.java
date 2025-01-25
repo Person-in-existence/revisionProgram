@@ -11,6 +11,9 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 
@@ -22,6 +25,8 @@ public class Window extends JFrame {
     private Timetable timetable;
     public Window() {
         super();
+
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
         // Set the title
         this.setTitle(Main.strings.getString("windowTitle"));
@@ -54,7 +59,21 @@ public class Window extends JFrame {
         constraints.weightx = 1;
         // Allows the panels to expand in both directions fully
         constraints.fill = GridBagConstraints.BOTH;
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if (contentPanel.closePanel()) {
+                    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                } else {
+                    // Otherwise, show a dialog
+                    int choice = JOptionPane.showConfirmDialog(Main.getWindow(), Main.strings.getString("closeFailed"), Main.strings.getString("errorDialogTitle"), JOptionPane.YES_NO_OPTION);
+                    if (choice == 0) {
+                        // User chose to close - setCloseOperation
+                        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                    }
+                }
+            }
+        });
 
         /// Make the top bar
         topBarPanel = makeTopPanel();
