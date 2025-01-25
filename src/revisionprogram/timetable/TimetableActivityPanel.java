@@ -144,6 +144,17 @@ public class TimetableActivityPanel extends JPanel {
             TimetablePanel.resizeLabel(activityLabel);
         }
         // TODO: THERE WAS A FAILED START HERE. INVESTIGATE? nameField.getPreferredSize() was null?
+        //Exception in thread "main" java.lang.NullPointerException: Cannot read field "width" because the return value of "javax.swing.JTextField.getPreferredSize()" is null
+        //at revisionprogram.timetable.TimetableActivityPanel.setData(TimetableActivityPanel.java:149)
+        //at revisionprogram.timetable.TimetableDayPanel.<init>(TimetableDayPanel.java:99)
+        //at revisionprogram.timetable.TimetablePanel.makeDayPanel(TimetablePanel.java:211)
+        //at revisionprogram.timetable.TimetablePanel.makeViewPanel(TimetablePanel.java:135)
+        //at revisionprogram.timetable.TimetablePanel.<init>(TimetablePanel.java:96)
+        //at revisionprogram.ContentHomePage.<init>(ContentHomePage.java:32)
+        //at revisionprogram.ContentPanel.showHomepage(ContentPanel.java:26)
+        //at revisionprogram.Window.goToHome(Window.java:173)
+        //at revisionprogram.Window.<init>(Window.java:76)
+        //at revisionprogram.Main.main(Main.java:72)
         nameField.setText(activity.name());
         TimetablePanel.resizeField(nameField);
         if (nameField.getPreferredSize().width > this.getMaximumSize().width) {

@@ -87,10 +87,24 @@ public class BlankViewDocumentPanel extends ViewDocumentPanel {
         if (++currentPanelBlank == blankCount) {
             currentPanelBlank = 0;
             currentBlankPanel += 1;
+            // Use a while loop to avoid issues where there is no blank in the panel
+            while (currentBlankPanel < panelList.numPanels()) {
+                // Get the card
+                card = (BlankViewCard) panelList.panelAt(currentBlankPanel);
+                if (card.getBlankString().blanks().length != 0) {
+                    break;
+                }
+                currentBlankPanel += 1;
+            }
         }
 
-        // Clear the inputField
+
+        // Clear the inputField and highlight the blank
         inputField.setText("");
+        // Highlight the blank
+        if (!(currentBlankPanel >= panelList.numPanels())) {
+            card.highlightBlank(card.getBlankString().blanks()[currentPanelBlank]); // Card will be correct - if we have changed it it will be updated
+        }
 
     }
 
@@ -124,10 +138,20 @@ public class BlankViewDocumentPanel extends ViewDocumentPanel {
         }
         currentBlankPanel = 0;
         currentPanelBlank = 0;
+        // Increase blanks to get the first panel which has a blank (in case panel 0 has no blanks)
+        // Use a while loop to avoid issues where there is no blank in the panel
+        while (currentBlankPanel < panelList.numPanels()) {
+            // Get the card
+            BlankViewCard card = (BlankViewCard) panelList.panelAt(currentBlankPanel);
+            if (card.getBlankString().blanks().length != 0) {
+                break;
+            }
+            currentBlankPanel += 1;
+        }
 
         if (originalDocument.blanks.length != 0) {
             // Highlight the first blank
-            BlankViewCard card = (BlankViewCard) panelList.panelAt(0);
+            BlankViewCard card = (BlankViewCard) panelList.panelAt(currentBlankPanel);
             BlankString blankString = card.getBlankString();
 
             if (blankString.blanks().length != 0) {
