@@ -37,12 +37,11 @@ public class BlankViewCard extends ListCard {
     }
 
     public void highlightBlank(Blank blank) {
-
         try {
             Highlighter highlighter = textPane.getHighlighter();
             Highlighter.HighlightPainter painter = new DefaultHighlighter.DefaultHighlightPainter(textPane.getSelectionColor());
             highlighter.removeAllHighlights();
-            highlighter.addHighlight(blank.getStart(), blank.getEnd(), painter);
+            highlighter.addHighlight(lookupIndex(blank.getStart()), lookupIndex(blank.getEnd()), painter);
         } catch (BadLocationException e) {
             e.printStackTrace();
         }

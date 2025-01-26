@@ -104,6 +104,8 @@ public class BlankViewDocumentPanel extends ViewDocumentPanel {
         // Highlight the blank
         if (!(currentBlankPanel >= panelList.numPanels())) {
             card.highlightBlank(card.getBlankString().blanks()[currentPanelBlank]); // Card will be correct - if we have changed it it will be updated
+            // Scroll to view this card
+            panelList.scrollToPanel(card);
         }
 
     }
@@ -149,7 +151,7 @@ public class BlankViewDocumentPanel extends ViewDocumentPanel {
             currentBlankPanel += 1;
         }
 
-        if (originalDocument.blanks.length != 0) {
+        if (originalDocument.blanks.length != 0 & currentBlankPanel < panelList.numPanels()/*Check that we haven't gone past the end*/) {
             // Highlight the first blank
             BlankViewCard card = (BlankViewCard) panelList.panelAt(currentBlankPanel);
             BlankString blankString = card.getBlankString();
