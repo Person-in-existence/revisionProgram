@@ -22,7 +22,12 @@ public class BlankViewCard extends ListCard {
     }
     public BlankViewCard(BlankString blankString) {
         super(new GridBagLayout());
+        this.setExpandToFit(false);
         GridBagConstraints constraints = Main.makeConstraints();
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1;
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.insets = new Insets(5,10,5,5);
         // Sort the blanks
         Arrays.sort(blankString.blanks(), Blank.comparator);
         this.blankString = blankString;
@@ -35,6 +40,7 @@ public class BlankViewCard extends ListCard {
 
         this.setBorder(Borders.defaultBorder());
     }
+
 
     public void highlightBlank(Blank blank) {
         try {

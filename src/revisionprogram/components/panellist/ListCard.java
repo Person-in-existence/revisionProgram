@@ -8,6 +8,7 @@ import java.awt.event.*;
 
 public abstract class ListCard extends JPanel {
     private PanelList parent;
+    private boolean expands = true;
     public ListCard() {
         super();
         this.setBorder(Borders.defaultBorder());
@@ -63,11 +64,16 @@ public abstract class ListCard extends JPanel {
             }
         });
     }
+    public void setExpandToFit(boolean expands) {
+        this.expands = expands;
+    }
     public void resize(int width) {
         Dimension preferredSize = getPreferredSize();
         Dimension size = new Dimension(width, (int) (width*1.618/6));
         // Check that the height of the content does not need to be taller to fit it
-        size = new Dimension(Math.max(size.width, preferredSize.width), Math.max(size.height, preferredSize.height));
+        if (expands) {
+            size = new Dimension(Math.max(size.width, preferredSize.width), Math.max(size.height, preferredSize.height));
+        }
         this.setPreferredSize(size);
         this.setMaximumSize(size);
         this.setMinimumSize(size);
