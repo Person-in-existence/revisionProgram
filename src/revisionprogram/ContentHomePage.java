@@ -15,8 +15,8 @@ public class ContentHomePage extends MainPanel {
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 1;
-        constraints.weighty = 1;
         constraints.weightx = 1;
+        constraints.fill = GridBagConstraints.NONE;
 
         // Add a files panel
         filesPanel = new FilesPanel();

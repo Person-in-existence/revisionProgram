@@ -5,6 +5,8 @@ import revisionprogram.Main;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class RevisionPanel extends JPanel {
     private DocumentDataPanel dataPanel;
@@ -26,6 +28,12 @@ public class RevisionPanel extends JPanel {
 
         this.setBorder(Borders.defaultBorder());
 
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                setMinimumSize(getPreferredSize());
+            }
+        });
 
     }
     private JPanel makeUpperPanel() {
