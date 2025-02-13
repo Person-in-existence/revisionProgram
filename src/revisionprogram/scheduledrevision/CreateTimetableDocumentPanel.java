@@ -42,6 +42,9 @@ public class CreateTimetableDocumentPanel extends JPanel {
         toCreateTable.getTableHeader().setReorderingAllowed(false);
         // Limit table height
         toCreateTable.setPreferredScrollableViewportSize(new Dimension(getTableWidth(), toCreateTable.getRowHeight()*numRows));
+        int height = toCreateTable.getTableHeader().getPreferredSize().height;
+        Dimension toCreateTableSize = toCreateTable.getPreferredScrollableViewportSize();
+        this.setMinimumSize(new Dimension(toCreateTableSize.width, toCreateTableSize.height + height));
         toCreateTable.setFont(Main.textContentFont);
 
         // Add an on-click listener
