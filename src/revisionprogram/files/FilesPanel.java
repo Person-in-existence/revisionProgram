@@ -44,8 +44,6 @@ public class FilesPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 setPreferredSize(new Dimension(getPreferredSize().width, getParent().getHeight()-50));
-                System.out.println(getSize());
-                System.out.println(getMaximumSize());
             }
         });
     }
