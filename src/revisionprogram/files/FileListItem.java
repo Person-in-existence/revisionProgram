@@ -57,6 +57,17 @@ public class FileListItem extends ListCard {
         JLabel subjectLabel = new JLabel(documentMetadata.subject());
         infoPanel.add(subjectLabel);
 
+        // Add a separation panel
+        infoConstraints.gridx++;
+        infoConstraints.weightx = 1;
+        infoPanel.add(new JPanel(), infoConstraints);
+        infoConstraints.weightx = 0;
+
+        // Add the next revision label
+        infoConstraints.gridx++;
+        JLabel revisionLabel = new JLabel(Main.getUserStyleDateString(documentMetadata.nextRevision()));
+        infoPanel.add(revisionLabel, infoConstraints);
+
         this.add(infoPanel, constraints);
     }
     public DocumentMetadata getData() {

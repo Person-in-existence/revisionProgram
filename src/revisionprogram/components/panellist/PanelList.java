@@ -16,18 +16,15 @@ import java.util.List;
 
 public class PanelList extends JPanel {
     private JPanel contentPanel;
-    private ArrayList<CreateListener> createButtonListeners = new ArrayList<>();
     private ArrayList<ListCard> panels = new ArrayList<>();
     private JButton createButton;
     private ScrollingPanel scrollingPanel;
     private boolean canCreate = true;
     private int selectedIndex = -1;
     private boolean selectionEnabled = false;
-    private int axis;
     private double widthFactor = 0.66;
     public PanelList(int axis) {
         super();
-        this.axis = axis;
 
         // Make the content panel with a box layout
         contentPanel = new JPanel();
