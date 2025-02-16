@@ -157,10 +157,16 @@ public class TimetableActivityPanel extends JPanel {
         //at revisionprogram.Main.main(Main.java:72)
         nameField.setText(activity.name());
         TimetablePanel.resizeField(nameField);
-        if (nameField.getPreferredSize().width > this.getMaximumSize().width) {
-            Dimension d = new Dimension (nameField.getPreferredSize().width + 10, this.getPreferredSize().height);
-            this.setPreferredSize(d);
-            this.setMaximumSize(d);
+        // Bug here (see above) - this is an attempt to fix that
+        if (nameField.getPreferredSize() != null) {
+            if (nameField.getPreferredSize().width > this.getMaximumSize().width) {
+                Dimension d = new Dimension(nameField.getPreferredSize().width + 10, this.getPreferredSize().height);
+                this.setPreferredSize(d);
+                this.setMaximumSize(d);
+            }
+        } else {
+            System.err.println("NameField.getPreferredSize was equal to null: crash site in TimetableActivityPanel");
+            System.err.println("Is timetable working properly?");
         }
         if (activityLabel != null) {
             updateSize(activityLabel);
