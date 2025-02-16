@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 public class ScheduledRevisionManager {
     public static final String saveLocation = Main.saveRoot + "documentprompts";
-    public static final int daysBeforeThreshold = 3;
+    public static final int daysBeforeThreshold = 1;
 
     public static DocumentMetadata[] getRevisionList() {
         DocumentMetadata[] data = Main.getDocumentData();
@@ -43,9 +43,11 @@ public class ScheduledRevisionManager {
         } else if (difference < 7) {
             // 7 days
             return LocalDate.now().plusDays(7);
-        } else if (difference < 30) {
-            return LocalDate.now().plusDays(30);
+        } else if (difference < 14) {
+            // 2 weeks
+            return LocalDate.now().plusDays(14);
         } else {
+            // 1 month
             return LocalDate.now().plusMonths(1);
         }
 
