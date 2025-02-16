@@ -8,6 +8,8 @@ import revisionprogram.components.panellist.PanelList;
 import javax.print.Doc;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -38,6 +40,14 @@ public class FilesPanel extends JPanel {
         panelList.setWidthFactor(0.8); // Set the widthFactor to 0.8 so the panels take up more of the width of the list
         addPanels(currentData);
         this.add(panelList, constraints);
+        this.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                setPreferredSize(new Dimension(getPreferredSize().width, getParent().getHeight()-50));
+                System.out.println(getSize());
+                System.out.println(getMaximumSize());
+            }
+        });
     }
     private void addPanels(DocumentMetadata[] files) {
         for (DocumentMetadata data: files) {
