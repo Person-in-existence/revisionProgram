@@ -12,5 +12,7 @@
     <orderEntry type="library" name="formdev.flatlaf.swingx" level="project" />
     <orderEntry type="library" name="swingx-all-1.6.4" level="project" />
     <orderEntry type="library" name="at.swimmesberger.swingx.all" level="project" />
+    <orderEntry type="library" name="flatlaf-3.5" level="project" />
+    <orderEntry type="library" name="flatlaf-swingx-3.5" level="project" />
   </component>
 </module>

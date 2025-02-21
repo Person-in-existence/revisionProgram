@@ -13,8 +13,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 
 public class Window extends JFrame {
@@ -30,6 +34,17 @@ public class Window extends JFrame {
 
         // Set the title
         this.setTitle(Main.strings.getString("windowTitle"));
+        // Set the icon
+        try {
+            URL url = Main.class.getResource("/icon.png");
+            if (url != null) {
+                ImageIcon icon = new ImageIcon(url);
+                setIconImage(icon.getImage());
+            }
+        } catch (Exception e) {
+            System.err.println("Loading icon failed: " + e.getMessage());
+            System.err.println(Arrays.toString(e.getStackTrace()));
+        }
 
         // Set the window so everything has access to it
         Main.setWindow(this);
