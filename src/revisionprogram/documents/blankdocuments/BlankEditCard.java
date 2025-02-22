@@ -12,6 +12,8 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,6 +49,17 @@ public class BlankEditCard extends ListCard {
 
         SimpleAttributeSet attributeSet = new SimpleAttributeSet();
         StyleConstants.setUnderline(attributeSet, true);
+
+        // Add a key listener to the textPane, to get rid of enters (otherwise they mess up the blanks)
+        textPane.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // Check whether the key pressed was enter
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    e.consume(); // Stop the key from being typed
+                }
+            }
+        });
         textPane.getStyledDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
