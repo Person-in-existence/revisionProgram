@@ -33,3 +33,4 @@ qodana.yaml
 /settings
 /timetable
 /target/
+/dependency-reduced-pom.xml
