@@ -46,8 +46,11 @@ public class TextViewDocumentPanel extends ViewDocumentPanel {
         pane.setBorder(new EmptyBorder(5,5,5,5));
         mainPaneArea = pane;
         pane.setFont(Main.textContentFont);
-        // Add the pane to the panel
-        panel.add(pane);
+        // Make a scrolling area
+        JScrollPane scrollPane = new JScrollPane(pane);
+        scrollPane.setBorder(null);
+        // Add the scroll panel to the panel
+        panel.add(scrollPane);
         // Return the panel
         return panel;
     }

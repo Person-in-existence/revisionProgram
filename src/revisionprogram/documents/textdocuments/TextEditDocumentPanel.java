@@ -42,8 +42,11 @@ public class TextEditDocumentPanel extends EditDocumentPanel {
         JTextPane pane = new JTextPane();
         mainPaneArea = pane;
         pane.setFont(Main.textContentFont);
-        // Add the pane to the panel
-        panel.add(pane);
+        // Add a scroll panel
+        JScrollPane scrollPane = new JScrollPane(pane);
+        scrollPane.setBorder(null);
+        // Add the scroll panel to the panel
+        panel.add(scrollPane);
         // Return the panel
         return panel;
     }
