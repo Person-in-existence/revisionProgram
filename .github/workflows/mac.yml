@@ -20,8 +20,12 @@ jobs:
     - name: Build project
       run: "mvn package"
 
-    - name: Package for windows
-      run: .idea/mac.bat
+    - name: Change permissions
+      run: "chmod +x .idea/mac.sh"
+
+
+    - name: Package for mac
+      run: .idea/mac.sh
 
     - name: Upload packaged exe
       uses: actions/upload-artifact@v4
