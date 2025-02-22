@@ -31,6 +31,7 @@
     </dependencies>
 
     <build>
+        <finalName>revisionProgram</finalName>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
