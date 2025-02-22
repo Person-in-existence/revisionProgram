@@ -20,6 +20,10 @@ jobs:
     - name: Build project
       run: "mvn package"
 
+    - name: Change permissions
+      run: "chmod +x script.sh"
+
+
     - name: Package for mac
       run: .idea/mac.sh
 
