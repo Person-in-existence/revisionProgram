@@ -32,6 +32,7 @@ public class PanelList extends JPanel {
 
         // Add a button to add a new panel
         createButton = new JButton(Main.strings.getString("panelListCreateButtonDefault"));
+        createButton.setAlignmentX(Component.CENTER_ALIGNMENT); // Set alignment to centre, to stop it going to the left of the screen at start
         contentPanel.add(createButton);
         contentPanel.add(Box.createVerticalStrut(8)); // Make sure there is a bit of padding so the button isn't cut off
 
