@@ -1,9 +1,10 @@
 set scriptDir=%~dp0
 cd "%scriptDir%"
-cd ..\out\artifacts\revisionProgram_jar
+cd ..\target
 jpackage ^
     --input "." ^
     --main-jar revisionProgram.jar ^
     --type dmg ^
+    --icon "../res/mac.icns"
     --name "Revision Program" ^
     --mac-package-identifier com.personinexistence.revisionprogram
