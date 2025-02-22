@@ -1,4 +1,4 @@
-scriptDir=$(dirname "$0"
+scriptDir=$(dirname "$0")
 cd "$scriptDir"
 cd ../target
 jpackage \
