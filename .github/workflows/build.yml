@@ -1,4 +1,4 @@
-name: Build for Mac
+name: Build Project
 
 on:
   workflow_dispatch:
@@ -19,6 +19,12 @@ jobs:
 
     - name: Build project
       run: "mvn package"
+
+    - name: Upload jar
+      uses: actions/upload-artifact@v4
+      with:
+        name: jar
+        path: target/revisionProgram.jar
 
       
       
