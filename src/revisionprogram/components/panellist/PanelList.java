@@ -107,6 +107,7 @@ public class PanelList extends JPanel {
     }
 
     public void update() {
+        resizeAll();
         this.revalidate();
         this.repaint();
     }

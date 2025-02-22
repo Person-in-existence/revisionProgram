@@ -155,9 +155,7 @@ public class FilesPanel extends JPanel {
 
         // Switch out the panels
         panelList.removeAllPanels();
-        for (DocumentMetadata item: search) {
-            panelList.addPanel(new FileListItem(item));
-        }
+        addPanels(search);
     }
 
     private boolean within(DocumentMetadata data, String searchTerm) {
