@@ -116,7 +116,8 @@ public class FilesPanel extends JPanel {
         searchBar.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(KeyEvent e) {
-                update();
+                SwingUtilities.invokeLater(()->update()); // Use invokeLater to allow the text to be processed first
+                // Otherwise, we update before anything changes.
             }
         });
 
