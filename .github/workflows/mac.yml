@@ -30,5 +30,5 @@ jobs:
     - name: Upload packaged exe
       uses: actions/upload-artifact@v4
       with:
-        name: windows
+        name: mac
         path: "target/Revision Program-1.0.dmg"
