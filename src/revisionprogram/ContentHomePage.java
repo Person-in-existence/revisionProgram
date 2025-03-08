@@ -5,6 +5,7 @@ import revisionprogram.scheduledrevision.CreateTimetableDocumentPanel;
 import revisionprogram.scheduledrevision.RevisionPanel;
 import revisionprogram.timetable.TimetablePanel;
 
+import javax.swing.*;
 import java.awt.*;
 
 public class ContentHomePage extends MainPanel {

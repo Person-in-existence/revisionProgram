@@ -9,15 +9,15 @@ import java.awt.event.WindowEvent;
 public class SettingsDialog extends JDialog {
     public static final String darkModeKey = "dark_mode";
     private boolean darkModeEnabled;
+    private static final int vPadding = 50;
+    private static final int hPadding = 50;
+    private int totalWidth = hPadding*3;
+    private int totalHeight = vPadding*3;
     public SettingsDialog(Window window) {
         super();
         // Make it so the lower panels cannot be clicked on while this is open
         this.setModalityType(ModalityType.APPLICATION_MODAL);
         Settings settings = new Settings();
-        final int vPadding = 50;
-        final int hPadding = 50;
-        int totalWidth = hPadding*3;
-        int totalHeight = vPadding*3;
         JPanel panel = new JPanel();
         panel.setBorder(new EmptyBorder(vPadding,hPadding,vPadding,hPadding));
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -36,29 +36,25 @@ public class SettingsDialog extends JDialog {
         }
         // Add action listener
         darkModeCheckBox.addActionListener(e->{
-            System.out.println("Checked");
-            if (darkModeCheckBox.isSelected()) {
-                System.out.println("Selected");
-                for (int i = 0; i < 3; i++) {
-                    if (Main.setDarkMode()) {
-                        window.refresh();
-                        break;
-                    }
-                }
-            } else {
-                for (int i = 0; i < 3; i++) {
-                    if (Main.setLightMode()) {
-                        window.refresh();
-                        break;
-                    }
-                }
-            }
-            // Change the setting
+            darkModeToggle(darkModeCheckBox);
         });
         darkModePanel.add(darkModeCheckBox, BorderLayout.LINE_END);
         panel.add(darkModePanel);
-        totalWidth += darkModePanel.getPreferredSize().width;
-        totalHeight += darkModePanel.getPreferredSize().height;
+        updateTotalSize(darkModePanel);
+
+
+
+        // BOTTOM!!!
+        // License view
+        JPanel licensePanel = new JPanel();
+        JButton licenseViewButton = new JButton(Main.strings.getString("settingLicenseView"));
+        licenseViewButton.setFocusable(false);
+        licenseViewButton.addActionListener(e->{
+            Main.showLicenseDialog(false);
+        });
+        licensePanel.add(licenseViewButton);
+        panel.add(licensePanel);
+        updateTotalSize(panel);
 
 
         this.setSize(new Dimension(totalWidth, totalHeight));
@@ -84,5 +80,34 @@ public class SettingsDialog extends JDialog {
                 window.closeSettings();
             }
         });
+    }
+    private void darkModeToggle(JCheckBox darkModeCheckBox) {
+        System.out.println("Checked");
+        Window window = Main.getWindow();
+        if (darkModeCheckBox.isSelected()) {
+            System.out.println("Selected");
+            for (int i = 0; i < 3; i++) {
+                if (Main.setDarkMode()) {
+                    window.refresh();
+                    break;
+                }
+            }
+        } else {
+            for (int i = 0; i < 3; i++) {
+                if (Main.setLightMode()) {
+                    window.refresh();
+                    break;
+                }
+            }
+        }
+    }
+    private void updateTotalSize(Component component) {
+        totalHeight += component.getPreferredSize().height;
+
+        // Only update width if it is larger than totalwidth
+        int paddedWidth = component.getPreferredSize().width + 50;
+        if (paddedWidth > totalWidth) {
+            totalWidth = paddedWidth;
+        }
     }
 }

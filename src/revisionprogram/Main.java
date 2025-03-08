@@ -44,6 +44,7 @@ public class Main {
         windowHeight = (int) (screenSize.height*SIZE_SCALER);
     }
     public static ResourceBundle strings;
+    public static ResourceBundle license;
     public static int dialogWidth = 300;
     public static int dialogHeight = 150;
 
@@ -59,9 +60,11 @@ public class Main {
         try {
             Locale locale = Locale.getDefault();
             strings = ResourceBundle.getBundle("Strings", locale);
+            license = ResourceBundle.getBundle("License", locale);
         } catch (Exception e) {
             System.err.println("Getting locale failed, using UK");
             strings = ResourceBundle.getBundle("Strings", Locale.UK);
+            license = ResourceBundle.getBundle("License", Locale.UK);
         }
 
         // Check saveLocation folder exists, otherwise create it
@@ -69,10 +72,49 @@ public class Main {
         if (!saveRoot.exists()) {
             saveRoot.mkdirs();
         }
+
+        // Do license if needed
+        if (!getLicenseAccepted()) {
+            int option = showLicenseDialog(true);
+            if (option != 0) {
+                // License was not accepted: don't open program.
+                System.err.println("License not accepted: closing");
+                return;
+            } else {
+                acceptLicense();
+                System.out.println("License accepted!");
+            }
+        }
+
         Window window = new Window();
     }
 
     protected static void setWindow(Window window) {Main.window = window;}
+
+    public static int showLicenseDialog(boolean asks) {
+        // If we want an answer, show a confirm dialog
+        if (asks) {
+            return JOptionPane.showConfirmDialog(null, license.getString("license"), license.getString("licenseDialogTitle"), JOptionPane.YES_NO_OPTION);
+        }
+        // Otherwise, show a message dialog and return 0
+        JOptionPane.showMessageDialog(null, license.getString("license"), license.getString("licenseDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
+        return 0;
+    }
+
+    public static boolean getLicenseAccepted() {
+        File file = new File(saveRoot + "license");
+        return file.exists();
+    }
+    public static void acceptLicense() {
+        try {
+            File file = new File(saveRoot + "license");
+            if (!file.createNewFile()) {
+                throw new IOException();
+            }
+        } catch (IOException e) {
+            System.err.println("Unable to save license accept.");
+        }
+    }
     public static DocumentType getTypeFromIndex(int index) {
         try {
             return DocumentType.values()[index];

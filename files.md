@@ -8,6 +8,12 @@ All files are saved in System.getenv("APPDATA") - the appdata folder of the syst
 
 ---
 
+## License:
+
+Whether the license has been accepted is stored in a file called "license". If this file exists, the license has been accepted.
+
+---
+
 ## Settings:
 
 Settings are stored in key-value pairs. The key and value are separated by an "=". Example:
