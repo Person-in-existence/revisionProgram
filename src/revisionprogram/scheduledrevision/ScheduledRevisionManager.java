@@ -6,6 +6,7 @@ import revisionprogram.documents.Document;
 import revisionprogram.timetable.Timetable;
 import revisionprogram.timetable.TimetableActivity;
 
+
 import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -37,20 +38,43 @@ public class ScheduledRevisionManager {
         }
 
         long difference = ChronoUnit.DAYS.between(previousRevision, nextRevision);
+        LocalDate scheduledRevision;
         if (difference < 1) {
             // 1 day
             return LocalDate.now().plusDays(1);
-        } else if (difference < 7) {
+        } else if (difference < 7-1) { // -1s mean that the randomness added will still work - adjustRandomly can make it up to 1 day before
             // 7 days
-            return LocalDate.now().plusDays(7);
-        } else if (difference < 14) {
+            scheduledRevision = LocalDate.now().plusDays(7);
+        } else if (difference < 14-1) {
             // 2 weeks
-            return LocalDate.now().plusDays(14);
+            scheduledRevision = LocalDate.now().plusDays(14);
+        } else if (difference < 28-1) {
+            scheduledRevision = LocalDate.now().plusWeeks(4); // 4 weeks
+        } else if (difference < (7*5-1)) {
+            scheduledRevision = LocalDate.now().plusWeeks(5); // 5 weeks
+        } else if (difference < (7*6-1)) {
+            scheduledRevision = LocalDate.now().plusWeeks(6); // 6 weeks
+        } else if (difference < (7*7-1)) {
+            scheduledRevision = LocalDate.now().plusWeeks(7); // 7 weeks
         } else {
-            // 1 month
-            return LocalDate.now().plusMonths(1);
+            scheduledRevision = LocalDate.now().plusWeeks(8); // 8 weeks
         }
+        return adjustRandomly(scheduledRevision);
 
+    }
+
+    private static LocalDate adjustRandomly(LocalDate date) {
+        double random = Math.random();
+        if (random < ((double) 1/3)) {
+            // Remove 1 - MAY NOT REMOVE MORE THAN 1 (would break getNextRevision)
+            return date.minusDays(1);
+        } else if (random < ((double) 2/3)) {
+            // Do nothing
+            return date;
+        } else {
+            // Add 1
+            return date.plusDays(1);
+        }
     }
 
     private static TimetableActivity[] readActivities(DataInputStream in) throws IOException{
