@@ -224,7 +224,6 @@ public class BlankEditCard extends ListCard {
         SwingUtilities.invokeLater(()->{
             // First, set the whole JTextPane to be not blank (to get rid of any potential old blanks)
             int textLength = textPane.getText().length();
-            System.out.println(blanks);
             textPane.getStyledDocument().setCharacterAttributes(0, textLength, notBlankAttributes, false);
 
             // Highlight each individual blank
@@ -275,14 +274,14 @@ public class BlankEditCard extends ListCard {
             // Check if it needs adjusting: if its start is after or at the offset, we can shift
             int start = blank.getStart();
             int end = blank.getEnd();
-            if (end == start + 1) {
+            if (end - start <= amount) { // Check whether the blank needs to be removed
                 SwingUtilities.invokeLater(()->blanks.remove(blank));
                 continue;
             }
             if (start >= offset) {
                 // Shift the blank by the negative amount
                 blank.shift(-amount);
-            } else if (end >= offset) {
+            } else if (end > offset) { // Just greater than: otherwise it has an issue if you delete the text after it
                 blank.setEnd(end - amount);
             }
         }
