@@ -159,8 +159,11 @@ public class FilesPanel extends JPanel {
         addPanels(search);
     }
 
-    private boolean within(DocumentMetadata data, String searchTerm) {
-        return data.title().contains(searchTerm);
+    private boolean withinCaseInsensitive(DocumentMetadata data, String searchTerm) {
+        // Convert to upper case to make case insensitive
+        String upperTitle = data.title().toUpperCase();
+        String upperSearchTerm = searchTerm.toUpperCase();
+        return upperTitle.contains(upperSearchTerm);
     }
 
     private DocumentMetadata[] search(String searchTerm) {
@@ -171,7 +174,7 @@ public class FilesPanel extends JPanel {
             // Go through the list. If an item contains the searchTerm, add it to the arraylist
             ArrayList<DocumentMetadata> items = new ArrayList<>();
             for (DocumentMetadata item: filteredData) {
-                if (within(item, searchTerm)) {
+                if (withinCaseInsensitive(item, searchTerm)) {
                     items.add(item);
                 }
             }
