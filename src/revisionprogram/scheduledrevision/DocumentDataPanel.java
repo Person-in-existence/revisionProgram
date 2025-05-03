@@ -49,9 +49,11 @@ public class DocumentDataPanel extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    int row = table.getSelectedRow();
-                    // Open that document
-                    openDocumentAtRow(row);
+                    SwingUtilities.invokeLater(()->{
+                        int row = table.getSelectedRow();
+                        // Open that document
+                        openDocumentAtRow(row);
+                    });
                 }
             }
         });
