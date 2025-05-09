@@ -26,7 +26,7 @@ public class DocumentDataPanel extends JPanel {
         // Convert the DocumentMetadata[] to data that can be given to the table
         Object[][] tableData = new Object[this.data.length][headers.length];
         for (int index = 0; index < this.data.length; index++) {
-            tableData[index] = dataToObject(data[index]);
+            tableData[index] = dataToObject(this.data[index]);
         }
 
         DefaultTableModel model = new DefaultTableModel(tableData, headers);
