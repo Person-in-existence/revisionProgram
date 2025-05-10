@@ -121,6 +121,14 @@ public class FactDocument extends Document {
     }
 
     @Override
+    public Document copy() {
+        // Copy facts
+        Fact[] copiedFacts = new Fact[facts.length];
+        System.arraycopy(facts, 0, copiedFacts, 0, facts.length);
+        return new FactDocument(subject, title, fileName, copiedFacts, lastRevised, nextRevision);
+    }
+
+    @Override
     public String getTitle() {
         return title;
     }

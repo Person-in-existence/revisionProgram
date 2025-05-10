@@ -3,6 +3,7 @@ package revisionprogram.documents.blankdocuments;
 import revisionprogram.documents.Document;
 import revisionprogram.documents.EditDocumentPanel;
 import revisionprogram.documents.ViewDocumentPanel;
+import revisionprogram.documents.factdocuments.FactDocument;
 import revisionprogram.files.FileException;
 
 import java.io.DataInputStream;
@@ -164,6 +165,13 @@ public class BlankDocument extends Document {
     @Override
     public void setNextRevision(LocalDate nextRevision) {
         this.nextRevision = nextRevision;
+    }
+
+    @Override
+    public Document copy() {
+        BlankString[] copiedBlanks = new BlankString[blanks.length];
+        System.arraycopy(blanks, 0, copiedBlanks, 0, blanks.length);
+        return new BlankDocument(subject, title, fileName, copiedBlanks, getLastRevised(), getNextRevision());
     }
 
     @Override

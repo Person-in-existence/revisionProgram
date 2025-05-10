@@ -141,15 +141,6 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
 
     }
 
-    @Override
-    public Document getDocument() {
-        LocalDate date = ScheduledRevisionManager.getNextRevision(originalDocument.lastRevised, originalDocument.nextRevision);
-        if (date == originalDocument.nextRevision) {
-            return originalDocument;
-        }
-        return new FactDocument(originalDocument.subject, originalDocument.title, originalDocument.fileName, originalDocument.facts, LocalDate.now(), date);
-    }
-
     private String[] getAnswers() {
         String[] answers = new String[panels.size()];
         for (int index = 0; index < panels.size(); index++) {
@@ -181,8 +172,8 @@ public class FactViewDocumentPanel extends ViewDocumentPanel {
 
 
 
-    protected Document getOriginalDocument() {
-        return originalDocument;
+    protected Document getDocument() {
+        return originalDocument.copy();
     }
 
     protected void updateTotalScore() {

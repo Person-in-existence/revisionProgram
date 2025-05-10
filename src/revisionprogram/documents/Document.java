@@ -11,6 +11,7 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 import revisionprogram.files.FileException;
+import revisionprogram.scheduledrevision.ScheduledRevisionManager;
 
 
 public abstract class Document {
@@ -58,6 +59,9 @@ public abstract class Document {
         System.err.println("revisionprogram.documents.Document.getTypeByExtension: Extension type not recognised: " + extension);
         System.err.println("Returning Text instead");
         return DocumentType.TEXT;
+    }
+    public boolean readyToAdvance() {
+        return !(LocalDate.now().plusDays(ScheduledRevisionManager.daysBeforeThreshold).isBefore(getNextRevision()));
     }
 
     public static String makeFilePath(String title, String fileName, String fileExtension) {
@@ -143,6 +147,7 @@ public abstract class Document {
     public abstract void setLastRevised(LocalDate lastRevised);
     public abstract LocalDate getNextRevision();
     public abstract void setNextRevision(LocalDate nextRevision);
+    public abstract Document copy();
     public static void writeString(String string, DataOutputStream out) throws IOException {
         // get the length of the string
         long length = string.length();

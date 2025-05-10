@@ -1,10 +1,11 @@
 package revisionprogram.documents;
 
 import revisionprogram.MainPanel;
-import revisionprogram.documents.textdocuments.TextDocument;
 import revisionprogram.files.FileException;
+import revisionprogram.scheduledrevision.ScheduledRevisionManager;
 
 import java.awt.*;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 public abstract class ViewDocumentPanel extends MainPanel {
@@ -14,18 +15,25 @@ public abstract class ViewDocumentPanel extends MainPanel {
     public ViewDocumentPanel(LayoutManager layout) {
         super(layout);
     }
-    public abstract Document getDocument();
-    protected abstract Document getOriginalDocument();
+    protected abstract Document getDocument();
     public abstract void setDocument(Document document);
-    //public abstract boolean close();
     public boolean close() {
         Document document = getDocument();
-        Document originalDocument = getOriginalDocument();
-        if (!document.getNextRevision().isEqual(originalDocument.getNextRevision()) | !document.getLastRevised().isEqual(originalDocument.getLastRevised())) {
+        if (document.readyToAdvance()) {
+            // Change revision on document
+            // Poll
+            ExitPollDialog.Confidence confidence = ExitPollDialog.poll();
+            // Get the next revision
+            LocalDate nextRevision = ScheduledRevisionManager.getNextRevision(document.getLastRevised(), document.getNextRevision(), confidence);
+            // Change the times on the document (Make a copy)
+            document.setLastRevised(LocalDate.now());
+            document.setNextRevision(nextRevision);
+
             FileException e = document.writeToFile();
             if (e.failed) {
                 System.err.println(e.getMessage());
                 System.err.println(Arrays.toString(e.getStackTrace()));
+                return false;
             }
         }
         return true;

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import revisionprogram.documents.*;
 import revisionprogram.Main;
+import revisionprogram.documents.factdocuments.FactDocument;
 import revisionprogram.files.FileException;
 
 
@@ -102,6 +103,11 @@ public class TextDocument extends Document {
     @Override
     public void setNextRevision(LocalDate nextRevision) {
         this.nextRevision = nextRevision;
+    }
+
+    @Override
+    public Document copy() {
+        return new TextDocument(title, content, fileName, lastRevised, nextRevision, subject);
     }
 
     public String getTitle() {

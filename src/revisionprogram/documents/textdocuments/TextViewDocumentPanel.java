@@ -55,17 +55,10 @@ public class TextViewDocumentPanel extends ViewDocumentPanel {
         return panel;
     }
 
-    protected Document getOriginalDocument() {
-        return document;
+    protected Document getDocument() {
+        return document.copy();
     }
 
-    public Document getDocument() {
-        LocalDate nextRevision = ScheduledRevisionManager.getNextRevision(document.lastRevised, document.nextRevision);
-        if (nextRevision != document.nextRevision) {
-            return new TextDocument(document.title, document.content, document.fileName, LocalDate.now(), nextRevision, document.subject);
-        }
-        return document;
-    }
     public void setDocument(Document document) {
         this.document = (TextDocument) document;
         this.mainPaneArea.setText(this.document.content);

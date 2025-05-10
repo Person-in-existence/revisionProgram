@@ -114,17 +114,9 @@ public class BlankViewDocumentPanel extends ViewDocumentPanel {
         return Objects.equals(toTest, answer);
     }
 
-
-
     @Override
-    public Document getDocument() {
-        LocalDate nextRevision = ScheduledRevisionManager.getNextRevision(originalDocument.lastRevised, originalDocument.nextRevision);
-        return new BlankDocument(originalDocument.title, originalDocument.getSubject(), originalDocument.getFileName(), originalDocument.blanks, LocalDate.now(), nextRevision);
-    }
-
-    @Override
-    protected Document getOriginalDocument() {
-        return originalDocument;
+    protected Document getDocument() {
+        return originalDocument.copy();
     }
 
     @Override

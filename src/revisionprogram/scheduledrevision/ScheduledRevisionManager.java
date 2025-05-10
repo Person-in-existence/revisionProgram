@@ -3,6 +3,7 @@ package revisionprogram.scheduledrevision;
 import revisionprogram.DocumentMetadata;
 import revisionprogram.Main;
 import revisionprogram.documents.Document;
+import revisionprogram.documents.ExitPollDialog;
 import revisionprogram.timetable.Timetable;
 import revisionprogram.timetable.TimetableActivity;
 
@@ -16,6 +17,8 @@ import java.util.Arrays;
 public class ScheduledRevisionManager {
     public static final String saveLocation = Main.saveRoot + "documentprompts";
     public static final int daysBeforeThreshold = 1;
+    public static final int[] times = {0,1,7,14,28,7*5,7*6,7*7, 7*8}; // Must be 0 so we can not move on at the start
+    public static final int randomThreshold = 3; // The first value where random adjustment is applied
 
     public static DocumentMetadata[] getRevisionList() {
         DocumentMetadata[] data = Main.getDocumentData();
@@ -31,35 +34,58 @@ public class ScheduledRevisionManager {
 
     }
 
-    public static LocalDate getNextRevision(LocalDate previousRevision, LocalDate nextRevision) {
+    public static LocalDate getNextRevision(LocalDate previousRevision, LocalDate nextRevision, ExitPollDialog.Confidence confidence) {
+
         // If it is far away from that revision (more than 3 days), dont change it at all
         if (LocalDate.now().plusDays(ScheduledRevisionManager.daysBeforeThreshold).isBefore(nextRevision)) {
             return nextRevision;
         }
 
         long difference = ChronoUnit.DAYS.between(previousRevision, nextRevision);
-        LocalDate scheduledRevision;
-        if (difference < 1) {
-            // 1 day
-            return LocalDate.now().plusDays(1);
-        } else if (difference < 7-1) { // -1s mean that the randomness added will still work - adjustRandomly can make it up to 1 day before
-            // 7 days
-            scheduledRevision = LocalDate.now().plusDays(7);
-        } else if (difference < 14-1) {
-            // 2 weeks
-            scheduledRevision = LocalDate.now().plusDays(14);
-        } else if (difference < 28-1) {
-            scheduledRevision = LocalDate.now().plusWeeks(4); // 4 weeks
-        } else if (difference < (7*5-1)) {
-            scheduledRevision = LocalDate.now().plusWeeks(5); // 5 weeks
-        } else if (difference < (7*6-1)) {
-            scheduledRevision = LocalDate.now().plusWeeks(6); // 6 weeks
-        } else if (difference < (7*7-1)) {
-            scheduledRevision = LocalDate.now().plusWeeks(7); // 7 weeks
-        } else {
-            scheduledRevision = LocalDate.now().plusWeeks(8); // 8 weeks
+
+        int finalIndex = 0;
+        boolean found = false;
+        for (int index = 0; index < times.length; index++) {
+            int value = times[index];
+            if (value < randomThreshold) {
+                // Value can't be random - check for the actual value
+                if (difference < value) {
+                    finalIndex = index;
+                    found = true;
+                    break;
+                }
+            } else {
+                // Value could be random; check against value-1
+                if (difference < value-1) {
+                    finalIndex = index;
+                    found = true;
+                    break;
+                }
+            }
         }
-        return adjustRandomly(scheduledRevision);
+        if (!found) {
+            // Last item
+            finalIndex = times.length-1;
+        }
+
+        // Adjust for confidence
+        if (confidence == ExitPollDialog.Confidence.OK && finalIndex >= 1) {
+            // Adjustment not needed here - it can only be 0 if we have issue
+            finalIndex -= 1;
+        } else if (confidence == ExitPollDialog.Confidence.POORLY) {
+            // Be final index - 2 or 0
+            finalIndex = finalIndex >=2 ? finalIndex - 2 : 0;
+        }
+
+        int days = times[finalIndex];
+
+        LocalDate time = LocalDate.now().plusDays(days);
+        if (days >= randomThreshold) {
+            return adjustRandomly(time);
+        } else {
+            return time;
+        }
+
 
     }
 
