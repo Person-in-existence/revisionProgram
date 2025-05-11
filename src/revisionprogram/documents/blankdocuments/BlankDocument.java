@@ -171,7 +171,7 @@ public class BlankDocument extends Document {
     public Document copy() {
         BlankString[] copiedBlanks = new BlankString[blanks.length];
         System.arraycopy(blanks, 0, copiedBlanks, 0, blanks.length);
-        return new BlankDocument(subject, title, fileName, copiedBlanks, getLastRevised(), getNextRevision());
+        return new BlankDocument(title, subject, fileName, copiedBlanks, getLastRevised(), getNextRevision());
     }
 
     @Override
