@@ -35,6 +35,7 @@ public class Main {
     public static int screenWidth;
     public static int screenHeight;
     private static Window window;
+    public static Settings settings;
 
     static {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -50,7 +51,7 @@ public class Main {
 
     public static void main(String[] args) {
         // Get the preferred settings (light/dark mode)
-        Settings settings = new Settings();
+        settings = new Settings();
 
         if (settings.darkMode) {
             setDarkMode();
@@ -218,6 +219,7 @@ public class Main {
 
     public static boolean setDarkMode() {
         try {
+            settings.darkMode = true;
             UIManager.setLookAndFeel("com.formdev.flatlaf.FlatDarkLaf");
             return true;
         } catch (Exception e) {
@@ -227,6 +229,7 @@ public class Main {
     }
     public static boolean setLightMode() {
         try {
+            settings.darkMode = false;
             UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
             return true;
         } catch (Exception e) {

@@ -45,5 +45,8 @@ public class Blank {
         return getStart() <= index & index < getEnd();
     }
     public static Comparator<Blank> comparator = Comparator.comparingInt(Blank::getStart);
+    public int length() {
+        return getEnd() - getStart();
+    }
 
 }

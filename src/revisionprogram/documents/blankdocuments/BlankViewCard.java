@@ -11,11 +11,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BlankViewCard extends ListCard {
-    private JTextPane textPane;
-    private BlankString blankString;
-    private ArrayList<Adjustment> strikethroughs = new ArrayList<>();
-    private static SimpleAttributeSet highlighted = new SimpleAttributeSet();
-    private static SimpleAttributeSet notHighlighted = new SimpleAttributeSet();
+    private final JTextPane textPane;
+    private final BlankString blankString;
+    private final ArrayList<Adjustment> strikethroughs = new ArrayList<>();
+    private final ArrayList<Blank> correctBlanks = new ArrayList<>();
+    private final ArrayList<Blank> incorrectBlanks = new ArrayList<>();
+    private final ArrayList<Blank> correctionBlanks = new ArrayList<>();
+    private final static SimpleAttributeSet highlighted = new SimpleAttributeSet();
+    private final static SimpleAttributeSet notHighlighted = new SimpleAttributeSet();
     static {
         StyleConstants.setBackground(highlighted, Color.CYAN);
         StyleConstants.setBackground(notHighlighted, UIManager.getColor(""));
@@ -56,7 +59,25 @@ public class BlankViewCard extends ListCard {
     public void revealBlank(Blank blank, boolean wasCorrect, String inputString) {
         // Make the strikethrough attributes - we will need them later
         SimpleAttributeSet strikethrough = new SimpleAttributeSet();
+        StyleConstants.setForeground(strikethrough, Color.RED);
         StyleConstants.setStrikeThrough(strikethrough, true);
+        StyleConstants.setUnderline(strikethrough, true);
+
+        SimpleAttributeSet green = new SimpleAttributeSet();
+        StyleConstants.setForeground(green, Color.GREEN);
+        StyleConstants.setUnderline(green, true);
+
+        SimpleAttributeSet blue = new SimpleAttributeSet();
+        StyleConstants.setUnderline(blue, true);
+
+        StyleConstants.setForeground(blue, Main.settings.darkMode ? Color.CYAN : Color.BLUE);
+
+        if (wasCorrect) {
+            correctBlanks.add(blank);
+        } else {
+            correctionBlanks.add(blank);
+            incorrectBlanks.add(new Blank(blank.getStart(), inputString.length()+blank.getStart()));
+        }
 
         // Add the input string
         StringBuilder stringBuilder = new StringBuilder(textPane.getText());
@@ -85,6 +106,17 @@ public class BlankViewCard extends ListCard {
             int adjustmentIndex = lookupIndex(adjustment.index());
             textPane.getStyledDocument().setCharacterAttributes(adjustmentIndex, adjustment.amount(), strikethrough, false);
         }
+
+        // Apply greens and reds
+        for (Blank correct : correctBlanks) {
+            int startIndex = lookupIndex(correct.getStart()+1)-1; // Use +1-1 to include the adjustment at this position (Because we inserted before)
+            textPane.getStyledDocument().setCharacterAttributes(startIndex, correct.length(), green, false);
+        }
+        for (Blank correction : correctionBlanks) {
+            int startIndex = lookupIndex(correction.getStart() + 1)  - 1;
+            textPane.getStyledDocument().setCharacterAttributes(startIndex, correction.length(), blue, false);
+        }
+
     }
 
     /**
