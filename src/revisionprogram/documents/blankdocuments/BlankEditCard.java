@@ -278,7 +278,7 @@ public class BlankEditCard extends ListCard {
                 SwingUtilities.invokeLater(()->blanks.remove(blank));
                 continue;
             }
-            if (start >= offset) {
+            if (start > offset) {
                 // Shift the blank by the negative amount
                 blank.shift(-amount);
             } else if (end > offset) { // Just greater than: otherwise it has an issue if you delete the text after it
