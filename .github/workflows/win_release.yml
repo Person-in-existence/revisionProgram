@@ -1,8 +1,10 @@
 name: Release for Windows
+permissions:
+  contents: write
 
 on:
   release:
-    types: [created, published]
+    types: [published]
 
 jobs:
   build:
@@ -27,11 +29,11 @@ jobs:
     # Rename the artifact using the release tag
     - name: Rename build artifact based on release tag
       shell: bash
-      run: mv "target/Revision Program-1.0.exe" "target/Revision Program-${{ github.event.release.tag_name }}.exe"
+      run: mv "target/Revision Program-1.0.exe" "target/Revision Program-${{github.event.release.tag_name}}.exe"
 
     - name: Upload asset to release
       uses: softprops/action-gh-release@v1
       with:
-        files: "target/Revision Program-${{ github.event.release.tag_name }}.exe"
+        files: "target/Revision Program-${{github.event.release.tag_name}}.exe"
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
