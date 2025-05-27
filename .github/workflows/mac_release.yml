@@ -1,0 +1,43 @@
+name: Release for Mac
+permissions:
+  contents: write
+  
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '17'
+
+    - name: Build project
+      run: "mvn package"
+
+    - name: Change permissions
+      run: "chmod +x .idea/mac.sh"
+
+
+    - name: Package for mac
+      run: .idea/mac.sh
+
+    # Rename the artifact using the release tag
+    - name: Rename build artifact based on release tag
+      shell: bash
+      run: mv "target/Revision Program-1.0.dmg" "target/revisionProgram-${{github.event.release.tag_name}}.dmg"
+
+    - name: Upload asset to release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "target/revisionProgram-${{github.event.release.tag_name}}.dmg"
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
