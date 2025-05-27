@@ -1,0 +1,39 @@
+name: Release Jar
+permissions:
+  contents: write
+  
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup JDK
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '17'
+
+    - name: Build project
+      run: "mvn package"
+
+    # Rename the artifact using the release tag
+    - name: Rename build artifact based on release tag
+      shell: bash
+      run: mv "target/revisionProgram.jar" "target/revisionProgram-${{github.event.release.tag_name}}.jar"
+
+    - name: Upload asset to release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "target/revisionProgram-${{github.event.release.tag_name}}.jar"
+      env:
+        GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+      
+      
