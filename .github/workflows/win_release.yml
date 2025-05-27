@@ -2,7 +2,7 @@ name: Release for Windows
 
 on:
   release:
-    types: [created]
+    types: [created, published]
 
 jobs:
   build:
