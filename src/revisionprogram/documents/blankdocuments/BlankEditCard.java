@@ -278,7 +278,7 @@ public class BlankEditCard extends ListCard {
             // Check if it needs adjusting: if its start is after or at the offset, we can shift
             int start = blank.getStart();
             int end = blank.getEnd();
-            if (end - start <= amount) { // Check whether the blank needs to be removed
+            if (end - start <= amount && start >= offset && start <= offset + amount) { // Check whether the blank needs to be removed
                 SwingUtilities.invokeLater(()->blanks.remove(blank));
                 continue;
             }
