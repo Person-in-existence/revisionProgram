@@ -105,7 +105,11 @@ public class BlankEditCard extends ListCard {
     }
 
     public void setBlanks(Blank[] blanks) {
-        this.blanks = new ArrayList<>(Arrays.asList(blanks));
+        this.blanks = new ArrayList<>();
+        // Copy so we don't change the original
+        for (Blank blank : blanks) {
+            this.blanks.add(new Blank(blank));
+        }
         renderBlanks();
     }
 

@@ -9,6 +9,10 @@ public class Blank {
         this.start = start;
         this.end = end;
     }
+    public Blank(Blank blank) {
+        this.start = blank.start;
+        this.end = blank.end;
+    }
     public void shift(int amount) {
         this.start += amount;
         this.end += amount;
@@ -34,7 +38,7 @@ public class Blank {
         return otherThis | thisOther | endCheck;
     }
     public boolean equals(Blank otherBlank) {
-        return getStart() == otherBlank.getStart() & getEnd() == otherBlank.getEnd();
+        return getStart() == otherBlank.getStart() && getEnd() == otherBlank.getEnd();
     }
     public boolean contains(Blank otherBlank) {
         boolean start = getStart() < otherBlank.getStart() & otherBlank.getStart() < getEnd();
