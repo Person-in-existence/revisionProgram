@@ -12,11 +12,11 @@ import java.util.Arrays;
 
 public class BlankViewCard extends ListCard {
     private final JTextPane textPane;
-    private final BlankString blankString;
-    private final ArrayList<Adjustment> strikethroughs = new ArrayList<>();
+    private BlankString blankString;
+    private ArrayList<Adjustment> strikethroughs = new ArrayList<>();
     private final ArrayList<Blank> correctBlanks = new ArrayList<>();
-    private final ArrayList<Blank> incorrectBlanks = new ArrayList<>();
-    private final ArrayList<Blank> correctionBlanks = new ArrayList<>();
+    private ArrayList<Blank> incorrectBlanks = new ArrayList<>();
+    private ArrayList<Blank> correctionBlanks = new ArrayList<>();
     private final static SimpleAttributeSet highlighted = new SimpleAttributeSet();
     private final static SimpleAttributeSet notHighlighted = new SimpleAttributeSet();
     static {
@@ -57,21 +57,6 @@ public class BlankViewCard extends ListCard {
 
     }
     public void revealBlank(Blank blank, boolean wasCorrect, String inputString) {
-        // Make the strikethrough attributes - we will need them later
-        SimpleAttributeSet strikethrough = new SimpleAttributeSet();
-        StyleConstants.setForeground(strikethrough, Color.RED);
-        StyleConstants.setStrikeThrough(strikethrough, true);
-        StyleConstants.setUnderline(strikethrough, true);
-
-        SimpleAttributeSet green = new SimpleAttributeSet();
-        StyleConstants.setForeground(green, Color.GREEN);
-        StyleConstants.setUnderline(green, true);
-
-        SimpleAttributeSet blue = new SimpleAttributeSet();
-        StyleConstants.setUnderline(blue, true);
-
-        StyleConstants.setForeground(blue, Main.settings.darkMode ? Color.CYAN : Color.BLUE);
-
         if (wasCorrect) {
             correctBlanks.add(blank);
         } else {
@@ -101,6 +86,26 @@ public class BlankViewCard extends ListCard {
         }
         textPane.setText(stringBuilder.toString());
 
+        applyFormatting();
+
+    }
+
+    private void applyFormatting() {
+        // Make the strikethrough attributes - we will need them later
+        SimpleAttributeSet strikethrough = new SimpleAttributeSet();
+        StyleConstants.setForeground(strikethrough, Color.RED);
+        StyleConstants.setStrikeThrough(strikethrough, true);
+        StyleConstants.setUnderline(strikethrough, true);
+
+        SimpleAttributeSet green = new SimpleAttributeSet();
+        StyleConstants.setForeground(green, Color.GREEN);
+        StyleConstants.setUnderline(green, true);
+
+        SimpleAttributeSet blue = new SimpleAttributeSet();
+        StyleConstants.setUnderline(blue, true);
+
+        StyleConstants.setForeground(blue, Main.settings.darkMode ? Color.CYAN : Color.BLUE);
+
         // Reapply the strikethroughs using strikethroughs
         for (Adjustment adjustment: strikethroughs) {
             int adjustmentIndex = lookupIndex(adjustment.index());
@@ -116,11 +121,41 @@ public class BlankViewCard extends ListCard {
             int startIndex = lookupIndex(correction.getStart() + 1)  - 1;
             textPane.getStyledDocument().setCharacterAttributes(startIndex, correction.length(), blue, false);
         }
+    }
 
+    public boolean hasIncorrectBlanks() {
+        return !incorrectBlanks.isEmpty();
     }
 
     /**
-     * Replaces the characters in the string which are blanked with _s, so you cant see them in the input
+     * Sets up the card for redoing mistakes
+     * Removes correct blanks from the blank string, but keeps them in correct to still see highlighting. Resets the text
+     */
+    public void redo() {
+        // Reset blankString
+        ArrayList<Blank> newBlanks = new ArrayList<>();
+        for (Blank blank: blankString.blanks()) {
+            // If it was wrong, add it to newBlanks
+            if (correctionBlanks.contains(blank)) {
+                newBlanks.add(blank);
+            }
+        }
+        blankString = new BlankString(blankString.string(), newBlanks.toArray(new Blank[0]));
+
+        // Clear correction and incorrect blanks
+        correctionBlanks = new ArrayList<>();
+        incorrectBlanks = new ArrayList<>();
+
+        // Clear strikethroughs
+        strikethroughs = new ArrayList<>();
+
+        // Regenerate the text
+        textPane.setText(blankedString(blankString));
+        applyFormatting();
+    }
+
+    /**
+     * Replaces the characters in the string which are blanked with _s, so you cant see them in the input. If a blank is in correctblanks, it will not be changed.
      * @param string The string to blank
      * @return The blanked string
      */
