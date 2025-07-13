@@ -20,10 +20,9 @@ public class CreateDialog extends JDialog {
         // Make a drop-down box
         JComboBox<String> comboBox = new JComboBox<>(Main.docTypes);
         dialogPanel.add(comboBox, constraints);
-        // Increment gridy by 1
-        constraints.gridy++;
 
         // Make a button to create
+        constraints.gridy++;
         JButton submitButton = new JButton(Main.strings.getString("submitCreateDialog"));
         submitButton.addActionListener(e->{
             // Call the function
@@ -32,7 +31,6 @@ public class CreateDialog extends JDialog {
             // Close the dialog
             this.dispose();
         });
-        // Add button to panel
         dialogPanel.add(submitButton, constraints);
 
         // Add the panel to the dialog
@@ -41,7 +39,7 @@ public class CreateDialog extends JDialog {
         // Give the dialog a title
         this.setTitle(Main.strings.getString("createDialogTitle"));
 
-        /// Centre the dialog
+        // Centre the dialog
         this.setLocation(Main.getWindow().getDialogCentre(Main.dialogWidth, Main.dialogHeight));
     }
     private void fireListeners() {

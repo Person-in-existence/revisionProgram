@@ -26,28 +26,18 @@ public abstract class EditDocumentPanel extends MainPanel {
             System.out.println("No change");
             return true;
         }
+
+        return writeFile();
+    }
+    private boolean writeFile() {
         // Check whether the document has a filename
-        if (!Objects.equals(getOriginalDocument().getFileName(), "")) {
-            // If it does, save it with a new document
-            FileException e = getDocument().writeToFile();
-            if (e.failed) {
-                // Pop up a dialog and return false
-                Main.showErrorDialog(e.getMessage());
-                return false;
-            }
-        } else {
-            FileException e = getDocument().writeToFile();
-            if (e.failed) {
-                System.err.println("File Write failed");
-                System.err.println(e.getMessage());
-
-                e.printStackTrace();
-                // Pop up a dialog and return false
-                Main.showErrorDialog(e.getMessage());
-                return false;
-            }
-
+        FileException e = getDocument().writeToFile();
+        if (e.failed) {
+            // Pop up a dialog and return false
+            Main.showErrorDialog(e.getMessage());
+            return false;
         }
+
         return true;
     }
 }

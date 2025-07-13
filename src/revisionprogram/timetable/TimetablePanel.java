@@ -221,8 +221,9 @@ public class TimetablePanel extends JPanel {
         }
     }
     public Timetable makeTimetable() {
+        // If not edit mode, we only need to update the set day index
         if (!editMode) {
-            return timetable;
+            return new Timetable(LocalDate.now(), setDayIndex, timetable.days, timetable.configuredActivities);
         }
         Day[] days = new Day[dayActivities.size()];
         // Loop through the days
@@ -240,8 +241,10 @@ public class TimetablePanel extends JPanel {
         return new Timetable(LocalDate.now(), setDayIndex, days, configuredActivities.toArray(new String[0]));
     }
     public void close() {
-        if (editMode | (originalSetDayIndex != setDayIndex)) {
+        if (editMode || (originalSetDayIndex != setDayIndex)) {
+            System.out.println(setDayIndex);
             Timetable timetable = makeTimetable();
+            System.out.println(timetable.getCurrentDay());
             FileException fileException = timetable.writeToFile();
             if (fileException.failed) {
                 // Try again and write error to console
@@ -290,6 +293,12 @@ public class TimetablePanel extends JPanel {
             setDayIndex = selectedIndex;
             // Set the current day
             dayActivities.get(setDayIndex).setSelectedDay(true);
+
+            // Update the timetable
+            timetable = makeTimetable();
+            Main.getWindow().setTimetable(timetable);
+            fireChangeListeners();
+
             // Request the focus in this window so that the yellow border shows
             this.requestFocusInWindow();
         }

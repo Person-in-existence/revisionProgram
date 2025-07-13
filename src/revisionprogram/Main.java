@@ -50,14 +50,24 @@ public class Main {
     public static int dialogHeight = 150;
 
     public static void main(String[] args) {
-        // Get the preferred settings (light/dark mode)
-        settings = new Settings();
-
-        if (settings.darkMode) {
-            setDarkMode();
-        } else {
-            setLightMode();
+        // Check saveLocation folder exists, otherwise create it
+        File saveRoot = new File(saveLocation);
+        if (!saveRoot.exists()) {
+            saveRoot.mkdirs();
         }
+
+        // Exit if the licence isn't accepted
+        if (!checkLicence()) {
+            return;
+        }
+
+        loadSettings();
+
+        setBundles();
+
+        Window window = new Window();
+    }
+    private static void setBundles() {
         try {
             Locale locale = Locale.getDefault();
             strings = ResourceBundle.getBundle("Strings", locale);
@@ -67,27 +77,31 @@ public class Main {
             strings = ResourceBundle.getBundle("Strings", Locale.UK);
             license = ResourceBundle.getBundle("License", Locale.UK);
         }
-
-        // Check saveLocation folder exists, otherwise create it
-        File saveRoot = new File(saveLocation);
-        if (!saveRoot.exists()) {
-            saveRoot.mkdirs();
-        }
-
+    }
+    private static boolean checkLicence() {
         // Do license if needed
         if (!getLicenseAccepted()) {
             int option = showLicenseDialog(true);
             if (option != 0) {
                 // License was not accepted: don't open program.
                 System.err.println("License not accepted: closing");
-                return;
+                return false;
             } else {
                 acceptLicense();
                 System.out.println("License accepted!");
             }
         }
+        return true;
+    }
 
-        Window window = new Window();
+    private static void loadSettings() {
+        settings = new Settings();
+
+        if (settings.darkMode) {
+            setDarkMode();
+        } else {
+            setLightMode();
+        }
     }
 
     protected static void setWindow(Window window) {Main.window = window;}

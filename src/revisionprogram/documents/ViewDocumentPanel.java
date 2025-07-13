@@ -23,6 +23,15 @@ public abstract class ViewDocumentPanel extends MainPanel {
             // Change revision on document
             // Poll
             ExitPollDialog.Confidence confidence = ExitPollDialog.poll();
+            // Check for cancel and unrevised
+            if (confidence == ExitPollDialog.Confidence.CANCEL) {
+                // For cancel, return false to go back
+                return false;
+            } else if (confidence == ExitPollDialog.Confidence.UNREVISED) {
+                // For unrevised, return true; we want to exit without saving
+                return true;
+            }
+
             // Get the next revision
             LocalDate nextRevision = ScheduledRevisionManager.getNextRevision(document.getLastRevised(), document.getNextRevision(), confidence);
             // Change the times on the document (Make a copy)

@@ -30,14 +30,17 @@ public class SettingsDialog extends JDialog {
         JLabel label = new JLabel(Main.strings.getString("settingDarkMode"));
         darkModePanel.add(label, BorderLayout.LINE_START);
         JCheckBox darkModeCheckBox = new JCheckBox();
+
         // Get the setting preference
         if (settings.darkMode) {
             darkModeCheckBox.setSelected(true);
         }
+
         // Add action listener
         darkModeCheckBox.addActionListener(e->{
             darkModeToggle(darkModeCheckBox);
         });
+
         darkModePanel.add(darkModeCheckBox, BorderLayout.LINE_END);
         panel.add(darkModePanel);
         updateTotalSize(darkModePanel);

@@ -44,9 +44,11 @@ public class TimetableActivityPanel extends JPanel {
         // Activity type panel
         activityTypePanel = new JPanel(new GridBagLayout());
         GridBagConstraints activityTypeConstraints = Main.makeConstraints();
+
         // Activity type label
         activityTypeLabel = new JLabel(Main.strings.getString("timetableActivityLabel"));
         activityTypePanel.add(activityTypeLabel, activityTypeConstraints);
+
         // Add a padding panel
         activityTypeConstraints.gridx++;
         activityTypePanel.add(new JPanel(), activityTypeConstraints);
@@ -59,37 +61,7 @@ public class TimetableActivityPanel extends JPanel {
             // Add the create new option
             activityChoice.addItem(Main.strings.getString("timetableNewActivity"));
             activityChoice.addActionListener(e -> {
-                // if create new is not active, exit the action listener (stops it from triggering while components change)
-                if (!createNewActive) {
-                    return;
-                }
-                // Use invokeLater so the "create new" does not show up over the menu
-                SwingUtilities.invokeLater(()-> {
-                    int activityIndex = activityChoice.getSelectedIndex();
-                    // Check if this is "create new"
-                    if (activityIndex == this.configuredActivities.size()) {
-                        // Open a dialog to create a new category
-                        String name = JOptionPane.showInputDialog(this, Main.strings.getString("timetableNewActivityDialogText"), Main.strings.getString("timetableNewActivityDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
-                        // Check the user did not press cancel, or input nothing
-                        if (name != null) {
-                            // Before adding the item, check that the item is not in the list already
-                            boolean inList = false;
-                            for (String configuredActivity : configuredActivities) {
-                                if (Objects.equals(configuredActivity, name)) {
-                                    inList = true;
-                                    break;
-                                }
-                            }
-                            if (!inList) {
-                                configuredActivities.add(name);
-                                activityChoice.insertItemAt(name, configuredActivities.size() - 1);
-                                parent.configuredActivitiesUpdated();
-                            }
-                            // Select the new item
-                            activityChoice.setSelectedItem(name);
-                        }
-                    }
-                });
+                onActivityChoiceChange();
             });
             activityTypePanel.add(activityChoice, activityTypeConstraints);
         } else {
@@ -128,6 +100,39 @@ public class TimetableActivityPanel extends JPanel {
         this.add(activityTypePanel, constraints);
         // Set the maximum size to be the preferred size, so they don't expand to fill the revisionprogram.timetable panel
         this.setMaximumSize(this.getPreferredSize());
+    }
+    private void onActivityChoiceChange() {
+        // if create new is not active, exit the action listener (stops it from triggering while components change)
+        if (!createNewActive) {
+            return;
+        }
+        // Use invokeLater so the "create new" does not show up over the menu
+        SwingUtilities.invokeLater(()-> {
+            int activityIndex = activityChoice.getSelectedIndex();
+            // Check if this is "create new"
+            if (activityIndex == this.configuredActivities.size()) {
+                // Open a dialog to create a new category
+                String name = JOptionPane.showInputDialog(this, Main.strings.getString("timetableNewActivityDialogText"), Main.strings.getString("timetableNewActivityDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
+                // Check the user did not press cancel, or input nothing
+                if (name != null) {
+                    // Before adding the item, check that the item is not in the list already
+                    boolean inList = false;
+                    for (String configuredActivity : configuredActivities) {
+                        if (Objects.equals(configuredActivity, name)) {
+                            inList = true;
+                            break;
+                        }
+                    }
+                    if (!inList) {
+                        configuredActivities.add(name);
+                        activityChoice.insertItemAt(name, configuredActivities.size() - 1);
+                        parent.configuredActivitiesUpdated();
+                    }
+                    // Select the new item
+                    activityChoice.setSelectedItem(name);
+                }
+            }
+        });
     }
     public void setData(TimetableActivity activity) {
         if (canEdit) {
