@@ -176,7 +176,10 @@ public class PanelList extends JPanel {
 
     public void scrollToPanel(ListCard card) {
         Rectangle bounds = card.getBounds();
-        contentPanel.scrollRectToVisible(bounds);
+        SwingUtilities.invokeLater(()->{
+            contentPanel.scrollRectToVisible(bounds);
+        });
+
     }
     public ListCard panelAt(int index) {
         return panels.get(index);
