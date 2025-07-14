@@ -29,6 +29,9 @@ public class ContentHomePage extends MainPanel {
         this.add(revisionPanel, constraints);
         constraints.gridx++;
 
+        // Refresh revision panel on file delete
+        filesPanel.addDeleteListener(revisionPanel::refresh);
+
         // Make the timetable panel now so we can get the timetable to give to timetableDocumentPanel
         timetablePanel = new TimetablePanel();
 

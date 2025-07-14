@@ -16,9 +16,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class DocumentDataPanel extends JPanel {
-    public final DocumentMetadata[] data;
+    public DocumentMetadata[] data;
     public static Object[] headers = new Object[] {Main.strings.getString("scheduledRevisionTitleHeader"), Main.strings.getString("scheduledRevisionLastRevisedHeader"), Main.strings.getString("scheduledRevisionNextRevisionHeader")};
     public static final int[] widths = {250, 100, 130}; // Widths of the table columns
+    private JTable table;
     public DocumentDataPanel(DocumentMetadata[] data) {
         super(new GridBagLayout());
         this.data = sortData(data);
@@ -30,7 +31,7 @@ public class DocumentDataPanel extends JPanel {
         }
 
         DefaultTableModel model = new DefaultTableModel(tableData, headers);
-        JTable table = new JTable(model) {
+        table = new JTable(model) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 // Disable editing
@@ -65,6 +66,17 @@ public class DocumentDataPanel extends JPanel {
         // Add the scrolling panel to this
         this.add(scrollPanel);
 
+    }
+    public void setData(DocumentMetadata[] data) {
+        this.data = sortData(data);
+        // Convert the DocumentMetadata[] to data that can be given to the table
+        Object[][] tableData = new Object[this.data.length][headers.length];
+        for (int index = 0; index < this.data.length; index++) {
+            tableData[index] = dataToObject(this.data[index]);
+        }
+
+        DefaultTableModel model = new DefaultTableModel(tableData, headers);
+        table.setModel(model);
     }
     private Object[] dataToObject(DocumentMetadata documentMetadata) {
         return new Object[] {documentMetadata.title(), Main.getUserStyleDateString(documentMetadata.lastRevised()), Main.getUserStyleDateString(documentMetadata.nextRevision())};

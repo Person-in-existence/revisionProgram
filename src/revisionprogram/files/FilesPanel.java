@@ -1,11 +1,11 @@
 package revisionprogram.files;
 
+import revisionprogram.TriggerListener;
 import revisionprogram.DocumentErrorPackage;
 import revisionprogram.DocumentMetadata;
 import revisionprogram.Main;
 import revisionprogram.components.panellist.PanelList;
 
-import javax.print.Doc;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -21,6 +21,7 @@ public class FilesPanel extends JPanel {
     private PanelList panelList;
     private DocumentMetadata[] currentData;
     private DocumentMetadata[] filteredData;
+    private final ArrayList<TriggerListener> deleteListeners = new ArrayList<>();
     public FilesPanel() {
         super(new GridBagLayout());
         GridBagConstraints constraints = Main.makeConstraints();
@@ -46,6 +47,17 @@ public class FilesPanel extends JPanel {
                 setPreferredSize(new Dimension(getPreferredSize().width, getParent().getHeight()-50));
             }
         });
+    }
+    public void addDeleteListener(TriggerListener listener) {
+        deleteListeners.add(listener);
+    }
+    public void removeDeleteListener(TriggerListener listener) {
+        deleteListeners.remove(listener);
+    }
+    private void fireDeleteListeners() {
+        for (TriggerListener listener: deleteListeners) {
+            listener.fire();
+        }
     }
     private void addPanels(DocumentMetadata[] files) {
         for (DocumentMetadata data: files) {
@@ -146,6 +158,7 @@ public class FilesPanel extends JPanel {
             // Get the updated document data from main
             currentData = Main.getDocumentData();
             update();
+            fireDeleteListeners();
         }
 
     }

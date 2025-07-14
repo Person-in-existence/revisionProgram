@@ -36,6 +36,9 @@ public class RevisionPanel extends JPanel {
         });
 
     }
+    public void refresh() {
+        dataPanel.setData(ScheduledRevisionManager.getRevisionList());
+    }
     private JPanel makeUpperPanel() {
         JPanel upperPanel = new JPanel();
         JLabel label = new JLabel(Main.strings.getString("scheduledRevisionPrompt"));
