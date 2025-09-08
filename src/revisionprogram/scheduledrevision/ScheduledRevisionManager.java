@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class ScheduledRevisionManager {
     public static final String saveLocation = Main.saveRoot + "documentprompts";
     public static final int daysBeforeThreshold = 1;
-    public static final int[] times = {0,1,7,14,28,7*5,7*6,7*7, 7*8}; // Must be 0 so we can not move on at the start
+    public static final int[] times = {0,1,4,7,14, 7*3, 7*4,7*5,7*6,7*7, 7*8}; // Must be 0 so we can not move on at the start
     public static final int randomThreshold = 3; // The first value where random adjustment is applied
 
     public static DocumentMetadata[] getRevisionList() {
