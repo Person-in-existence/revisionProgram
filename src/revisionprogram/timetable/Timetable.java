@@ -8,6 +8,8 @@ import revisionprogram.files.FileException;
 import java.io.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Objects;
 
 public class Timetable {
     private static final String saveLocation = Main.saveRoot + "timetable";
@@ -79,7 +81,7 @@ public class Timetable {
                 for (int activitiesIndex = 0; activitiesIndex < numDayActivities; activitiesIndex++) {
                     // String activity name
                     Document.writeString(days[index].activities[activitiesIndex].name(), out);
-                    // long activitiesIndex
+                    // int activitiesIndex
                     int activityIndex = days[index].activities[activitiesIndex].activityIndex();
                     out.writeInt(activityIndex);
                 }
@@ -181,5 +183,68 @@ public class Timetable {
         }
         return names;
     }
+    public String[] getConfiguredActivities() {
+        return configuredActivities;
+    }
 
+    /**
+     * Adds a subject to the timetable, then saves the changes to file.
+     * For internal use - the Main.addSubject() method should be used for general use - it ensure the UI is consistent.
+     *
+     * @param name The name of the new subject to add
+     * @return A file exception from the writeToFile() method
+     */
+    public FileException addSubject(String name) {
+        String[] newConfiguredActivities = new String[configuredActivities.length + 1];
+
+        // Copy the old configured activities into the start of newConfiguredActivities
+        System.arraycopy(configuredActivities, 0, newConfiguredActivities, 0, configuredActivities.length);
+
+        // Add the name to the new version
+        newConfiguredActivities[newConfiguredActivities.length-1] = name;
+
+        configuredActivities = newConfiguredActivities;
+
+        // Save changes to file
+        return writeToFile();
+    }
+
+    /**
+     * Deletes a subject from the timetable, then saves the changes to file.
+     * Any activities with the deleted subject will also be deleted.
+     * For internal use - the Main.deleteSubject() method should be used for general use - this only updates the timetable.
+     *
+     * @param name The name of the subject to delete
+     * @return A file exception from the writeToFile() method, for whether saving to file was successful. A file exception with false will be returned if the subject could not be found.
+     */
+    public FileException deleteSubject(String name) {
+        // Must adjust all indices in days
+
+
+        ArrayList<String> newConfiguredActivities = new ArrayList<>();
+        // Get the index of the subject to remove
+        int subjectIndex = -1;
+        for (int index = 0; index < configuredActivities.length; index++) {
+            if (Objects.equals(configuredActivities[index], name)) {
+                subjectIndex = index;
+            } else {
+                newConfiguredActivities.add(configuredActivities[index]);
+            }
+        }
+        // Check the subject actually exists
+        if (subjectIndex < 0) {
+            System.out.println("Call to delete subject " + name + " in timetable found no such subject. Returned without edits");
+            return new FileException(false, "");
+        }
+
+        // Update all the days in the timetable
+        for (Day day : days) {
+            day.subjectDeleted(subjectIndex);
+        }
+
+        configuredActivities = newConfiguredActivities.toArray(new String[0]);
+
+        // Save the changes to file
+        return writeToFile();
+    }
 }

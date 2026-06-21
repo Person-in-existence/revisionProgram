@@ -17,6 +17,7 @@ public class TimetableActivityPanel extends JPanel {
     private JComboBox<String> activityChoice;
     private JLabel activityLabel;
     private boolean createNewActive = true;
+    private int selectedSubjectIndex;
     public final boolean canEdit;
     private TimetablePanel parent;
     private JLabel activityTypeLabel;
@@ -132,9 +133,18 @@ public class TimetableActivityPanel extends JPanel {
                     activityChoice.setSelectedItem(name);
                 }
             }
+            selectedSubjectIndex = activityChoice.getSelectedIndex();
         });
     }
+    public boolean subjectSelectedIs(String name) {
+        if (selectedSubjectIndex >= configuredActivities.size()) {
+            return false;
+        } else {
+            return Objects.equals(configuredActivities.get(selectedSubjectIndex), name);
+        }
+    }
     public void setData(TimetableActivity activity) {
+        selectedSubjectIndex = activity.activityIndex();
         if (canEdit) {
             // Stop the action listener from triggering
             createNewActive = false;
@@ -184,11 +194,17 @@ public class TimetableActivityPanel extends JPanel {
         this.repaint();
     }
     public void configuredActivitiesUpdated() {
+        // If this was called outside of edit mode by the settings panel, exit to avoid crash
+        if (activityChoice == null) {
+            return;
+        }
         // Temporarily disable the action listeners while this is changing
         createNewActive = false;
+
         // Get the selected item to preserve it (index works as things can only be added onto the end, but it has to be checked in case it is the last thing in the JComboBox)
         int selectedIndex = activityChoice.getSelectedIndex();
         int itemCount = activityChoice.getItemCount();
+        String previouslySelected = (String) activityChoice.getSelectedItem();
 
         activityChoice.removeAllItems();
         for (String configuredActivity : configuredActivities) {
@@ -196,13 +212,26 @@ public class TimetableActivityPanel extends JPanel {
         }
         // Add "create new"
         activityChoice.addItem(Main.strings.getString("timetableNewActivity"));
-        // Select the correct, previously selected item
-        if (selectedIndex != itemCount - 1) {
-            activityChoice.setSelectedIndex(selectedIndex);
+
+        // Handle deletions separately (old code works for renames and additions)
+        if (activityChoice.getItemCount() >= itemCount) {
+            // Select the correct, previously selected item
+            if (selectedIndex != itemCount - 1) {
+                activityChoice.setSelectedIndex(selectedIndex);
+            } else {
+                // Safe as one item is added for every item in configured activities, plus one extra (create new)
+                activityChoice.setSelectedIndex(configuredActivities.size());
+            }
         } else {
-            // Safe as one item is added for every item in configured activities, plus one extra (create new)
-            activityChoice.setSelectedIndex(configuredActivities.size());
+            // If there is a deletion, use the name of the previous item to make sure it is moved correctly. If not, set to create new
+            if (configuredActivities.contains(previouslySelected)) {
+                activityChoice.setSelectedIndex(configuredActivities.indexOf(previouslySelected));
+            } else {
+                // Otherwise, set to create new (this will work if create new was previously selected)
+                activityChoice.setSelectedIndex(configuredActivities.size());
+            }
         }
+
         createNewActive = true;
     }
     public TimetableActivity getActivity() {

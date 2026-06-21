@@ -220,6 +220,27 @@ public class TimetablePanel extends JPanel {
             activities.get(index).configuredActivitiesUpdated();
         }
     }
+    public void addNewConfiguredActivity(String name) {
+        configuredActivities.add(name);
+        configuredActivitiesUpdated();
+    }
+    public void renameConfiguredActivity(String old, String replacement) {
+        int index = configuredActivities.indexOf(old);
+        configuredActivities.set(index, replacement);
+        configuredActivitiesUpdated();
+    }
+    public void removeConfiguredActivity(String name) {
+        // Check that the activity is in the timetable
+        if (configuredActivities.contains(name)) {
+            // Remove the subject from any days that have it
+            for (TimetableDayPanel day : dayActivities) {
+                day.subjectDeleted(name);
+            }
+            configuredActivities.remove(name);
+            configuredActivitiesUpdated();
+        }
+
+    }
     public Timetable makeTimetable() {
         // If not edit mode, we only need to update the set day index
         if (!editMode) {

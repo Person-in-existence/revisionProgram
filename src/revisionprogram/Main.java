@@ -4,6 +4,8 @@ import com.formdev.flatlaf.ui.FlatButtonBorder;
 import revisionprogram.documents.Document;
 import revisionprogram.documents.DocumentType;
 import revisionprogram.files.FileException;
+import revisionprogram.timetable.Timetable;
+import revisionprogram.timetable.TimetablePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -304,7 +306,16 @@ public class Main {
             c.setBackground(getTextPaneBackground());
         }
     }
+
+    /**
+     *
+     * Converts a file name to something safe to use for a file name
+     * (No disallowed characters, which are replaced by underscores, and empty names become untitled).
+     * @param fileName The file name to convert
+     * @return The converted file name
+     */
     public static String convertFileName(String fileName) {
+
         StringBuilder newFileName = new StringBuilder();
         // Name it "Untitled" if it is empty (as no set file name is an empty string, so an empty file name will break it)
         if (Objects.equals(fileName, "")) {
@@ -390,5 +401,105 @@ public class Main {
             return new FileException(true, e.getMessage());
         }
 
+    }
+
+    /**
+     * Adds a subject.
+     *
+     * @param name The name of the new subject
+     * @return Whether adding the subject was successful, as a boolean.
+     */
+    public static boolean addSubject(String name) {
+        Timetable timetable = getWindow().getTimetable();
+
+
+        TimetablePanel timetablePanel = window.getTimetablePanelIfOpen();
+        if (timetablePanel != null) {
+            timetablePanel.addNewConfiguredActivity(name);
+        }
+
+        FileException exception = timetable.addSubject(name);
+        if (exception.failed) {
+            System.err.println("Timetable failed to save new subject with message: " + exception.getMessage());
+        }
+        return !exception.failed;
+    }
+
+    /**
+     * Deletes a subject and all documents which have that subject
+     * @param name The name of the subject to delete
+     * @return Whether deleting the subject from the timetable was successful, as a boolean - will not be triggered by deleting individual files
+     */
+    public static boolean deleteSubject(String name) {
+        Timetable timetable = getWindow().getTimetable();
+
+        TimetablePanel timetablePanel = window.getTimetablePanelIfOpen();
+        if (timetablePanel != null) {
+            timetablePanel.removeConfiguredActivity(name);
+        }
+        FileException exception = timetable.deleteSubject(name);
+        if (exception.failed) {
+            System.err.println("Timetable failed to save new subject with message: " + exception.getMessage());
+        }
+        // TODO: REMOVE DOCUMENTS WITH SUBJECT
+
+        DocumentMetadata[] allFiles = getDocumentData();
+
+
+        // Find the files with the subject and delete them
+
+        for (DocumentMetadata file : allFiles) {
+            if (Objects.equals(file.subject(), name)) {
+                FileException tempException = removeFile(file);
+                if (tempException.failed) {
+                    System.err.println("Deleting file with name " + file.name() + " and subject " + file.subject() + " failed when deleting subject " + name + " with reason " + tempException.getMessage());
+                }
+            }
+        }
+
+
+        return !exception.failed;
+    }
+
+    /**
+     * Gets all the subjects used by documents which exist
+     * @return An array of all subjects found.
+     */
+    public static Object[][] getAllSubjectsAndNumDocuments() {
+        DocumentMetadata[] documentData = getDocumentData();
+        ArrayList<Object[]> subjects = new ArrayList<>();
+        for (DocumentMetadata documentMetadata : documentData) {
+            String subject = documentMetadata.subject();
+            if (!subjectArrayListContainsSubject(subjects, subject)) {
+                subjects.add(new Object[] {subject, 1});
+            } else {
+                // Find the subject in the arraylist
+                for (Object[] subjectArray : subjects) {
+                    if (Objects.equals(subjectArray[0], subject)) {
+                        subjectArray[1] = (int) (subjectArray[1]) + 1;
+                    }
+                }
+            }
+        }
+
+        // Now check for any subjects in timetable which don't have any attached documents
+        Timetable timetable = getWindow().getTimetable();
+        String[] timetableSubjects = timetable.getConfiguredActivities();
+        for (String subject : timetableSubjects) {
+            if (!subjectArrayListContainsSubject(subjects, subject)) {
+                subjects.add(new Object[] {subject, 0});
+            }
+        }
+
+        System.out.println(Arrays.deepToString(subjects.toArray(new Object[][]{})));
+        return subjects.toArray(new Object[][] {});
+    }
+    private static boolean subjectArrayListContainsSubject(ArrayList<Object[]> subjects, String subject) {
+        for (Object[] subjectArray : subjects) {
+            if (Objects.equals(subjectArray[0], subject)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -50,6 +50,9 @@ public class ContentHomePage extends MainPanel {
     public void refresh(){
         filesPanel.refreshUI();
     }
+    public TimetablePanel getTimetablePanel() {
+        return timetablePanel;
+    }
     @Override
     public boolean close() {
         timetablePanel.close();

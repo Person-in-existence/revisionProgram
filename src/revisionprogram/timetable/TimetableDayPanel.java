@@ -167,4 +167,22 @@ public class TimetableDayPanel extends JPanel {
         isSelectedDay = selected;
         this.setBorder(defaultBorder());
     }
+
+    /**
+     * Deletes activities with a deleted subject - also deletes from parent arraylist to keep consistency
+     * @param name The name of the subject to delete
+     */
+    public void subjectDeleted(String name) {
+        // Go backwards to avoid index issues
+        for (int index = dayActivityArrayList.size() - 1; index >= 0; index--) {
+            TimetableActivityPanel timetableActivityPanel = dayActivityArrayList.get(index);
+            if (timetableActivityPanel.subjectSelectedIs(name)) {
+
+                dayActivityArrayList.remove(index);
+
+                // "If the list does not contain the element, it is unchanged." so this should be safe
+                parent.activities.remove(timetableActivityPanel);
+            }
+        }
+    }
 }

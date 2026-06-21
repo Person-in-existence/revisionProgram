@@ -1,6 +1,7 @@
 package revisionprogram;
 
 import revisionprogram.documents.Document;
+import revisionprogram.timetable.TimetablePanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,15 @@ public class ContentPanel extends JPanel {
         System.out.println("revisionprogram.ContentPanel switching to homepage");
         switchPanel(new ContentHomePage());
     }
+
+
+    public TimetablePanel getTimetablePanelIfOpen() {
+        if (panel.getClass() == ContentHomePage.class) {
+            return ((ContentHomePage) panel).getTimetablePanel();
+        }
+        return null;
+    }
+
     public void declarePanelOpen() {
         panelHasClosed = false;
     }

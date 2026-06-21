@@ -5,6 +5,7 @@ import revisionprogram.documents.Document;
 import revisionprogram.documents.DocumentType;
 import revisionprogram.files.FileException;
 import revisionprogram.timetable.Timetable;
+import revisionprogram.timetable.TimetablePanel;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -161,6 +162,10 @@ public class Window extends JFrame {
         }
         // If not, don't do anything
 
+    }
+
+    public TimetablePanel getTimetablePanelIfOpen() {
+        return contentPanel.getTimetablePanelIfOpen();
     }
 
     public void editDocument(Document document) {
