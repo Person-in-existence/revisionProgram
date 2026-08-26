@@ -58,14 +58,15 @@ public class Main {
             saveRoot.mkdirs();
         }
 
+        // Get stuff from bundles before checking licence so the licence text can be found
+        setBundles();
+
         // Exit if the licence isn't accepted
         if (!checkLicence()) {
             return;
         }
 
         loadSettings();
-
-        setBundles();
 
         Window window = new Window();
     }

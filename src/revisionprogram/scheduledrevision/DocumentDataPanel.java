@@ -19,7 +19,7 @@ import java.util.ArrayList;
 public class DocumentDataPanel extends JPanel {
     public DocumentMetadata[] data;
     public static Object[] headers = new Object[] {Main.strings.getString("scheduledRevisionTitleHeader"), Main.strings.getString("scheduledRevisionLastRevisedHeader"), Main.strings.getString("scheduledRevisionNextRevisionHeader")};
-    public static final int[] widths = {250, 100, 130}; // Widths of the table columns
+    public static final int[] widths = {200, 100, 130}; // Widths of the table columns
     private ScrollingTable table;
     public DocumentDataPanel(DocumentMetadata[] data) {
         super(new GridBagLayout());
