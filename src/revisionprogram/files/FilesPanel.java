@@ -44,7 +44,9 @@ public class FilesPanel extends JPanel {
         this.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
-                setPreferredSize(new Dimension(getPreferredSize().width, getParent().getHeight()-50));
+                int newHeight = getParent().getHeight()-50;
+                panelList.resizeHeightOnParent(newHeight);
+                setPreferredSize(new Dimension(getPreferredSize().width, newHeight));
             }
         });
     }

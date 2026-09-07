@@ -23,6 +23,7 @@ public class PanelList extends JPanel {
     private int selectedIndex = -1;
     private boolean selectionEnabled = false;
     private double widthFactor = 0.66;
+    private int preferredHeight = 0;
     public PanelList(int axis) {
         super();
 
@@ -58,7 +59,6 @@ public class PanelList extends JPanel {
                     revalidate();
                     repaint();
                 });
-
             }
         });
     }
@@ -68,7 +68,18 @@ public class PanelList extends JPanel {
     }
 
     public Dimension getPreferredSize() {
-        return new Dimension(contentPanel.getPreferredSize().width, contentPanel.getPreferredSize().height + 10);
+        return new Dimension(contentPanel.getPreferredSize().width, preferredHeight);
+    }
+
+    /**
+     * Updates the height of the panel list to be the input height. Allows the panel list
+     * to be used on smaller screens or when the window is resized.
+     * @param newHeight The new height for the panel list to be.
+     */
+    public void resizeHeightOnParent(int newHeight) {
+        preferredHeight = newHeight;
+        revalidate();
+        repaint();
     }
 
 
