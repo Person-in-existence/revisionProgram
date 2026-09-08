@@ -24,8 +24,9 @@ public class Main {
     public static final Font textContentFont = new Font("Arial", Font.PLAIN, 16);
     public static final Font factFont = new Font("Arial", Font.PLAIN, 24);
     public static final String[] docTypes = new String[] {"Text", "Fact", "Blank"};
-    public static String saveRoot = System.getenv("APPDATA") + "/revisionProgram/";
-    public static String saveLocation = saveRoot + "sets/";
+    public static final String saveFolderName = "revisionProgram";
+    public static String saveRoot;
+    public static String saveLocation;
     public static final double SIZE_SCALER = 0.9;
     public static final int scrollSpeed = 20;
     public static final Color factCorrectColour = new Color(50, 206, 50);
@@ -52,10 +53,13 @@ public class Main {
     public static int dialogHeight = 150;
 
     public static void main(String[] args) {
+        // Initialise the save locations (so it is correct for the OS):
+        setSaveLoc();
+
         // Check saveLocation folder exists, otherwise create it
-        File saveRoot = new File(saveLocation);
-        if (!saveRoot.exists()) {
-            saveRoot.mkdirs();
+        File saveLocationFile = new File(saveLocation);
+        if (!saveLocationFile.exists()) {
+            saveLocationFile.mkdirs();
         }
 
         // Get stuff from bundles before checking licence so the licence text can be found
@@ -69,6 +73,28 @@ public class Main {
         loadSettings();
 
         Window window = new Window();
+    }
+
+    /**
+     * Initialises the saveRoot and saveLocation variables based on the operating system to allow file handling
+     * to work.
+     */
+    private static void setSaveLoc() {
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("windows")) {
+            saveRoot = System.getenv("APPDATA") + "/" + saveFolderName + "/";
+            System.out.println("Windows detected! saveRoot: " + saveRoot);
+        } else if (os.contains("mac")) {
+            saveRoot = System.getProperty("user.home") + "/Library/Application Support/" + saveFolderName + "/";
+            System.out.println("Mac detected! saveRoot: " + saveRoot);
+        } else {
+            // Probably linux
+            saveRoot = System.getProperty("user.home") + "/." + saveFolderName + "/";
+            System.out.println("Neither windows nor mac detected! saveRoot: " + saveRoot);
+        }
+
+        // Set the save location for sets based on the root.
+        saveLocation = saveRoot + "sets/";
     }
     private static void setBundles() {
         try {
